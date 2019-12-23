@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/main_activity_main_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/default_app_padding">
+
+        <Button
+            android:id="@+id/button_tensiometer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tensiometer" />
+
+        <Button
+            android:id="@+id/button_pillreminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pastillero" />
+
+        <Button
+            android:id="@+id/button_bracelet_at500hr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bracelet AT-500HR" />
+
+        <Button
+            android:id="@+id/button_bracelet_at250"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bracelet AT-250" />
+
+        <Button
+            android:id="@+id/button_oximeter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oximeter" />
+
+        <Button
+            android:id="@+id/button_tensiobracelet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tensiometer Bracelet" />
+
+        <Button
+            android:id="@+id/button_thermometer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thermometer" />
+
+        <Button
+            android:id="@+id/button_weightScale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Weight Scale" />
+
+        <Button
+            android:id="@+id/button_baby_temp_bt125"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Baby Thermometer BT-125" />
+
+        <Button
+            android:id="@+id/button_multiple_connection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Multiple connection" />
+
+        <Button
+            android:id="@+id/button_multiple_connection2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Multiple connection 2" />
+
+        <Button
+            android:id="@+id/button_scan_all_devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan all devices" />
+
+        <Button
+            android:id="@+id/button_bracelet_at2019"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pulsera AT-2019" />
+
+    </LinearLayout>
+</ScrollView>

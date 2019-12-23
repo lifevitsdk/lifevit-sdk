@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LifeVitSDKApp</string>
+    <string name="dialog_error_title">Error</string>
+    <string name="settings">Ajustes</string>
+    <string name="message_need_location_permission">Necesita permisos de localización para conectar con los dispositivos.</string>
+
+</resources>

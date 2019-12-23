@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/default_app_padding">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/button_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/default_half_padding"
+        android:paddingTop="@dimen/default_half_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connection result: " />
+
+        <TextView
+            android:id="@+id/textview_connection_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="---" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/measurement_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_measurement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start measurement" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Measurement State: " />
+
+            <TextView
+                android:id="@+id/textview_measurement_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Result Systolic: " />
+
+            <TextView
+                android:id="@+id/textview_measurement_result_sys"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Result Diastolic: " />
+
+            <TextView
+                android:id="@+id/textview_measurement_result_dia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Result Pulse: " />
+
+            <TextView
+                android:id="@+id/textview_measurement_result_puls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/connect_by_addr_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/button_connect_by_addr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect by address" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connection result: " />
+
+            <TextView
+                android:id="@+id/textview_connect_by_addr_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/default_app_padding">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/multiple_connection_button_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect all devices" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tensiometer connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_tensiometer_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bracelet AT-500HR connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_at500hr_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bracelet AT-250 connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_at250_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Oximeter connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_oximeter_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tensio-bracelet connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_tensiobracelet_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thermometer connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_thermometer_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weight scale connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_weight_scale_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Baby thermometer connection status: " />
+
+            <TextView
+                android:id="@+id/multiple_connection_baby_temp_connection_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

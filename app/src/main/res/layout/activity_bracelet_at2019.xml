@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/default_app_padding">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/bracelet_at2019_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/default_half_padding"
+        android:paddingTop="@dimen/default_half_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connection result: " />
+
+        <TextView
+            android:id="@+id/bracelet_at2019_connection_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="---" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bracelet_at2019_measurement_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/bracelet_at2019_button_command"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="send command" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Results: " />
+
+            <TextView
+                android:id="@+id/bracelet_at2019_textview_command_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:text="" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

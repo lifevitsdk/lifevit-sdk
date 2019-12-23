@@ -1,0 +1,50 @@
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.compileSdkVersion
+    buildToolsVersion project.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion project.targetSdkVersion
+        versionCode project.versionCode
+        versionName project.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        debug {
+            buildConfigField "boolean", "DEBUG_MESSAGES", "true"
+            buildConfigField ("int", "DEBUG_MESSAGES_LEVEL", "2")
+        }
+        release {
+            buildConfigField "boolean", "DEBUG_MESSAGES", "false"
+            buildConfigField ("int", "DEBUG_MESSAGES_LEVEL", "4")
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions{
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    testImplementation 'junit:junit:4.12'
+
+    // AT-250 Firmware Update
+//    compile 'no.nordicsemi.android:dfu:1.6.1'
+  //  compile project(':dfu')
+
+    implementation 'com.google.code.gson:gson:2.2.4'
+    implementation files('libs/nrf-logger-v2.0.jar')
+
+
+}

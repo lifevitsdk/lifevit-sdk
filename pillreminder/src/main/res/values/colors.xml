@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#211E70</color>
+    <color name="colorPrimaryDark">#12103C</color>
+    <color name="colorAccent">#428CF7</color>
+
+    <color name="warningBackground">#C4FC2020</color>
+    <color name="connectingBackground">#C4428CF7</color>
+    <color name="connectedBackground">#C476A04A</color>
+
+    <color name="bracelet_yellow">#ffff55</color>
+    <color name="bracelet_red">#f24040</color>
+    <color name="bracelet_purple">#5b5bef</color>
+    <color name="bracelet_green">#5fff67</color>
+    <color name="bracelet_blue">#2d72b5</color>
+
+</resources>

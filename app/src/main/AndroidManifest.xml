@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="es.lifevit.sdk.sampleapp">
+
+    <application
+        android:name=".SDKTestApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".activities.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.TensiometerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BraceletAT500HrActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.OximeterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TensiobraceletActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ThermometerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.WeightScaleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MultipleConnectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MultipleConnectionActivity2"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BraceletAT250Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BabyTempBT125Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ScanAllDevicesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PillReminderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BraceletAT2019Activity"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".services.LifeVitTensiService"
+            android:enabled="true" />
+
+    </application>
+
+</manifest>
