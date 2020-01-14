@@ -9,6 +9,12 @@ import no.nordicsemi.android.dfu.DfuBaseService;
 
 public class LifevitSDKConstants {
 
+
+    public static final class WeightScale{
+        public static final int TYPE1 = 1, TYPE2 =2;
+    }
+
+
     public static final String TAG = "LifeVitSDK";
 
     // region ---------- Devices

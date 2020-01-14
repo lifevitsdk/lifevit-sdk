@@ -16,12 +16,13 @@ import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
 import es.lifevit.sdk.listeners.LifevitSDKWeightScaleListener;
 import es.lifevit.sdk.sampleapp.R;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
+import es.lifevit.sdk.weightscale.WeightScaleData;
 
 public class WeightScaleActivity extends AppCompatActivity {
 
 
     TextView textview_connection_result, textview_measurement_info;
-    TextView textview_bmr, textview_bone, textview_fat, textview_muscle, textview_visceral, textview_water, textview_weight, textview_info;
+    TextView textview_bmr, textview_bone, textview_fat, textview_muscle, textview_visceral, textview_water, textview_weight, textview_info, textview_protein, textview_bodyage, textview_idealweight, textview_obesity;
 
     Button button_connect, weight_scale_button_clear_results, weight_scale_button_history;
     private CheckBox weight_scale_check_connected;
@@ -122,6 +123,10 @@ public class WeightScaleActivity extends AppCompatActivity {
         textview_water = findViewById(R.id.weight_scale_textview_measurement_water);
         textview_weight = findViewById(R.id.weight_scale_textview_measurement_weight);
         textview_info = findViewById(R.id.weight_scale_textview_measurement_info);
+        textview_protein = findViewById(R.id.weight_scale_textview_measurement_protein);
+        textview_obesity = findViewById(R.id.weight_scale_textview_measurement_obesity);
+        textview_idealweight = findViewById(R.id.weight_scale_textview_measurement_idealweight);
+        textview_bodyage = findViewById(R.id.weight_scale_textview_measurement_bodyage);
 
 
         button_connect = findViewById(R.id.weight_scale_button_connect);
@@ -269,6 +274,10 @@ public class WeightScaleActivity extends AppCompatActivity {
                         textview_muscle.setText("");
                         textview_visceral.setText("");
                         textview_water.setText("");
+                        textview_protein.setText("");
+                        textview_idealweight.setText("");
+                        textview_obesity.setText("");
+                        textview_bodyage.setText("");
 
                         textview_weight.setText(String.format("%.1f %s (measuring)", weight, unit == LifevitSDKConstants.WEIGHT_UNIT_KG ? "Kg" : "Lb"));
                     }
@@ -276,24 +285,39 @@ public class WeightScaleActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onScaleMeasurementAllValues(final double weight, final int unit, final double fatPercentage, final double waterPercentage, final double musclePercent,
-                                                    final double bmrKcal, final double visceralPercentage, final double boneRaw) {
+            public void onWeightScaleDetected(final int type) {
+
                 runOnUiThread(new Runnable() {
                     @Override
-                    public void run() {
-                        String unitStr = (unit == LifevitSDKConstants.WEIGHT_UNIT_KG ? "Kg" : "Lb");
-
-                        textview_bmr.setText(String.format("%.1f", bmrKcal) + " Kcal");
-                        textview_bone.setText(String.format("%.1f", boneRaw) + " " + unitStr);
-                        textview_fat.setText(String.format("%.1f", fatPercentage) + " %");
-                        textview_muscle.setText(String.format("%.1f", musclePercent) + " %");
-                        textview_visceral.setText(String.format("%.1f", visceralPercentage) + " %");
-                        textview_water.setText(String.format("%.1f", waterPercentage) + " %");
-
-                        textview_weight.setText(String.format("%.1f %s", weight, unitStr));
+                    public void run() { textview_info.setText("Scale type: " + type);
                     }
                 });
             }
+
+            @Override
+            public void onScaleMeasurementAllValues(final WeightScaleData data) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String unitStr = data.getUnit();
+
+                        textview_bmr.setText(String.format("%.1f", data.getBmr()) + " Kcal");
+                        textview_bone.setText(String.format("%.1f", data.getBone()) + " " + unitStr);
+                        textview_fat.setText(String.format("%.1f", data.getFatPercentage()) + " %");
+                        textview_muscle.setText(String.format("%.1f", data.getMusclePercentage()) + " %");
+                        textview_visceral.setText(String.format("%.1f", data.getVisceralPercentage()) + " %");
+                        textview_water.setText(String.format("%.1f", data.getWaterPercentage()) + " %");
+                        textview_protein.setText(String.format("%.1f", data.getProteinPercentage()) + " %");
+                        textview_idealweight.setText(String.format("%.1f", data.getIdealWeight()));
+                        textview_bodyage.setText(String.format("%.1f", data.getBodyAge()));
+                        textview_obesity.setText(String.format("%.1f", data.getObesityPercentage()) + " %");
+
+                        textview_weight.setText(String.format("%.1f %s", data.getWeight(), unitStr));
+                    }
+                });
+            }
+
+
         };
 
         // Create connection helper
