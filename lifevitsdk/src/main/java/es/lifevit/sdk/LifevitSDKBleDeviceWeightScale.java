@@ -652,7 +652,6 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         if (bia == 0) {
             return 0;
         }
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
         int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
         int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
 
@@ -672,12 +671,18 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
     }
 
     public double getProteinPercentage(double musclePercent) {
-        return musclePercent / 2 - 3;
+        if(musclePercent>0) {
+            return musclePercent / 2 - 3;
+        }
+        return 0;
     }
 
     public double getIdealBodyWeight() {
         double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
-        return 21.8 * userHeight * userHeight;
+
+        double h = userHeight / 100.0;
+        double factor = 2.0;
+        return 21.8 * Math.pow(h, factor);
     }
 
     public double getObesityPercentage(double weight) {

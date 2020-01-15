@@ -316,7 +316,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ideal Height: " />
+                android:text="Ideal Weight: " />
 
             <TextView
                 android:id="@+id/weight_scale_textview_measurement_idealweight"

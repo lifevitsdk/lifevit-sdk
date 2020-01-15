@@ -1701,6 +1701,11 @@ public class LifevitSDKManager {
     // region --- Weight Scale Methods ---
 
 
+    public void setUpWeightScale(int gender, int ageYears, int heightCm) {
+
+       setUpWeightScale(gender, ageYears, heightCm, LifevitSDKConstants.WEIGHT_UNIT_KG);
+    }
+
     public void setUpWeightScale(int gender, int ageYears, int heightCm, int weightUnit) {
 
         LogUtils.log(Log.INFO, CLASS_TAG, "setUpWeightScale. Configure weight scale.");
