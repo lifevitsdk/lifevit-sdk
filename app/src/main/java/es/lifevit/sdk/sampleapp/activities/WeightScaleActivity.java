@@ -1,7 +1,6 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,12 +10,11 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import es.lifevit.sdk.LifevitSDKConstants;
-import es.lifevit.sdk.LifevitSDKManager;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
 import es.lifevit.sdk.listeners.LifevitSDKWeightScaleListener;
 import es.lifevit.sdk.sampleapp.R;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
-import es.lifevit.sdk.weightscale.WeightScaleData;
+import es.lifevit.sdk.weightscale.LifevitSDKWeightScaleData;
 
 public class WeightScaleActivity extends AppCompatActivity {
 
@@ -285,7 +283,7 @@ public class WeightScaleActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onWeightScaleDetected(final int type) {
+            public void onScaleTypeDetected(final int type) {
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -295,7 +293,7 @@ public class WeightScaleActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onScaleMeasurementAllValues(final WeightScaleData data) {
+            public void onScaleMeasurementAllValues(final LifevitSDKWeightScaleData data) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

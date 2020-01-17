@@ -13,7 +13,7 @@ import java.util.UUID;
 import es.lifevit.sdk.utils.HexUtils;
 import es.lifevit.sdk.utils.LogUtils;
 import es.lifevit.sdk.utils.Utils;
-import es.lifevit.sdk.weightscale.WeightScaleData;
+import es.lifevit.sdk.weightscale.LifevitSDKWeightScaleData;
 
 
 /**
@@ -167,7 +167,7 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                     mBluetoothGatt.setCharacteristicNotification(c, true);
                     isNewWeightScale = true;
                     if (mLifevitSDKManager.getWeightScaleListener() != null) {
-                        mLifevitSDKManager.getWeightScaleListener().onWeightScaleDetected(LifevitSDKConstants.WeightScale.TYPE2);
+                        mLifevitSDKManager.getWeightScaleListener().onScaleTypeDetected(LifevitSDKConstants.WeightScale.TYPE2);
                     }
 
                     for (BluetoothGattDescriptor d : c.getDescriptors()
@@ -182,7 +182,7 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
 
         if (!isNewWeightScale) {
             if (mLifevitSDKManager.getWeightScaleListener() != null) {
-                mLifevitSDKManager.getWeightScaleListener().onWeightScaleDetected(LifevitSDKConstants.WeightScale.TYPE1);
+                mLifevitSDKManager.getWeightScaleListener().onScaleTypeDetected(LifevitSDKConstants.WeightScale.TYPE1);
             }
 
         }
@@ -235,7 +235,7 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                 double bmrKcal = this.getBMRWithWeight(weight, bia);
 
                 if (mLifevitSDKManager.getWeightScaleListener() != null) {
-                    WeightScaleData data = new WeightScaleData();
+                    LifevitSDKWeightScaleData data = new LifevitSDKWeightScaleData();
                     data.setWeight(weight);
                     data.setUnit("kg");
                     data.setImc(getBMIWithWeight(weight));
@@ -324,7 +324,7 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
 
                                 if (mLifevitSDKManager.getWeightScaleListener() != null) {
 
-                                    WeightScaleData data = new WeightScaleData();
+                                    LifevitSDKWeightScaleData data = new LifevitSDKWeightScaleData();
                                     data.setBmr(bmrKcal);
                                     data.setBone(boneKg);
                                     data.setBonePercentage(bonePercentage);
@@ -443,7 +443,7 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
 
                                 // It returns result in Kg always
                                 if (mLifevitSDKManager.getWeightScaleListener() != null) {
-                                    WeightScaleData data = new WeightScaleData();
+                                    LifevitSDKWeightScaleData data = new LifevitSDKWeightScaleData();
                                     data.setBmr(bmrKcal);
                                     data.setBone(boneKg);
                                     data.setBonePercentage(bonePercentage);
