@@ -16,7 +16,24 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac62e854-a3d4-4d8c-a0fc-3885c1bb8e92" name="Default" comment="Cambios en pulseras." />
+    <list default="true" id="ac62e854-a3d4-4d8c-a0fc-3885c1bb8e92" name="Default" comment="Cambios en pulseras.">
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/javaCompile/jarAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/javaCompile/taskHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/javaCompile/taskJars.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/javaCompile/taskJars.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pillreminder/pillreminder.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pillreminder/pillreminder.iml" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/lifevitsdk-release/.gradle/" />
     <ignored path="$PROJECT_DIR$/lifevitsdk-release/build/" />
     <ignored path="$PROJECT_DIR$/build/classes/" />
@@ -81,28 +98,37 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/BraceletAT250Activity.java">
+        <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceWeightScale.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2205">
-              <caret line="180" column="36" selection-start-line="180" selection-start-column="36" selection-end-line="181" selection-end-column="70" />
+            <state relative-caret-position="10020">
+              <caret line="683" column="28" selection-start-line="683" selection-start-column="28" selection-end-line="683" selection-end-column="28" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/local.properties">
+        <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/PreferenceUtil.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="23" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="23" />
+            <state relative-caret-position="2160">
+              <caret line="150" column="94" selection-start-line="150" selection-start-column="60" selection-end-line="150" selection-end-column="94" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKConstants.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="13" column="51" selection-start-line="13" selection-start-column="51" selection-end-line="13" selection-end-column="51" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceWeightScale.java">
+        <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/listeners/LifevitSDKWeightScaleListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="130">
-              <caret line="238" column="96" selection-start-line="238" selection-start-column="68" selection-end-line="238" selection-end-column="96" />
+            <state relative-caret-position="180">
+              <caret line="12" column="17" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -110,42 +136,33 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/WeightScaleActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4050">
-              <caret line="285" selection-start-line="285" selection-end-line="285" />
+            <state relative-caret-position="1485">
+              <caret line="113" column="78" selection-start-line="113" selection-start-column="78" selection-end-line="113" selection-end-column="78" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_weight_scale.xml">
+          <provider editor-type-id="android-designer2" />
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="36" selection-start-line="20" selection-start-column="36" selection-end-line="20" selection-end-column="36" />
+            <state relative-caret-position="1515">
+              <caret line="101" column="28" selection-end-line="330" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceThermometerV2.java">
+        <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1305">
-              <caret line="101" column="15" selection-start-line="101" selection-start-column="15" selection-end-line="101" selection-end-column="15" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/PillReminderActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3930">
-              <caret line="289" column="83" selection-start-line="289" selection-start-column="83" selection-end-line="289" selection-end-column="83" />
+            <state relative-caret-position="24165">
+              <caret line="1706" column="5" selection-start-line="1706" selection-start-column="5" selection-end-line="1706" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-          <provider editor-type-id="android-manifest" />
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="795">
               <caret line="53" column="58" selection-start-line="53" selection-start-column="58" selection-end-line="53" selection-end-column="58" />
@@ -154,6 +171,7 @@
               </folding>
             </state>
           </provider>
+          <provider editor-type-id="android-manifest" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -186,10 +204,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>EAR</find>
-      <find>ear</find>
-      <find>EAR_FA</find>
-      <find>textview_measurement_result</find>
       <find>doWithData</find>
       <find>serial</find>
       <find>sendDeviceStatus</find>
@@ -216,11 +230,16 @@
       <find>onScaleMeasurementAllValues</find>
       <find>upda</find>
       <find>ISSC_CHAR_BODY_UUID</find>
+      <find>@property (strong, nonatomic) NSNumber*</find>
+      <find>@property (strong, nonatomic) NSNumber*</find>
+      <find>isNewWeightScale</find>
+      <find>190</find>
     </findStrings>
     <replaceStrings>
       <replace />
       <replace>HashMap&lt;String, LifevitScanResult&gt;&gt;</replace>
       <replace>HashMap&lt;String, LifevitScanResult&gt;</replace>
+      <replace>private double</replace>
     </replaceStrings>
   </component>
   <component name="GenerateSignedApkSettings">
@@ -228,11 +247,12 @@
     <option name="KEY_ALIAS" value="dagapharma" />
     <option name="REMEMBER_PASSWORDS" value="true" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/TensiometerActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/LifeVitTensiService.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/PreferenceUtil.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/bracelet/LifevitSDKAT250TimeRange.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/listeners/LifevitSDKBraceletAT250Listener.java" />
@@ -244,9 +264,7 @@
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceThermometer.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/utils/BLEAdvertisedData.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/build/generated/source/buildConfig/debug/es/lifevit/sdk/BuildConfig.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_weight_scale.xml" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/utils/LogUtils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/WeightScaleActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/TensiometerActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/TensiobraceletActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/OximeterActivity.java" />
@@ -266,11 +284,9 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_thermometer.xml" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/listeners/LifevitSDKThermometerListener.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/ThermometerActivity.java" />
-        <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKConstants.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/MainActivity.java" />
-        <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKManager.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDevice.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/PillReminderActivity.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDevicePillReminder.java" />
@@ -281,17 +297,22 @@
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceTensiometerV2.java" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceBraceletAT500HR.java" />
         <option value="$PROJECT_DIR$/local.properties" />
+        <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKConstants.java" />
+        <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/weightscale/WeightScaleData.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_weight_scale.xml" />
         <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceWeightScale.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/WeightScaleActivity.java" />
+        <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKManager.java" />
+        <option value="$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/listeners/LifevitSDKWeightScaleListener.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1627" />
-    <option name="y" value="76" />
-    <option name="width" value="1440" />
-    <option name="height" value="841" />
+    <option name="y" value="23" />
+    <option name="width" value="1680" />
+    <option name="height" value="991" />
   </component>
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
     <ConfirmationsSetting value="1" id="Remove" />
   </component>
@@ -326,38 +347,27 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <expand>
             <path>
               <item name="LifevitSDK" type="1abcf292:AndroidViewProjectNode" />
-              <item name="lifevitsdk" type="feadf853:AndroidModuleNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
             </path>
             <path>
               <item name="LifevitSDK" type="1abcf292:AndroidViewProjectNode" />
               <item name="lifevitsdk" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-            </path>
-            <path>
-              <item name="LifevitSDK" type="1abcf292:AndroidViewProjectNode" />
-              <item name="lifevitsdk" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="sdk" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="LifevitSDK" type="1abcf292:AndroidViewProjectNode" />
-              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="DEBUGGABLE_DEVICE" value="bq-aquaris_x5_plus-ZY913386" />
+    <property name="DEBUGGABLE_DEVICE" value="samsung-sm_a500fu-78e9ee7d" />
     <property name="DEBUGGABLE_PROCESS" value="es.lifevit.sdk.sampleapp" />
     <property name="DEBUGGER_ID" value="Auto" />
     <property name="ExportApk.ApkPath" value="$PROJECT_DIR$/app" />
@@ -365,6 +375,7 @@
     <property name="ExportApk.Flavors" value="" />
     <property name="ExportApk.SignV1" value="true" />
     <property name="ExportApk.SignV2" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="android.profiler.active" value="true" />
     <property name="android.project.structure.last.selected" value="dfu" />
@@ -373,6 +384,7 @@
     <property name="device.picker.selection" value="SSR9X18625G03079" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="not.eligible.for.single.variant.sync" value="true" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="show.do.not.ask.upgrade.gradle.plugin" value="3.2.1" />
     <property name="sync.plugin.last.upgrade.timestamp" value="1530547673516" />
   </component>
@@ -685,40 +697,6 @@
     <configuration>$USER_HOME$/.subversion</configuration>
     <supportedVersion>125</supportedVersion>
   </component>
-  <component name="SvnFileUrlMappingImpl">
-    <option name="myMappingRoots">
-      <list>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/.idea" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/.idea" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/app" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/app" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/lifevitsdk" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/lifevitsdk" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/pillreminder" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/pillreminder" />
-        </SvnCopyRootSimple>
-      </list>
-    </option>
-    <option name="myMoreRealMappingRoots">
-      <list>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$" />
-        </SvnCopyRootSimple>
-      </list>
-    </option>
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="ac62e854-a3d4-4d8c-a0fc-3885c1bb8e92" name="Default" comment="" />
@@ -944,7 +922,28 @@
       <option name="project" value="LOCAL" />
       <updated>1576829811032</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Cambios para pronokal">
+      <created>1579033101155</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1579033101155</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Cambios en báscula.">
+      <created>1579079562674</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1579079562674</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Cambios en básculas.">
+      <created>1579265224100</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1579265224100</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TodoView">
@@ -957,42 +956,42 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="23" width="1920" height="1021" extended-state="6" />
+    <frame x="0" y="23" width="1680" height="991" extended-state="6" />
     <layout>
-      <window_info id="Build Variants" order="0" sideWeight="0.5253165" side_tool="true" visible="true" weight="0.19488817" />
+      <window_info id="Build Variants" order="0" sideWeight="0.53365386" side_tool="true" visible="true" weight="0.16971917" />
       <window_info id="Capture Tool" order="1" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="5" sideWeight="0.47468355" visible="true" weight="0.19488817" />
+      <window_info active="true" content_ui="combo" id="Project" order="5" sideWeight="0.46634614" visible="true" weight="0.16971917" />
       <window_info id="Captures" order="6" side_tool="true" weight="0.25" />
       <window_info id="Resources Explorer" order="7" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49946752" weight="0.3205945" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3295063" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49840257" weight="0.35881105" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49840257" visible="true" weight="0.33333334" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946752" weight="0.3289183" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4978701" weight="0.35871965" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3290735" />
       <window_info anchor="bottom" id="Gradle Console" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Android Profiler" order="8" show_stripe_button="false" weight="0.32692307" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" visible="true" weight="0.30242825" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.502442" side_tool="true" visible="true" weight="0.28767124" />
       <window_info anchor="bottom" id="Logcat" order="10" sideWeight="0.72097975" weight="0.42356688" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.49946752" weight="0.20382166" />
       <window_info anchor="bottom" id="Terminal" order="12" weight="0.3280255" />
       <window_info anchor="bottom" id="Messages" order="13" weight="0.32988626" />
-      <window_info anchor="bottom" id="Build" order="14" visible="true" weight="0.30242825" />
+      <window_info anchor="bottom" id="Build" order="14" sideWeight="0.497558" visible="true" weight="0.28767124" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
       <window_info anchor="right" id="Palette&#9;" order="1" />
       <window_info anchor="right" id="Capture Analysis" order="2" />
       <window_info anchor="right" id="Gradle" order="3" weight="0.32967034" />
-      <window_info anchor="right" id="Structure" order="4" sideWeight="0.5030303" visible="true" weight="0.16932908" />
+      <window_info anchor="right" id="Structure" order="4" sideWeight="0.5030303" weight="0.14749734" />
       <window_info anchor="right" id="Fabric" order="5" weight="0.08913309" />
       <window_info anchor="right" id="Theme Preview" order="6" />
       <window_info anchor="right" id="Commander" order="7" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="8" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="9" weight="0.25" />
-      <window_info anchor="right" id="Preview" order="10" sideWeight="0.4969697" weight="0.32844934" />
+      <window_info anchor="right" id="Preview" order="10" sideWeight="0.4969697" weight="0.32800853" />
       <window_info anchor="right" id="Assistant" order="11" />
     </layout>
     <layout-to-restore>
@@ -1032,6 +1031,9 @@
     </layout-to-restore>
   </component>
   <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
     <MESSAGE value="CAmbio de conexión" />
     <MESSAGE value="CAmbio de protocolo de pulsera tensio" />
     <MESSAGE value="Cambio en el envio de la información de usuario de la bascula" />
@@ -1042,14 +1044,17 @@
     <MESSAGE value="Integración del pastillero" />
     <MESSAGE value="Cambios en pulseras." />
     <MESSAGE value="Nueva báscula" />
-    <option name="LAST_COMMIT_MESSAGE" value="Nueva báscula" />
+    <MESSAGE value="Cambios para pronokal" />
+    <MESSAGE value="Cambios en báscula." />
+    <MESSAGE value="Cambios en básculas." />
+    <option name="LAST_COMMIT_MESSAGE" value="Cambios en básculas." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKManager.java</url>
-          <line>1742</line>
+          <line>1747</line>
           <properties />
           <option name="timeStamp" value="15" />
         </line-breakpoint>
@@ -1127,7 +1132,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceWeightScale.java</url>
-          <line>165</line>
+          <line>166</line>
           <properties />
           <option name="timeStamp" value="95" />
         </line-breakpoint>
@@ -1155,27 +1160,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/BraceletAT250SendQueue.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1515">
-          <caret line="111" column="66" selection-start-line="111" selection-start-column="66" selection-end-line="111" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/BraceletAT500HRSendQueue.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1725">
-          <caret line="128" column="80" selection-start-line="128" selection-start-column="80" selection-end-line="128" selection-end-column="80" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/SDKTestApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="9" column="21" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/no/nordicsemi/android/dfu/DfuBaseService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
@@ -1256,13 +1240,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3045">
-          <caret line="203" column="59" selection-start-line="203" selection-start-column="59" selection-end-line="203" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/pillreminder/PillReminderSendQueue.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1770">
@@ -1322,13 +1299,7 @@
     <entry file="file://$PROJECT_DIR$/lifevitsdk/lifevitsdk.iml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/dfu/dfu.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="41" selection-start-line="8" selection-start-column="41" selection-end-line="8" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/dfu/dfu.iml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/BraceletAT500HrActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7035">
@@ -1392,13 +1363,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/listeners/LifevitSDKWeightScaleListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="26" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/BraceletAT2019SendQueue.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1920">
@@ -1417,13 +1381,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3105">
           <caret line="247" column="12" selection-start-line="247" selection-start-column="12" selection-end-line="247" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25125">
-          <caret line="1770" column="37" selection-start-line="1770" selection-start-column="37" selection-end-line="1770" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -1448,13 +1405,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/WeightScaleActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4050">
-          <caret line="285" selection-start-line="285" selection-end-line="285" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -1473,6 +1423,122 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3930">
           <caret line="289" column="83" selection-start-line="289" selection-start-column="83" selection-end-line="289" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/weightscale/LifevitSDKWeightScaleData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="122" column="5" selection-start-line="122" selection-start-column="5" selection-end-line="122" selection-end-column="5" />
+          <folding>
+            <element signature="e#513#514#0" expanded="true" />
+            <element signature="e#542#543#0" expanded="true" />
+            <element signature="e#586#587#0" expanded="true" />
+            <element signature="e#622#623#0" expanded="true" />
+            <element signature="e#653#654#0" expanded="true" />
+            <element signature="e#680#681#0" expanded="true" />
+            <element signature="e#720#721#0" expanded="true" />
+            <element signature="e#752#753#0" expanded="true" />
+            <element signature="e#782#783#0" expanded="true" />
+            <element signature="e#808#809#0" expanded="true" />
+            <element signature="e#846#847#0" expanded="true" />
+            <element signature="e#876#877#0" expanded="true" />
+            <element signature="e#906#907#0" expanded="true" />
+            <element signature="e#932#933#0" expanded="true" />
+            <element signature="e#970#971#0" expanded="true" />
+            <element signature="e#1000#1001#0" expanded="true" />
+            <element signature="e#1040#1041#0" expanded="true" />
+            <element signature="e#1076#1077#0" expanded="true" />
+            <element signature="e#1134#1135#0" expanded="true" />
+            <element signature="e#1184#1185#0" expanded="true" />
+            <element signature="e#1216#1217#0" expanded="true" />
+            <element signature="e#1244#1245#0" expanded="true" />
+            <element signature="e#1286#1287#0" expanded="true" />
+            <element signature="e#1320#1321#0" expanded="true" />
+            <element signature="e#1362#1363#0" expanded="true" />
+            <element signature="e#1400#1401#0" expanded="true" />
+            <element signature="e#1549#1550#0" expanded="true" />
+            <element signature="e#1578#1579#0" expanded="true" />
+            <element signature="e#1622#1623#0" expanded="true" />
+            <element signature="e#1658#1659#0" expanded="true" />
+            <element signature="e#1701#1702#0" expanded="true" />
+            <element signature="e#1740#1741#0" expanded="true" />
+            <element signature="e#1895#1896#0" expanded="true" />
+            <element signature="e#1926#1927#0" expanded="true" />
+            <element signature="e#1974#1975#0" expanded="true" />
+            <element signature="e#2014#2015#0" expanded="true" />
+            <element signature="e#2059#2060#0" expanded="true" />
+            <element signature="e#2100#2101#0" expanded="true" />
+            <element signature="e#2259#2260#0" expanded="true" />
+            <element signature="e#2286#2287#0" expanded="true" />
+            <element signature="e#2326#2327#0" expanded="true" />
+            <element signature="e#2358#2359#0" expanded="true" />
+            <element signature="e#2399#2400#0" expanded="true" />
+            <element signature="e#2436#2437#0" expanded="true" />
+            <element signature="e#2496#2497#0" expanded="true" />
+            <element signature="e#2548#2549#0" expanded="true" />
+            <element signature="e#2578#2579#0" expanded="true" />
+            <element signature="e#2604#2605#0" expanded="true" />
+            <element signature="e#2642#2643#0" expanded="true" />
+            <element signature="e#2672#2673#0" expanded="true" />
+            <element signature="e#2828#2829#0" expanded="true" />
+            <element signature="e#2858#2859#0" expanded="true" />
+            <element signature="e#2904#2905#0" expanded="true" />
+            <element signature="e#2942#2943#0" expanded="true" />
+            <element signature="e#2980#2981#0" expanded="true" />
+            <element signature="e#3014#3015#0" expanded="true" />
+            <element signature="e#3068#3069#0" expanded="true" />
+            <element signature="e#3114#3115#0" expanded="true" />
+            <element signature="e#3158#3159#0" expanded="true" />
+            <element signature="e#3198#3199#0" expanded="true" />
+            <element signature="e#3356#3357#0" expanded="true" />
+            <element signature="e#3386#3387#0" expanded="true" />
+            <element signature="e#3432#3433#0" expanded="true" />
+            <element signature="e#3470#3471#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceWeightScale.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10020">
+          <caret line="683" column="28" selection-start-line="683" selection-start-column="28" selection-end-line="683" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/PreferenceUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2160">
+          <caret line="150" column="94" selection-start-line="150" selection-start-column="60" selection-end-line="150" selection-end-column="94" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="51" selection-start-line="13" selection-start-column="51" selection-end-line="13" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/es/lifevit/sdk/sampleapp/activities/WeightScaleActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1485">
+          <caret line="113" column="78" selection-start-line="113" selection-start-column="78" selection-end-line="113" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_weight_scale.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1515">
+          <caret line="101" column="28" selection-end-line="330" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24165">
+          <caret line="1706" column="5" selection-start-line="1706" selection-start-column="5" selection-end-line="1706" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -1502,10 +1568,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/LifevitSDKBleDeviceWeightScale.java">
+    <entry file="file://$PROJECT_DIR$/lifevitsdk/src/main/java/es/lifevit/sdk/listeners/LifevitSDKWeightScaleListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="238" column="96" selection-start-line="238" selection-start-column="68" selection-end-line="238" selection-end-column="96" />
+        <state relative-caret-position="180">
+          <caret line="12" column="17" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
         </state>
       </provider>
     </entry>
