@@ -1,7 +1,6 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +26,6 @@ import es.lifevit.sdk.bracelet.LifevitSDKAlarmTime;
 import es.lifevit.sdk.bracelet.LifevitSDKAppNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKBraceletData;
 import es.lifevit.sdk.bracelet.LifevitSDKMonitoringAlarm;
-import es.lifevit.sdk.bracelet.LifevitSDKSedentaryAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKStepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummarySleepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummaryStepData;
@@ -151,7 +150,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                 break;
                             case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_TIME: {
                                 Calendar cal = Calendar.getInstance();
-                                Long time = Long.valueOf(cal.getTimeInMillis() / 1000);
+                                Long time = cal.getTimeInMillis() / 1000;
 
                                 manager.bracelet2019SetDeviceTime(time);
                                 break;
@@ -353,6 +352,8 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                     + ", calories: " + String.format("%.2f", steps.getCalories())
                                     + ", distance: " + String.format("%.2f", steps.getDistance());
                             textview_info.setText(text);
+
+                            Log.d(TAG, "[braceletCurrentStepsReceived] " + text);
                         }
                     });
                 }
@@ -384,6 +385,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                             }
 
                             textview_info.setText(text);
+                            Log.d(TAG, "[braceletStepsReceived] " + text);
                         }
                     });
                 }
@@ -400,9 +402,10 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                             text += "Current steps: " + steps.getSteps()
                                     + ", calories: " + String.format("%.2f", steps.getCalories())
                                     + ", distance: " + String.format("%.2f", steps.getDistance())
-                                    + ", active time: " + String.format("%.2f", steps.getActiveTime())
-                                    + ", heart rate: " + String.format("%.2f", steps.getHeartRate());
+                                    + ", active time: " + steps.getActiveTime()
+                                    + ", heart rate: " + steps.getHeartRate();
                             textview_info.setText(text);
+                            Log.d(TAG, "[braceletSummaryStepsReceived] " + text);
                         }
                     });
                 }
@@ -417,9 +420,10 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                             String text = textview_info.getText().toString();
                             text += "\n";
                             text += "Current awakes: " + sleep.getAwakes()
-                                    + ", total deep sleep minutes: " + String.format("%.2f", sleep.getTotalDeepMinutes())
-                                    + ", total light sleep minutes: " + String.format("%.2f", sleep.getTotalLightMinutes());
+                                    + ", total deep sleep minutes: " + sleep.getTotalDeepMinutes()
+                                    + ", total light sleep minutes: " + sleep.getTotalLightMinutes();
                             textview_info.setText(text);
+                            Log.d(TAG, "[braceletSummarySleepReceived] " + text);
                         }
                     });
                 }
@@ -441,7 +445,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                     text += "\n";
                                     text += message;
                                     textview_info.setText(text);
-                                //} else if (message.getClass().isInstance("java.lang.Long")) {
+                                    //} else if (message.getClass().isInstance("java.lang.Long")) {
                                 } else if (message instanceof Long) {
                                     String text = textview_info.getText().toString();
                                     text += "\n";
@@ -451,11 +455,11 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     String strDate = dateFormat.format(d);
 
-                                    text += dateFormat.format(d);;
+                                    text += dateFormat.format(d);
+
                                     textview_info.setText(text);
+                                    Log.d(TAG, "[braceletInformation] " + text);
                                 }
-
-
                             }
                         }
                     });
@@ -475,6 +479,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                 text += "\n";
                                 text += "Wrong parameters.";
                                 textview_info.setText(text);
+                                Log.d(TAG, "[braceletError] " + text);
                             }
                         }
                     });
@@ -491,24 +496,43 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                             text += "\n";
                             text += "Current battery level: " + battery;
                             textview_info.setText(text);
+                            Log.d(TAG, "[braceletCurrentBattery] " + text);
                         }
                     });
                 }
             }
 
             @Override
-            public void braceletDataReceived(LifevitSDKBraceletData braceletData){
+            public void braceletDataReceived(final LifevitSDKBraceletData braceletData) {
                 synchronized (textview_info) {
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            Log.d(TAG, "[braceletDataReceived]");
 
+                            ArrayList<LifevitSDKStepData> data = braceletData.getStepsData();
+
+                            String text = textview_info.getText().toString();
+                            text += "\n";
+                            text += "Received heartdata packets: " + data.size();
+                            int i = 0;
+
+                            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                            while (i < data.size() && i < 100) {
+                                text += "\n";
+                                text += "Index " + i + ", date: "
+                                        + df.format(new Date(data.get(i).getDate()))
+                                        + ", Steps:" + data.get(i).getSteps()
+                                        + ", Calories:" + data.get(i).getCalories()
+                                        + ", Distance:" + data.get(i).getDistance();
+                                i++;
+                            }
+                            textview_info.setText(text);
                         }
                     });
                 }
             }
-
         };
 
         // Create connection helper
