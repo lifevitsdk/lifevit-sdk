@@ -25,7 +25,9 @@ import es.lifevit.sdk.LifevitSDKUserData;
 import es.lifevit.sdk.bracelet.LifevitSDKAlarmTime;
 import es.lifevit.sdk.bracelet.LifevitSDKAppNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKBraceletData;
+import es.lifevit.sdk.bracelet.LifevitSDKHeartbeatData;
 import es.lifevit.sdk.bracelet.LifevitSDKMonitoringAlarm;
+import es.lifevit.sdk.bracelet.LifevitSDKSleepData;
 import es.lifevit.sdk.bracelet.LifevitSDKStepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummarySleepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummaryStepData;
@@ -511,23 +513,62 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                         public void run() {
                             Log.d(TAG, "[braceletDataReceived]");
 
-                            ArrayList<LifevitSDKStepData> data = braceletData.getStepsData();
-
                             String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += "Received heartdata packets: " + data.size();
-                            int i = 0;
 
-                            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                            while (i < data.size() && i < 100) {
+                            ArrayList<LifevitSDKStepData> stepsData = braceletData.getStepsData();
+                            if (!stepsData.isEmpty()) {
+
                                 text += "\n";
-                                text += "Index " + i + ", date: "
-                                        + df.format(new Date(data.get(i).getDate()))
-                                        + ", Steps:" + data.get(i).getSteps()
-                                        + ", Calories:" + data.get(i).getCalories()
-                                        + ", Distance:" + data.get(i).getDistance();
-                                i++;
+                                text += "----- Received Activity (steps) packets: " + stepsData.size();
+                                int i = 0;
+
+                                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                while (i < stepsData.size()) {
+                                    text += "\n";
+                                    text += "[Steps] Index " + i
+                                            + ", date: " + df.format(new Date(stepsData.get(i).getDate()))
+                                            + ", Steps:" + stepsData.get(i).getSteps()
+                                            + ", Calories:" + stepsData.get(i).getCalories()
+                                            + ", Distance:" + stepsData.get(i).getDistance();
+                                    i++;
+                                }
                             }
+
+                            ArrayList<LifevitSDKSleepData> sleepData = braceletData.getSleepData();
+                            if (!sleepData.isEmpty()) {
+
+                                text += "\n";
+                                text += "----- Received Sleep packets: " + sleepData.size();
+                                int i = 0;
+
+                                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                while (i < sleepData.size()) {
+                                    text += "\n";
+                                    text += "[Sleep] Index " + i
+                                            + ", date: " + df.format(new Date(sleepData.get(i).getDate()))
+                                            + ", Deepness:" + sleepData.get(i).getSleepDeepness()
+                                            + ", Duration:" + sleepData.get(i).getSleepDuration();
+                                    i++;
+                                }
+                            }
+
+                            ArrayList<LifevitSDKHeartbeatData> heartRateData = braceletData.getHeartData();
+                            if (!heartRateData.isEmpty()) {
+
+                                text += "\n";
+                                text += "----- Received Heartbeat packets: " + heartRateData.size();
+                                int i = 0;
+
+                                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                while (i < heartRateData.size()) {
+                                    text += "\n";
+                                    text += "[Heartbeat] Index " + i
+                                            + ", date: " + df.format(new Date(heartRateData.get(i).getDate()))
+                                            + ", Deepness:" + heartRateData.get(i).getHeartrate();
+                                    i++;
+                                }
+                            }
+
                             textview_info.setText(text);
                         }
                     });

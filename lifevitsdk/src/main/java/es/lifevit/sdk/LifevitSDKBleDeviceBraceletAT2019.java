@@ -618,8 +618,11 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         if (serial == 0x01) {
 
+            heartRateDataArray.clear();
+            stepDataArray.clear();
+            sleepDataArray.clear();
 
-            int header1_date_year = Utils.bytesToInt(new byte[]{0, 0, rx[i + 1], rx[i]});
+            int header1_date_year = Utils.bytesToInt(new byte[]{0, 0, rx[i], rx[i + 1]});
             i += 2;
             int header1_date_month = Utils.bytesToInt(new byte[]{0, 0, 0, rx[i++]});
             int header1_date_day = Utils.bytesToInt(new byte[]{0, 0, 0, rx[i++]});
@@ -652,7 +655,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             cal.set(Calendar.MINUTE, minutesOffset % 60);
             cal.set(Calendar.SECOND, 0);
 
-            recordDate = cal.getTimeInMillis() / 1000;
+            recordDate = cal.getTimeInMillis();
             totalPackages = totalPackets;
             totalItems = items;
 
@@ -683,7 +686,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
                 Date rDate = cal.getTime();
 
-                recordDate = cal.getTimeInMillis() / 1000;
+                recordDate = cal.getTimeInMillis();
 
                 LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> DATA date: " + rDate + ",distanceToLastMeasurement: " + distanceToLastMeasurement + ", Heart rate: " + hr);
 
@@ -695,7 +698,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
                 totalItems--;
             }
         }
-
     }
 
 
@@ -710,8 +712,11 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         if (serial == 0x01) {
 
+            heartRateDataArray.clear();
+            stepDataArray.clear();
+            sleepDataArray.clear();
 
-            int header1_date_year = Utils.bytesToInt(new byte[]{0, 0, rx[i + 1], rx[i]});
+            int header1_date_year = Utils.bytesToInt(new byte[]{0, 0, rx[i], rx[i + 1]});
             i += 2;
             int header1_date_month = Utils.bytesToInt(new byte[]{0, 0, 0, rx[i++]});
             int header1_date_day = Utils.bytesToInt(new byte[]{0, 0, 0, rx[i++]});
@@ -747,7 +752,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             cal.set(Calendar.MINUTE, minutes);
             cal.set(Calendar.SECOND, 0);
 
-            recordDate = cal.getTimeInMillis() / 1000;
+            recordDate = cal.getTimeInMillis();
             totalPackages = totalPackets;
             totalItems = sleepItems;
 
@@ -812,16 +817,12 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
                 }
 
-
-                Date rDate = cal.getTime();
-                recordDate = cal.getTimeInMillis() / 1000;
+                recordDate = cal.getTimeInMillis();
                 data.setDate(recordDate);
 
                 sleepDataArray.add(data);
-
             }
         }
-
     }
 
 
@@ -836,8 +837,11 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         if (serial == 0x01) {
 
+            heartRateDataArray.clear();
+            stepDataArray.clear();
+            sleepDataArray.clear();
 
-            int header1_date_year = Utils.bytesToInt(new byte[]{0, 0, rx[i + 1], rx[i]});
+            int header1_date_year = Utils.bytesToInt(new byte[]{0, 0, rx[i], rx[i + 1]});
             int header1_date_month = rx[i + 2];
             int header1_date_day = rx[i + 3];
 
@@ -866,7 +870,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             cal.set(Calendar.MINUTE, header1_offset_minutes_from_day_start % 60);
             cal.set(Calendar.SECOND, 0);
 
-            recordDate = cal.getTimeInMillis() / 1000;
+            recordDate = cal.getTimeInMillis();
 
             packetDurationInMinutes = header1_how_many_minutes_every_package;
             totalPackages = header1_total_packages;
@@ -914,22 +918,17 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
                 cal.setTimeInMillis(recordDate);
                 cal.add(Calendar.MINUTE, ((packetDurationInMinutes * 60) * stepDataArray.size()));
 
-                Date rDate = cal.getTime();
-                long ldate = cal.getTimeInMillis() / 1000;
-
-
                 //recordDate = cal.getTimeInMillis() / 1000;
                 ///data.setDate(recordDate);
 
-                LifevitSDKStepData data = new LifevitSDKStepData(ldate, steps, calories, distance);
+                LifevitSDKStepData data = new LifevitSDKStepData(cal.getTimeInMillis(), steps, calories, distance);
 
                 if (steps != 0 && calories != 0 && distance != 0) {
                     stepDataArray.add(data);
                 }
 
                 LogUtils.log(Log.DEBUG, CLASS_TAG, "    === Current === "
-                        + "rDate: " + rDate
-                        + ", lDate: " + ldate
+                        + "rDate: " + cal.getTimeInMillis()
                         + ", steps: " + steps
                         + ", calories: " + calories
                         + ", distance: " + distance);
@@ -1561,7 +1560,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
                 processSleepMonitoring(rx);
 
-            } else if (rx[0] == 0x08 && rx[1] == 0xEE) {
+            } else if (rx[0] == 0x08 && rx[1] == (byte) 0xEE) {
 
                 processEndData();
 
