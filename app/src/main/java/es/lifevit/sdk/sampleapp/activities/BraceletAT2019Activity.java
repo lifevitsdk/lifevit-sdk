@@ -564,7 +564,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                     text += "\n";
                                     text += "[Heartbeat] Index " + i
                                             + ", date: " + df.format(new Date(heartRateData.get(i).getDate()))
-                                            + ", Deepness:" + heartRateData.get(i).getHeartrate();
+                                            + ", Heart Rate: " + heartRateData.get(i).getHeartrate();
                                     i++;
                                 }
                             }
