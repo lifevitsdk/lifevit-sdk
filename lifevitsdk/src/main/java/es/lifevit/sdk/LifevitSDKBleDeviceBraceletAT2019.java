@@ -12,7 +12,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import es.lifevit.sdk.bracelet.LifevitSDKAlarmTime;
@@ -60,13 +59,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     static BraceletAT2019SendQueue sendingThread;
 
 
-    Calendar sportsDataPacketDate;
-    int sportsDataPacketDuration;
-    int sportsDataTotalPackages;
-
-    List<LifevitSDKStepData> sportsDataList = new ArrayList<>();
-
-
     /**
      * Service descriptor 4
      */
@@ -91,49 +83,41 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     protected static final String UUID_NOTIFY_CHARACTERISTIC_READ_2 = "00000AF2-0000-1000-8000-00805f9b34fb";
 
 
-    /**
-     * Actions to send to BLE device
-     */
+    // region --- Constants: Actions to send to BLE device ---
 
-    public static final int ACTION_GET_BASIC_INFO = 0;
-    public static final int ACTION_GET_FEATURE_LIST = 1;
-    public static final int ACTION_SET_TIME = 2;
-    public static final int ACTION_GET_DEVICE_TIME = 3;
-    public static final int ACTION_SYNC_DATA = 4;
-    public static final int ACTION_SYNC_SPORTS_DATA = 5;
-    public static final int ACTION_SYNCHRONIZE_SLEEP_DATA = 6;
-    public static final int ACTION_SYNCHRONIZE_HEART_RATE_DATA = 7;
-    public static final int ACTION_SYNCHRONIZE_HISTORIC_SPORT_DATA = 8;
-    public static final int ACTION_SYNCHRONIZE_HISTORIC_SLEEP_DATA = 9;
-    public static final int ACTION_SYNCHRONIZE_HISTORIC_HEART_RATE_DATA = 10;
-    public static final int ACTION_CONFIGURE_ALARM = 11;
-    public static final int ACTION_SET_GOALS = 12;
+    static final int ACTION_GET_BASIC_INFO = 0;
+    static final int ACTION_GET_FEATURE_LIST = 1;
+    static final int ACTION_SET_TIME = 2;
+    static final int ACTION_GET_DEVICE_TIME = 3;
+    static final int ACTION_SYNC_DATA = 4;
+    static final int ACTION_SYNC_SPORTS_DATA = 5;
+    static final int ACTION_SYNCHRONIZE_SLEEP_DATA = 6;
+    static final int ACTION_SYNCHRONIZE_HEART_RATE_DATA = 7;
+    static final int ACTION_SYNCHRONIZE_HISTORIC_SPORT_DATA = 8;
+    static final int ACTION_SYNCHRONIZE_HISTORIC_SLEEP_DATA = 9;
+    static final int ACTION_SYNCHRONIZE_HISTORIC_HEART_RATE_DATA = 10;
+    static final int ACTION_CONFIGURE_ALARM = 11;
+    static final int ACTION_DELETE_ALARM = 12;
+    static final int ACTION_SET_GOALS = 13;
+    static final int ACTION_SET_USER_INFORMATION = 14;
+    static final int ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM = 15;
+    static final int ACTION_ANTITHEFT = 16;
+    static final int ACTION_RISE_HAND = 17;
+    static final int ACTION_ANDROID_PHONE = 18;
+    static final int ACTION_HEART_RATE_INTERVAL_SETTING = 19;
+    static final int ACTION_HEART_RATE_MONITORING = 20;
+    static final int ACTION_FIND_PHONE = 21;
+    static final int ACTION_ACNS = 22;
+    static final int ACTION_SLEEP_MONITORING = 23;
+    static final int ACTION_BATTERY = 24;
+    static final int ACTION_START_SYNCHRONIZATION = 25;
+    static final int ACTION_REPLY_LAST_SYNCHRONIZATION = 26;
 
-    public static final int ACTION_SET_USER_INFORMATION = 13;
-    public static final int ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM = 14;
-    public static final int ACTION_ANTITHEFT = 15;
-    public static final int ACTION_RISE_HAND = 16;
-    public static final int ACTION_ANDROID_PHONE = 17;
-    public static final int ACTION_HEART_RATE_INTERVAL_SETTING = 18;
-    public static final int ACTION_HEART_RATE_MONITORING = 19;
-    public static final int ACTION_FIND_PHONE = 20;
-    public static final int ACTION_ACNS = 21;
-    public static final int ACTION_SLEEP_MONITORING = 22;
-
-    public static final int ACTION_BATTERY = 23;
-
-    //public static final int ACTION_GET_REAL_TIME_DATA = 3;
-    //public static final int ACTION_END_SYNC_DATA = 5;
-    //public static final int ACTION_BIND = 8;
-    //public static final int ACTION_UNBIND = 9;
-    //public static final int ACTION_GET_MAC = 12;
-    //public static final int ACTION_SERIAL_NUMBER = 14;
-    //public static final int ACTION_GET_NOTIFICATION_STATUS = 19;
+    // endregion --- Constants: Actions to send to BLE device ---
 
 
-    /**
-     * Creator
-     */
+    // region --- Device methods ---
+
 
     protected LifevitSDKBleDeviceBraceletAT2019(BluetoothDevice dev, LifevitSDKManager manager) {
 
@@ -147,9 +131,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         return LifevitSDKConstants.DEVICE_BRACELET_AT2019;
     }
 
-    /**
-     * Receivers
-     */
 
     protected void connectGatt(Context context, boolean firstTime) {
 
@@ -181,142 +162,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
     }
 
-
-    /**
-     * Public methods
-     */
-
-    protected void getBasicInfo() {
-        sendingThread.addToQueue(ACTION_GET_BASIC_INFO);
-    }
-
-    protected void getFeatureList() {
-        sendingThread.addToQueue(ACTION_GET_FEATURE_LIST);
-    }
-
-    protected void setTime(Long datetime) {
-        sendingThread.addToQueue(ACTION_SET_TIME, datetime);
-    }
-
-    protected void getDeviceTime() {
-        sendingThread.addToQueue(ACTION_GET_DEVICE_TIME);
-    }
-
-    protected void synchronizeData() {
-        sendingThread.addToQueue(ACTION_SYNC_DATA);
-    }
-
-    /*
-    protected void endSynchronizeData() {
-        sendingThread.addToQueue(ACTION_END_SYNC_DATA);
-    }
-    */
-
-
-    protected void synchronizeSportsData() {
-        sendingThread.addToQueue(ACTION_SYNC_SPORTS_DATA);
-    }
-
-    /*
-    protected void cancelOp() {
-        sendingThread.taskFinished();
-    }
-    */
-
-
-    protected void synchronizeSleepData() {
-        sendingThread.addToQueue(ACTION_SYNCHRONIZE_SLEEP_DATA);
-    }
-
-    protected void synchronizeHeartRateData() {
-        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HEART_RATE_DATA);
-    }
-
-    protected void synchronizeHistoricSportData() {
-        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HISTORIC_SPORT_DATA);
-    }
-
-    protected void synchronizeHistoricSleepData() {
-        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HISTORIC_SLEEP_DATA);
-    }
-
-    protected void synchronizeHistoricHeartRateData() {
-        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HISTORIC_HEART_RATE_DATA);
-    }
-
-    protected void configureAlarm(LifevitSDKAlarmTime alarm) {
-        sendingThread.addToQueue(ACTION_CONFIGURE_ALARM, alarm);
-    }
-
-    protected void setGoals(int steps, LifevitSDKAlarmTime alarm) {
-        sendingThread.addToQueue(ACTION_SET_GOALS, steps, alarm);
-    }
-
-    protected void setUserInformation(LifevitSDKUserData user) {
-        sendingThread.addToQueue(ACTION_SET_USER_INFORMATION, user);
-    }
-
-    protected void configureBraceletSedentaryAlarm(LifevitSDKMonitoringAlarm alarm) {
-        sendingThread.addToQueue(ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM, alarm);
-    }
-
-    protected void configureAntitheft(Boolean active) {
-        sendingThread.addToQueue(ACTION_ANTITHEFT, active);
-    }
-
-    protected void configureRiseHand(Boolean leftHand) {
-        sendingThread.addToQueue(ACTION_RISE_HAND, leftHand);
-    }
-
-    protected void configureAndroidPhone() {
-        sendingThread.addToQueue(ACTION_ANDROID_PHONE);
-    }
-
-    protected void configureHeartRateIntervalSetting(int burnFatThreshold, int aerobicExercise, int limitExercise, int userMaxHR) {
-        sendingThread.addToQueue(ACTION_HEART_RATE_INTERVAL_SETTING, burnFatThreshold, aerobicExercise, limitExercise, userMaxHR);
-    }
-
-    protected void configureHeartRateMonitoring(Boolean enabled, Boolean timeIntervalEnabled, LifevitSDKSedentaryAlarm monitoringTime) {
-        sendingThread.addToQueue(ACTION_HEART_RATE_MONITORING, enabled, timeIntervalEnabled, monitoringTime);
-    }
-
-    protected void configureFindPhone(Boolean enabled) {
-        sendingThread.addToQueue(ACTION_FIND_PHONE, enabled);
-    }
-
-    protected void configureACNS(LifevitSDKAppNotification appNotification) {
-        sendingThread.addToQueue(ACTION_ACNS, appNotification);
-    }
-
-    protected void configureSleepMonitoring(Boolean enabled, LifevitSDKMonitoringAlarm monitoringTime) {
-        sendingThread.addToQueue(ACTION_SLEEP_MONITORING, enabled, monitoringTime);
-    }
-
-
-
-
-/*
-    protected void getMAC() {
-        sendingThread.addToQueue(ACTION_GET_MAC);
-    }
-
-    protected void getBattery() {
-        sendingThread.addToQueue(ACTION_BATTERY);
-    }
-
-    protected void getSerialNumberAT2019() {
-        sendingThread.addToQueue(ACTION_SERIAL_NUMBER);
-    }
-
-   protected void getNotificationStatus() {
-        sendingThread.addToQueue(ACTION_GET_NOTIFICATION_STATUS);
-    }
-*/
-
-
-    /**
-     * Other methods
-     */
 
     protected static boolean isAt2019BraceletDevice(String name) {
         return DEVICE_NAME.equalsIgnoreCase(name) || DEVICE_SECOND_NAME.equalsIgnoreCase(name);
@@ -401,6 +246,122 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
 
+    // endregion --- Device methods ---
+
+
+    // region --- Public methods to give orders to bracelet ---
+
+    void getBasicInfo() {
+        sendingThread.addToQueue(ACTION_GET_BASIC_INFO);
+    }
+
+    void getFeatureList() {
+        sendingThread.addToQueue(ACTION_GET_FEATURE_LIST);
+    }
+
+    void setTime(Long datetime) {
+        sendingThread.addToQueue(ACTION_SET_TIME, datetime);
+    }
+
+    void getDeviceTime() {
+        sendingThread.addToQueue(ACTION_GET_DEVICE_TIME);
+    }
+
+    void synchronizeData() {
+        sendingThread.addToQueue(ACTION_SYNC_DATA);
+    }
+
+    void synchronizeSportsData() {
+        sendingThread.addToQueue(ACTION_SYNC_SPORTS_DATA);
+    }
+
+    void synchronizeSleepData() {
+        sendingThread.addToQueue(ACTION_SYNCHRONIZE_SLEEP_DATA);
+    }
+
+    void synchronizeHeartRateData() {
+        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HEART_RATE_DATA);
+    }
+
+    void synchronizeHistoricSportData() {
+        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HISTORIC_SPORT_DATA);
+    }
+
+    void synchronizeHistoricSleepData() {
+        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HISTORIC_SLEEP_DATA);
+    }
+
+    void synchronizeHistoricHeartRateData() {
+        sendingThread.addToQueue(ACTION_SYNCHRONIZE_HISTORIC_HEART_RATE_DATA);
+    }
+
+    void configureAlarm(LifevitSDKAlarmTime alarm) {
+        sendingThread.addToQueue(ACTION_CONFIGURE_ALARM, alarm);
+    }
+
+    void removeAlarm(boolean isPrimaryAlarm) {
+        sendingThread.addToQueue(ACTION_CONFIGURE_ALARM, isPrimaryAlarm);
+    }
+
+    void setGoals(int steps, int sleepHour, int sleepMinute) {
+        sendingThread.addToQueue(ACTION_SET_GOALS, steps, sleepHour, sleepMinute);
+    }
+
+    void setUserInformation(LifevitSDKUserData user) {
+        sendingThread.addToQueue(ACTION_SET_USER_INFORMATION, user);
+    }
+
+    void configureBraceletSedentaryAlarm(LifevitSDKMonitoringAlarm alarm) {
+        sendingThread.addToQueue(ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM, alarm);
+    }
+
+    void configureAntitheft(Boolean active) {
+        sendingThread.addToQueue(ACTION_ANTITHEFT, active);
+    }
+
+    void configureRiseHand(Boolean leftHand) {
+        sendingThread.addToQueue(ACTION_RISE_HAND, leftHand);
+    }
+
+    void configureAndroidPhone() {
+        sendingThread.addToQueue(ACTION_ANDROID_PHONE);
+    }
+
+    void configureHeartRateIntervalSetting(int burnFatThreshold, int aerobicExercise, int limitExercise, int userMaxHR) {
+        sendingThread.addToQueue(ACTION_HEART_RATE_INTERVAL_SETTING, burnFatThreshold, aerobicExercise, limitExercise, userMaxHR);
+    }
+
+    void configureHeartRateMonitoring(Boolean enabled, Boolean timeIntervalEnabled, LifevitSDKSedentaryAlarm monitoringTime) {
+        sendingThread.addToQueue(ACTION_HEART_RATE_MONITORING, enabled, timeIntervalEnabled, monitoringTime);
+    }
+
+    void configureFindPhone(Boolean enabled) {
+        sendingThread.addToQueue(ACTION_FIND_PHONE, enabled);
+    }
+
+    void configureACNS(LifevitSDKAppNotification appNotification) {
+        sendingThread.addToQueue(ACTION_ACNS, appNotification);
+    }
+
+    void configureSleepMonitoring(Boolean enabled, LifevitSDKMonitoringAlarm monitoringTime) {
+        sendingThread.addToQueue(ACTION_SLEEP_MONITORING, enabled, monitoringTime);
+    }
+
+    void getBattery() {
+        sendingThread.addToQueue(ACTION_BATTERY);
+    }
+
+    void startSynchronization() {
+        sendingThread.addToQueue(ACTION_START_SYNCHRONIZATION);
+    }
+
+    void replyLastSynchronization() {
+        sendingThread.addToQueue(ACTION_REPLY_LAST_SYNCHRONIZATION);
+    }
+
+    // endregion --- "Public methods" ---
+
+
     protected void sendMessage(byte[] data) {
         sendMessage(data, 1);
     }
@@ -437,9 +398,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
 
-    /*********************************************************************************************/
-    /***************************  Methods to receive data from device  ***************************/
-    /*********************************************************************************************/
+    // region --- Processing responses methods ---
+
 
     private void processBasicInfo(byte[] rx) {
         int deviceId = Utils.bytesToInt(new byte[]{0, 0, rx[3], rx[2]});
@@ -464,30 +424,21 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         // detailed version（0x00：NO， 0x01：YES）
         int hasDetailVersion = rx[10];
 
-        LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received get basic info. Data received:");
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - deviceId: " + deviceId);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - firmwareVersion: " + firmwareVersion);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - runMode: " + runMode);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - batteryStatus: " + batteryStatus);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - batteryPower: " + batteryPower);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - bindingFlag: " + bindingFlag);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - restartFlag: " + restartFlag);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - hasDetailVersion: " + hasDetailVersion);
-
-        String message = ">>> Received get basic info. Data received:";
-        message = message + "    - deviceId: " + deviceId;
-        message = message + "    - firmwareVersion: " + firmwareVersion;
-        message = message + "    - runMode: " + runMode;
-        message = message + "    - batteryStatus: " + batteryStatus;
-        message = message + "    - batteryPower: " + batteryPower;
-        message = message + "    - bindingFlag: " + bindingFlag;
-        message = message + "    - restartFlag: " + restartFlag;
+        String message = ">>> Received get basic info. Data received:\n";
+        message = message + "    - deviceId: " + deviceId + "\n";
+        message = message + "    - firmwareVersion: " + firmwareVersion + "\n";
+        message = message + "    - runMode: " + runMode + "\n";
+        message = message + "    - batteryStatus: " + batteryStatus + "\n";
+        message = message + "    - batteryPower: " + batteryPower + "\n";
+        message = message + "    - bindingFlag: " + bindingFlag + "\n";
+        message = message + "    - restartFlag: " + restartFlag + "\n";
         message = message + "    - hasDetailVersion: " + hasDetailVersion;
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, message);
 
         if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
             mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
         }
-
 
         sendingThread.taskFinished();
     }
@@ -514,46 +465,27 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         int sport_num_show = rx[18];
         int lang_type = rx[19];
 
-
-        LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received get feature list. Data received");
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - main_function: " + String.format("%8s", Integer.toBinaryString(main_function & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - main1: " + String.format("%8s", Integer.toBinaryString(main1 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - alarm_type: " + String.format("%8s", Integer.toBinaryString(alarm_type & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - alarm_count: " + String.format("%8s", Integer.toBinaryString(alarm_count & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - control: " + String.format("%8s", Integer.toBinaryString(control & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - call_notify: " + String.format("%8s", Integer.toBinaryString(call_notify & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - msg_notify1: " + String.format("%8s", Integer.toBinaryString(msg_notify1 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - msg_notify2: " + String.format("%8s", Integer.toBinaryString(msg_notify2 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - msg_notify3: " + String.format("%8s", Integer.toBinaryString(msg_notify3 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - msg_cfg: " + String.format("%8s", Integer.toBinaryString(msg_cfg & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - sport_type0: " + String.format("%8s", Integer.toBinaryString(sport_type0 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - sport_type1: " + String.format("%8s", Integer.toBinaryString(sport_type1 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - sport_type2: " + String.format("%8s", Integer.toBinaryString(sport_type2 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - sport_type3: " + String.format("%8s", Integer.toBinaryString(sport_type3 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - sport_num_show: " + String.format("%8s", Integer.toBinaryString(sport_num_show & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - other: " + String.format("%8s", Integer.toBinaryString(other & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - other2: " + String.format("%8s", Integer.toBinaryString(other2 & 0xFF)).replace(' ', '0'));
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "    - lang_type: " + String.format("%8s", Integer.toBinaryString(lang_type & 0xFF)).replace(' ', '0'));
-
-        String message = ">>> Received get feature list. Data received:";
-        message = message + "    - main_function: " + String.format("%8s", Integer.toBinaryString(main_function & 0xFF)).replace(' ', '0');
-        message = message + "    - main1: " + String.format("%8s", Integer.toBinaryString(main1 & 0xFF)).replace(' ', '0');
-        message = message + "    - alarm_type: " + String.format("%8s", Integer.toBinaryString(alarm_type & 0xFF)).replace(' ', '0');
-        message = message + "    - alarm_count: " + String.format("%8s", Integer.toBinaryString(alarm_count & 0xFF)).replace(' ', '0');
-        message = message + "    - control: " + String.format("%8s", Integer.toBinaryString(control & 0xFF)).replace(' ', '0');
-        message = message + "    - call_notify: " + String.format("%8s", Integer.toBinaryString(call_notify & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_notify1: " + String.format("%8s", Integer.toBinaryString(msg_notify1 & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_notify2: " + String.format("%8s", Integer.toBinaryString(msg_notify2 & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_notify3: " + String.format("%8s", Integer.toBinaryString(msg_notify3 & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_cfg: " + String.format("%8s", Integer.toBinaryString(msg_cfg & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type0: " + String.format("%8s", Integer.toBinaryString(sport_type0 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type1: " + String.format("%8s", Integer.toBinaryString(sport_type1 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type2: " + String.format("%8s", Integer.toBinaryString(sport_type2 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type3: " + String.format("%8s", Integer.toBinaryString(sport_type3 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_num_show: " + String.format("%8s", Integer.toBinaryString(sport_num_show & 0xFF)).replace(' ', '0');
-        message = message + "    - other: " + String.format("%8s", Integer.toBinaryString(other & 0xFF)).replace(' ', '0');
-        message = message + "    - other2: " + String.format("%8s", Integer.toBinaryString(other2 & 0xFF)).replace(' ', '0');
+        String message = ">>> Received get feature list. Data received:\n";
+        message = message + "    - main_function: " + String.format("%8s\n", Integer.toBinaryString(main_function & 0xFF)).replace(' ', '0');
+        message = message + "    - main1: " + String.format("%8s\n", Integer.toBinaryString(main1 & 0xFF)).replace(' ', '0');
+        message = message + "    - alarm_type: " + String.format("%8s\n", Integer.toBinaryString(alarm_type & 0xFF)).replace(' ', '0');
+        message = message + "    - alarm_count: " + String.format("%8s\n", Integer.toBinaryString(alarm_count & 0xFF)).replace(' ', '0');
+        message = message + "    - control: " + String.format("%8s\n", Integer.toBinaryString(control & 0xFF)).replace(' ', '0');
+        message = message + "    - call_notify: " + String.format("%8s\n", Integer.toBinaryString(call_notify & 0xFF)).replace(' ', '0');
+        message = message + "    - msg_notify1: " + String.format("%8s\n", Integer.toBinaryString(msg_notify1 & 0xFF)).replace(' ', '0');
+        message = message + "    - msg_notify2: " + String.format("%8s\n", Integer.toBinaryString(msg_notify2 & 0xFF)).replace(' ', '0');
+        message = message + "    - msg_notify3: " + String.format("%8s\n", Integer.toBinaryString(msg_notify3 & 0xFF)).replace(' ', '0');
+        message = message + "    - msg_cfg: " + String.format("%8s\n", Integer.toBinaryString(msg_cfg & 0xFF)).replace(' ', '0');
+        message = message + "    - sport_type0: " + String.format("%8s\n", Integer.toBinaryString(sport_type0 & 0xFF)).replace(' ', '0');
+        message = message + "    - sport_type1: " + String.format("%8s\n", Integer.toBinaryString(sport_type1 & 0xFF)).replace(' ', '0');
+        message = message + "    - sport_type2: " + String.format("%8s\n", Integer.toBinaryString(sport_type2 & 0xFF)).replace(' ', '0');
+        message = message + "    - sport_type3: " + String.format("%8s\n", Integer.toBinaryString(sport_type3 & 0xFF)).replace(' ', '0');
+        message = message + "    - sport_num_show: " + String.format("%8s\n", Integer.toBinaryString(sport_num_show & 0xFF)).replace(' ', '0');
+        message = message + "    - other: " + String.format("%8s\n", Integer.toBinaryString(other & 0xFF)).replace(' ', '0');
+        message = message + "    - other2: " + String.format("%8s\n", Integer.toBinaryString(other2 & 0xFF)).replace(' ', '0');
         message = message + "    - lang_type: " + String.format("%8s", Integer.toBinaryString(lang_type & 0xFF)).replace(' ', '0');
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, message);
 
         if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
             mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
@@ -569,8 +501,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         int langTypes2 = rx[2];
         int other = rx[3];
 
-        String message = ">>> Received get extended feature list. Data received:";
-        message = message + "    - other: " + String.format("%8s", Integer.toBinaryString(other & 0xFF)).replace(' ', '0');
+        String message = ">>> Received get extended feature list. Data received:\n";
+        message = message + "    - other: " + String.format("%8s\n", Integer.toBinaryString(other & 0xFF)).replace(' ', '0');
         message = message + "    - langTypes2: " + String.format("%8s", Integer.toBinaryString(langTypes2 & 0xFF)).replace(' ', '0');
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, message);
@@ -612,6 +544,9 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             }
             if (sleepDataToSend.size() > 0) {
                 braceletData.setSleepData(sleepDataToSend);
+            } else {
+                // Send at least 1 element
+                braceletData.setSleepData(sleepDataArray);
             }
         }
 
@@ -630,6 +565,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
             mLifevitSDKManager.getBraceletAT2019Listener().braceletDataReceived(braceletData);
         }
+
+        replyLastSynchronization();
 
         sendingThread.taskFinished();
     }
@@ -678,6 +615,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             cal.set(Calendar.HOUR_OF_DAY, minutesOffset / 60);
             cal.set(Calendar.MINUTE, minutesOffset % 60);
             cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
 
             recordDate = cal.getTimeInMillis();
             totalPackages = totalPackets;
@@ -700,29 +638,32 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- aerobic_mins: " + aerobic_mins);
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- limit_mins: " + limit_mins);
         } else {
-            int sIndex = 0;
-            while (sIndex < length && totalItems > 0) {
-                int distanceToLastMeasurement = rx[4 + (sIndex++)];
-                int hr = rx[4 + (sIndex++)];
+            int sIndex = 4;
+            while (sIndex < (length + 4) && totalItems > 0) {
+                int distanceToLastMeasurement = byteToUnsignedInt(rx[sIndex]);
+                int hr = rx[sIndex + 1];
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(recordDate);
-                if (distanceToLastMeasurement > 0) {
-                    cal.add(Calendar.MINUTE, distanceToLastMeasurement);
-                }
-
-                recordDate = cal.getTimeInMillis();
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> DATA date: " + cal.getTime() + ",distanceToLastMeasurement: " + distanceToLastMeasurement + ", Heart rate: " + hr);
+                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> DATA date: " + new Date(recordDate) + ",distanceToLastMeasurement: " + distanceToLastMeasurement + ", Heart rate: " + hr);
 
                 LifevitSDKHeartbeatData data = new LifevitSDKHeartbeatData();
                 data.setHeartrate(hr);
                 data.setDate(recordDate);
 
+                // Update date for next measurement
+                if (distanceToLastMeasurement > 0) {
+                    recordDate = recordDate + distanceToLastMeasurement * 60 * 1000;
+                }
+
                 heartRateDataArray.add(data);
                 totalItems--;
+                sIndex = sIndex + 2;
             }
         }
+    }
+
+
+    public static int byteToUnsignedInt(byte b) {
+        return b & 0xff;
     }
 
 
@@ -757,25 +698,37 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_date_year: " + header1_date_year);
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_date_month: " + header1_date_month);
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_date_day: " + header1_date_day);
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- hour: " + hour);
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- minutes: " + minutes);
+            LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- sleep end hour: " + hour);
+            LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- sleep end minutes: " + minutes);
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- totalMinutes: " + totalMinutes);
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- sleepItems: " + sleepItems);
             LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- totalPackets: " + totalPackets);
 
 
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, header1_date_year);
-            cal.set(Calendar.MONTH, header1_date_month - 1);
-            cal.set(Calendar.DAY_OF_MONTH, header1_date_day);
+            Calendar calEndTime = Calendar.getInstance();
+            calEndTime.set(Calendar.YEAR, header1_date_year);
+            calEndTime.set(Calendar.MONTH, header1_date_month - 1);
+            calEndTime.set(Calendar.DAY_OF_MONTH, header1_date_day);
+            calEndTime.set(Calendar.HOUR_OF_DAY, hour);
+            calEndTime.set(Calendar.MINUTE, minutes);
+            calEndTime.set(Calendar.SECOND, 0);
+            calEndTime.set(Calendar.MILLISECOND, 0);
 
-            cal.set(Calendar.HOUR_OF_DAY, hour);
-            cal.set(Calendar.MINUTE, minutes);
-            cal.set(Calendar.SECOND, 0);
+            Calendar calStartTime = Calendar.getInstance();
+            calStartTime.setTimeInMillis(calEndTime.getTimeInMillis());
+            calStartTime.add(Calendar.MINUTE, -totalMinutes);
 
-            recordDate = cal.getTimeInMillis();
+            recordDate = calStartTime.getTimeInMillis();
             totalPackages = totalPackets;
             totalItems = sleepItems;
+
+            if (sleepItems == 0) {
+                // If there are no elements, add one empty element to know we finished synchronizing sleep data
+                LifevitSDKSleepData data = new LifevitSDKSleepData();
+                data.setDate(Calendar.getInstance().getTimeInMillis());
+                data.setSleepDuration(0);
+                sleepDataArray.add(data);
+            }
 
         } else if (serial == 0x02) {
 
@@ -800,24 +753,18 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             }
 
         } else {
-            int sIndex = 0;
-            while (sIndex < length && totalItems > 0) {
-                int status = rx[4 + (sIndex++)];
-                int duration = rx[4 + (sIndex++)];
-                totalItems--;
+            int sIndex = 4;
+            while (sIndex < (length + 4) && totalItems > 0) {
+                int status = rx[sIndex];
+                int duration = rx[sIndex + 1];
 
                 LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> DATA: status: " + status + ", duration: " + duration);
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(recordDate);
-                cal.add(Calendar.MINUTE, duration * 60);
 
                 LifevitSDKSleepData data = new LifevitSDKSleepData();
 
                 data.setSleepDuration(duration);
                 switch (status) {
-                    case 1:
-                        continue;
                     case 2:
                         data.setSleepDeepness(LifevitSDKConstants.LIGHT_SLEEP);
                         break;
@@ -825,13 +772,19 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
                         data.setSleepDeepness(LifevitSDKConstants.DEEP_SLEEP);
                         break;
                     default:
-                        continue;
+                        data.setSleepDeepness(-1);
                 }
 
-                recordDate = cal.getTimeInMillis();
-                data.setDate(recordDate);
+                if (data.getSleepDeepness() != -1) {
+                    data.setDate(recordDate);
+                    sleepDataArray.add(data);
+                }
 
-                sleepDataArray.add(data);
+                // Update next record date
+                recordDate = recordDate + duration * 60 * 1000;
+
+                totalItems--;
+                sIndex = sIndex + 2;
             }
         }
     }
@@ -879,6 +832,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             cal.set(Calendar.HOUR_OF_DAY, header1_offset_minutes_from_day_start / 60);
             cal.set(Calendar.MINUTE, header1_offset_minutes_from_day_start % 60);
             cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
 
             recordDate = cal.getTimeInMillis();
 
@@ -906,14 +860,14 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             }
 
         } else {
-            int sIndex = 0;
-            while (sIndex < length) {
+            int sIndex = 4;
+            while (sIndex < length + 4) {
 
-                byte b0 = rx[4 + (sIndex++)];
-                byte b1 = rx[4 + (sIndex++)];
-                byte b2 = rx[4 + (sIndex++)];
-                byte b3 = rx[4 + (sIndex++)];
-                byte b4 = rx[4 + (sIndex++)];
+                byte b0 = rx[sIndex];
+                byte b1 = rx[sIndex + 1];
+                byte b2 = rx[sIndex + 2];
+                byte b3 = rx[sIndex + 3];
+                byte b4 = rx[sIndex + 4];
 
                 int mode = b0 & 0x03;
                 int steps = ((b0 & 0xFC) >> 2) + ((b1 & 0x3F) << 6);
@@ -940,6 +894,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
                         + ", steps: " + steps
                         + ", calories: " + calories
                         + ", distance: " + distance);
+
+                sIndex += 5;
             }
         }
 
@@ -949,7 +905,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         if (mDeviceType.equals(DEVICE_NAME)) {
             return Utils.bytesToInt(new byte[]{0, 0, rx[4], rx[5]});
         } else {
-            return Utils.bytesToInt(new byte[]{0, 0, rx[5], rx[4]});
+            return Utils.bytesToInt(new byte[]{0, 0, rx[4], rx[5]});
         }
     }
 
@@ -973,6 +929,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         cal.set(Calendar.HOUR_OF_DAY, header1_date_hour);
         cal.set(Calendar.MINUTE, header1_date_minute);
         cal.set(Calendar.SECOND, header1_date_second);
+        cal.set(Calendar.MILLISECOND, 0);
+
         //cal.set(Calendar.DAY_OF_WEEK, header1_date_weekday);
 
         /*
@@ -1044,11 +1002,11 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "Notification status ");
 
-        String message = ">>> Received get feature list. Data received:";
-        message = message + "    - notify_switch: " + String.format("%8s", Integer.toBinaryString(notify_switch & 0xFF)).replace(' ', '0');
-        message = message + "    - notify_item1: " + String.format("%8s", Integer.toBinaryString(notify_item1 & 0xFF)).replace(' ', '0');
-        message = message + "    - notify_item2: " + String.format("%8s", Integer.toBinaryString(notify_item2 & 0xFF)).replace(' ', '0');
-        message = message + "    - call_switch: " + String.format("%8s", Integer.toBinaryString(call_switch & 0xFF)).replace(' ', '0');
+        String message = ">>> Received get feature list. Data received:\n";
+        message = message + "    - notify_switch: " + String.format("%8s\n", Integer.toBinaryString(notify_switch & 0xFF)).replace(' ', '0');
+        message = message + "    - notify_item1: " + String.format("%8s\n", Integer.toBinaryString(notify_item1 & 0xFF)).replace(' ', '0');
+        message = message + "    - notify_item2: " + String.format("%8s\n", Integer.toBinaryString(notify_item2 & 0xFF)).replace(' ', '0');
+        message = message + "    - call_switch: " + String.format("%8s\n", Integer.toBinaryString(call_switch & 0xFF)).replace(' ', '0');
         message = message + "    - call_delay: " + String.format("%8s", Integer.toBinaryString(call_delay & 0xFF)).replace(' ', '0');
 
 
@@ -1087,392 +1045,84 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
     private void processSetDeviceDatetime(byte[] rx) {
-        String message = "Datetime updated";
-
-        LogUtils.log(Log.DEBUG, CLASS_TAG, message);
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
+        parseSettingsResponse(rx, "Datetime");
     }
 
     private void processConfigureAlarm(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed configuring alarm";
-                    break;
-
-                case 1:
-                    message = "Error configuring alarm: fail more than maxium value";
-                    break;
-
-                case 2:
-                    message = "Error configuring alarm: fail-id was occupier";
-                    break;
-
-                case 3:
-                    message = "Error configuring alarm: fail-id is invalid";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
-
-
+        parseSettingsResponse(rx, "Alarm");
     }
 
     private void processStepTargetAndSleepTime(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting target and sleep time";
-                    break;
-
-                case 1:
-                    message = "Error setting target and sleep time: fail-type do not supported";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
-
+        parseSettingsResponse(rx, "Target and sleep time");
     }
 
     private void processSetUserInformation(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting user information";
-                    break;
-
-                case 1:
-                    message = "Error setting user information: fail-incorrect parameter";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
+        parseSettingsResponse(rx, "User information");
     }
-
 
     private void processConfigureSedentaryAlarm(byte[] rx) {
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed configuring sedentary alarm";
-                    break;
-
-                case 1:
-                    message = "Error configuring sedentary alarm: fail-wrong parameter";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
+        parseSettingsResponse(rx, "Sedentary alarm");
     }
-
 
     private void processConfigureAntiTheft(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed configuring antitheft";
-                    break;
-
-                case 1:
-                    message = "Error configuring antitheft: fail-not support";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
-
+        parseSettingsResponse(rx, "Antitheft");
     }
 
-
     private void processRiseHand(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting hand";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
+        parseSettingsResponse(rx, "Rise hand");
     }
 
     private void processiOSPhone(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting iOS Phone";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
-
+        parseSettingsResponse(rx, "iOS Phone");
     }
 
     private void processHeartRateIntervalSetting(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting heart rate intervals";
-                    break;
-
-                case 1:
-                    message = "Error setting heart rate intervals";
-                    break;
-
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
-
+        parseSettingsResponse(rx, "Heart rate intervals");
     }
 
+
     private void processHeartRateMonitoring(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting heart rate monitoring";
-                    break;
-
-                case 1:
-                    message = "Error setting heart rate monitoring";
-                    break;
-
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
-
+        parseSettingsResponse(rx, "Heart rate monitoring");
     }
 
     private void processFindPhone(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting find phone functionality";
-                    break;
-
-                case 1:
-                    message = "Error setting find phone functionality";
-                    break;
-
-
-                default:
-                    message = "Unknown error";
-                    break;
-            }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-        }
-
-        sendingThread.taskFinished();
-
+        parseSettingsResponse(rx, "Find phone functionality");
     }
 
     private void processConfigureReminder(byte[] rx) {
-
-        int success = rx[2];
-
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Error setting notification reminder: unknown timeout";
-                    mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-                    break;
-
-                case 1:
-                    message = "Succeed setting notification reminder";
-                    mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-                    break;
-
-                case 2:
-                    message = "Error setting notification reminder: fail";
-                    mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-                    break;
-
-                case -120:
-                    sendConfigureACNSActivate();
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
-                    break;
-            }
-
+        if (rx.length > 2 && rx[2] == -120) {
+            sendConfigureACNSActivate();
         }
-
-        sendingThread.taskFinished();
-
+        parseSettingsResponse(rx, "Notification reminder");
     }
 
     private void processSleepMonitoring(byte[] rx) {
+        parseSettingsResponse(rx, "Sleep monitoring");
+    }
 
-        int success = rx[2];
+    private void parseSettingsResponse(byte[] rx, String operation) {
 
         if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-
-            String message;
-
-            switch (success) {
-                case 0:
-                    message = "Succeed setting sleep monitoring";
-                    break;
-
-                case 1:
-                    message = "Error setting sleep monitoring: fail";
-                    break;
-
-                case 2:
-                    message = "Error setting sleep monitoring: fail - parameter error";
-                    break;
-
-                default:
-                    message = "Unknown error";
-                    break;
+            if (rx.length > 2) {
+                int success = rx[2];
+                String message;
+                if (success == 0) {
+                    message = "Succeed setting: " + operation;
+                } else {
+                    message = "Error setting: " + operation + " (error code " + success + ")";
+                }
+                mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
+            } else if (rx.length == 2) {
+                mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation("Succeed setting (2 bytes): " + operation);
+            } else {
+                mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation("Unknown error setting: " + operation);
             }
-
-
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
         }
 
         sendingThread.taskFinished();
     }
+
+    // endregion --- Processing responses methods ---
 
 
     protected void characteristicReadProcessData(BluetoothGattCharacteristic characteristic) {
@@ -1486,7 +1136,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             String resultsStr = new String(rx);
 
             LogUtils.log(Log.DEBUG, CLASS_TAG, "characteristicReadProcessData - RECEIVED (byte format): " + HexUtils.getStringToPrint(rx));
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "characteristicReadProcessData - RECEIVED (string format): " + resultsStr);
 
             if (rx[0] == 0x02 && rx[1] == 0x01) {
 
@@ -1586,77 +1235,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
                 sendingThread.taskFinished();
             }
 
-
-            /*
-
-            else if (rx[0] == 0x02 && rx[1] == 0x03) {
-
-                int year = Utils.bytesToInt(new byte[]{0, 0, rx[2], rx[3]});
-                int month = rx[4];
-                int day = rx[5];
-                int hour = rx[6];
-                int minute = rx[7];
-                int second = rx[8];
-                int weekday = rx[9];
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received get time. Date received: " + day + "/" + month + "/" + year
-                        + ", " + hour + ":" + minute + ":" + second);
-
-                sendingThread.taskFinished();
-
-            } else if (rx[0] == 0x02 && rx[1] == (byte) 0xA0) {
-
-                int totalSteps = Utils.bytesToInt(new byte[]{rx[5], rx[4], rx[3], rx[2]});
-                int totalCalories = Utils.bytesToInt(new byte[]{rx[9], rx[8], rx[7], rx[6]});
-                int totalDistance = Utils.bytesToInt(new byte[]{rx[13], rx[12], rx[11], rx[10]});
-                int totalActiveTime = Utils.bytesToInt(new byte[]{rx[17], rx[16], rx[15], rx[14]});
-                int heartRate = rx[18];
-                int invalid = -1;
-
-                try {
-                    if (rx.length >= 20) {
-                        invalid = rx[19];
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received Sync data. Data received:");
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - totalSteps: " + totalSteps);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - totalCalories: " + totalCalories);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - totalDistance: " + totalDistance);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - totalActiveTime: " + totalActiveTime);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - heartRate: " + heartRate);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - invalid: " + invalid);
-
-                sendingThread.taskFinished();
-
-            } else if (rx[0] == 0x03 && rx[1] == 0x01) {
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received Set Time!");
-
-                sendingThread.taskFinished();
-
-            } else if (rx[0] == 0x04 && rx[1] == 0x01) {
-
-                int status = rx[2];
-                int bindingCodeLength = rx[3];
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received Bind:");
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - status: " + status);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - bindingCodeLength: " + bindingCodeLength);
-
-            } else if (rx[0] == 0x04 && rx[1] == 0x02) {
-
-                int status = rx[2];
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received UNBind:");
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - status: " + status);
-            }
-
-
-            */
-
         } else if (characteristic.getUuid().equals(UUID.fromString(UUID_NOTIFY_CHARACTERISTIC_READ_2))) {
 
             byte[] rx = characteristic.getValue();
@@ -1664,8 +1242,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             String resultsStr = new String(rx);
 
             LogUtils.log(Log.DEBUG, CLASS_TAG, "characteristicReadProcessData(2) - RECEIVED (byte format): " + HexUtils.getStringToPrint(rx));
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "characteristicReadProcessData(2) - RECEIVED (string format): " + resultsStr);
-
 
             if (rx[0] == 0x08 && rx[1] == 0x01) {
 
@@ -1702,156 +1278,12 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
                 LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> NO CASE BRACELET AT2019");
                 sendingThread.taskFinished();
-
             }
-
-            /*
-
-            if (rx[0] == 0x08 && rx[1] == 0x01) {
-
-                int totalPackets = Utils.bytesToInt(new byte[]{0, 0, rx[3], rx[2]});
-                int activeDays = rx[4];
-                int sleepDays = rx[5];
-                int heartDays = rx[6];
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Data received:");
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - totalPackets: " + totalPackets);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - activeDays: " + activeDays);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - sleepDays: " + sleepDays);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - heartDays: " + heartDays);
-
-                sendingThread.taskFinished();
-
-            } else if (rx[0] == 0x08 && rx[1] == 0x02) {
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received finish synchronization!");
-
-                sendingThread.taskFinished();
-
-            } else if (rx[0] == 0x08 && rx[1] == (byte) 0xEE) {
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Finished Receiving Sports data.");
-
-                sendStepsData();
-                resetSportsData();
-
-                sendingThread.taskFinished();
-
-            } else if (rx[0] == 0x08 && rx[1] == 0x03) {
-
-                int serial = rx[2];
-                int length = rx[3];
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Received Sports data:");
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - serial: " + serial);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - length: " + length);
-
-                int i = 4;
-
-                // 08:03:01:10:E3:07:08:09:00:00:0F:60:22:00
-                // 08:03:02:10:62:00:00:00:04:00:00:00:45:00:00:00:60:00:00:00
-                // 08:03:03:0F:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-                // 08:03:22:0F:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-                // 08:EE:00:00:00:00
-
-                if (serial == 0x01) {
-
-                    // Is header
-
-                    // 08:03:01:10:E3:07:08:09:00:00:0F:60:22:00
-
-                    int header1_date_year = Utils.bytesToInt(new byte[]{0, 0, rx[i + 1], rx[i]});
-                    int header1_date_month = rx[i + 2];
-                    int header1_date_day = rx[i + 3];
-
-                    int header1_offset_minutes_from_day_start = Utils.bytesToInt(new byte[]{0, 0, rx[i + 4], rx[i + 5]});
-                    int header1_how_many_minutes_every_package = rx[i + 6];
-                    int header1_sport_item = rx[i + 7];
-                    int header1_total_packages = rx[i + 8];
-
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Headers:");
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_date_year: " + header1_date_year);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_date_month: " + header1_date_month);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_date_day: " + header1_date_day);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_offset_minutes_from_day_start: " + header1_offset_minutes_from_day_start);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_how_many_minutes_every_package: " + header1_how_many_minutes_every_package);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_sport_item: " + header1_sport_item);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header1_total_packages: " + header1_total_packages);
-
-
-                    sportsDataPacketDate = Calendar.getInstance();
-                    sportsDataPacketDate.set(Calendar.YEAR, header1_date_year);
-                    sportsDataPacketDate.set(Calendar.MONTH, header1_date_month - 1);
-                    sportsDataPacketDate.set(Calendar.YEAR, header1_date_day);
-
-                    sportsDataPacketDate.set(Calendar.HOUR, header1_offset_minutes_from_day_start / 60);
-                    sportsDataPacketDate.set(Calendar.MINUTE, header1_offset_minutes_from_day_start % 60);
-
-                    sportsDataPacketDuration = header1_how_many_minutes_every_package;
-                    sportsDataTotalPackages = header1_total_packages;
-
-                } else {
-
-                    // Is normal packet
-
-                    // 08:03:02:10 : 62:00:00:00 : 04:00:00:00 : 45:00:00:00 : 60:00:00:00
-
-                    int header2_total_steps = Utils.bytesToInt(new byte[]{rx[i + 3], rx[i + 2], rx[i + 1], rx[i]});
-                    int header2_total_calories = Utils.bytesToInt(new byte[]{rx[i + 7], rx[i + 6], rx[i + 5], rx[i + 4]});
-                    int header2_total_distance = Utils.bytesToInt(new byte[]{rx[i + 11], rx[i + 10], rx[i + 9], rx[i + 8]});
-                    int header2_total_active_time = Utils.bytesToInt(new byte[]{rx[i + 15], rx[i + 14], rx[i + 13], rx[i + 12]});
-
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Headers:");
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header2_total_steps: " + header2_total_steps);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header2_total_calories: " + header2_total_calories);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header2_total_distance: " + header2_total_distance);
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "    --- header2_total_active_time: " + header2_total_active_time);
-
-                    long packetDate = sportsDataPacketDate.getTimeInMillis() + sportsDataPacketDuration * (serial - 2);
-
-                    addToSportsData(header2_total_steps, header2_total_calories, header2_total_distance, packetDate);
-
-                }
-            }
-
-             */
         }
     }
 
 
-    /*********************************************************************************************/
-    /*****************************  Methods to send info to activity  ****************************/
-    /*********************************************************************************************/
-
-/*
-    private void addToSportsData(int steps, float calories, float distance, long date) {
-
-        // create new record
-        LifevitSDKStepData record = new LifevitSDKStepData(date, steps, calories, distance);
-
-        sportsDataList.add(record);
-    }
-
-
-    private void sendStepsData() {
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletStepsReceived(sportsDataList);
-        }
-    }
-
-
-    private void resetSportsData() {
-
-        sportsDataPacketDate = null;
-        sportsDataPacketDuration = 0;
-        sportsDataTotalPackages = 0;
-        sportsDataList = new ArrayList<>();
-    }
-*/
-
-    /*********************************************************************************************/
-    /**************************  Methods to send instruction to device  **************************/
-    /*********************************************************************************************/
+    // region --- Send commands to bracelet ---
 
 
     byte[] getEmptyArray() {
@@ -1879,6 +1311,40 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         syncparamsArray[19] = (byte) 0;
 
         return syncparamsArray;
+    }
+
+
+    protected void sendStartSynchronizeData() {
+
+        byte[] syncparamsArray = getEmptyArray();
+
+        syncparamsArray[0] = (byte) 0x08;
+        syncparamsArray[1] = (byte) 0x01;
+
+        // Synchronization flag: (0x01: manual synchronization, 0x02: automatic synchronization in the background)
+        syncparamsArray[2] = (byte) 0x02;
+
+        // Safe mode: (0x01: safe mode, other values: normal mode)
+        syncparamsArray[3] = (byte) 0x01;
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendStartSynchronizeData] " + HexUtils.getStringToPrint(syncparamsArray));
+
+        sendMessage(syncparamsArray, 2);
+    }
+
+
+    protected void sendReplyLastSynchronization() {
+
+        byte[] syncparamsArray = getEmptyArray();
+
+        syncparamsArray[0] = (byte) 0x08;
+        syncparamsArray[1] = (byte) 0xEE;
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendReplyLastSynchronization] " + HexUtils.getStringToPrint(syncparamsArray));
+
+        sendMessage(syncparamsArray, 2);
+
+        sendingThread.taskFinished();
     }
 
 
@@ -2012,7 +1478,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         // The serial number of the package (1~255), valid only when resending
         syncparamsArray[3] = (byte) 0x01;
 
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeSleepData] " + HexUtils.getStringToPrint(syncparamsArray));
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeHeartRateData] " + HexUtils.getStringToPrint(syncparamsArray));
 
         sendMessage(syncparamsArray, 2);
     }
@@ -2026,7 +1492,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         syncparamsArray[1] = (byte) 0x01;
 
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(time * 1000);
+        cal.setTimeInMillis(time);
 
         int currentYear = cal.get(Calendar.YEAR);
         byte lowerByte = (byte) (currentYear & 0xFF);
@@ -2081,7 +1547,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         syncparamsArray[0] = (byte) 0x02;
         syncparamsArray[1] = (byte) 0x05;
-
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[Send Get battery] " + HexUtils.getStringToPrint(syncparamsArray));
 
@@ -2162,26 +1627,55 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             syncparamsArray[2] = (byte) 0x01; //alarm (alarm number)
         }
 
-
         syncparamsArray[3] = (byte) 0x55; //show status (show)
         syncparamsArray[4] = (byte) 0x00; //wake up (type)
         syncparamsArray[5] = (byte) alarm.getHour();
         syncparamsArray[6] = (byte) alarm.getMinute();
 
+        String weekDays = "";
 
-        String weekDays = "0";
-        weekDays += alarm.isMonday() ? "1" : "0";
-        weekDays += alarm.isTuesday() ? "1" : "0";
-        weekDays += alarm.isWednesday() ? "1" : "0";
-        weekDays += alarm.isThursday() ? "1" : "0";
-        weekDays += alarm.isFriday() ? "1" : "0";
-        weekDays += alarm.isSaturday() ? "1" : "0";
         weekDays += alarm.isSunday() ? "1" : "0";
+        weekDays += alarm.isSaturday() ? "1" : "0";
+        weekDays += alarm.isFriday() ? "1" : "0";
+        weekDays += alarm.isThursday() ? "1" : "0";
+        weekDays += alarm.isWednesday() ? "1" : "0";
+        weekDays += alarm.isTuesday() ? "1" : "0";
+        weekDays += alarm.isMonday() ? "1" : "0";
 
+        // Enabled
+        weekDays += "1";
 
         syncparamsArray[7] = (byte) Integer.parseInt(weekDays, 2);
         syncparamsArray[8] = (byte) 0x00;
 
+        // Send command
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[Send configureAlarm] " + HexUtils.getStringToPrint(syncparamsArray));
+
+        sendMessage(syncparamsArray);
+    }
+
+
+    protected void sendRemoveAlarm(boolean isPrimaryAlarm) {
+
+        byte[] syncparamsArray = getEmptyArray();
+
+        syncparamsArray[0] = (byte) 0x03;
+        syncparamsArray[1] = (byte) 0x02;
+
+        if (isPrimaryAlarm) {
+            syncparamsArray[2] = (byte) 0x01; //alarm (alarm number)
+        } else {
+            syncparamsArray[2] = (byte) 0x02; //alarm (alarm number)
+        }
+
+        syncparamsArray[3] = (byte) 0x00; //show status (show)
+        syncparamsArray[4] = (byte) 0x00; //wake up (type)
+        syncparamsArray[5] = (byte) 0x00;
+        syncparamsArray[6] = (byte) 0x00;
+
+        syncparamsArray[7] = (byte) 0x00; // 0 is OFF
+        syncparamsArray[8] = (byte) 0x00;
 
         // Send command
 
@@ -2230,24 +1724,23 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
 
-    protected void sendSetGoals(int steps, LifevitSDKAlarmTime sleepAlarm) {
+    protected void sendSetGoals(int steps, int sleepHour, int sleepMinute) {
 
         byte[] syncparamsArray = getEmptyArray();
 
         syncparamsArray[0] = (byte) 0x03;
         syncparamsArray[1] = (byte) 0x03;
 
-        syncparamsArray[2] = (byte) 0x00; //Steps goal
+        // type (0x00:step， 0x01：calorie， 0x02：distance)
+        syncparamsArray[2] = (byte) 0x00;
 
+        syncparamsArray[3] = (byte) ((steps >> 24) & 0xFF);
+        syncparamsArray[4] = (byte) ((steps >> 16) & 0xFF);
+        syncparamsArray[5] = (byte) ((steps >> 8) & 0xFF);
+        syncparamsArray[6] = (byte) (steps & 0xFF);
 
-        syncparamsArray[3] = (byte) (steps & 0xFF);
-        syncparamsArray[4] = (byte) ((steps << 8) & 0xFF);
-        syncparamsArray[5] = (byte) ((steps << 16) & 0xFF);
-        syncparamsArray[6] = (byte) ((steps << 24) & 0xFF);
-
-        syncparamsArray[7] = (byte) sleepAlarm.getHour();
-        syncparamsArray[8] = (byte) sleepAlarm.getMinute();
-
+        syncparamsArray[7] = (byte) sleepHour;
+        syncparamsArray[8] = (byte) sleepMinute;
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[setGoals] " + HexUtils.getStringToPrint(syncparamsArray));
 
@@ -2649,12 +2142,9 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         syncparamsArray[0] = (byte) 0x02;
         syncparamsArray[1] = (byte) 0xA0;
 
-        // Synchronization flag: (0x01: manual synchronization, 0x02: automatic synchronization in the background)
+        //Flag bit (0x00: no function, 0x01: forced heart rate monitoring, 0x02: forced open blood pressure monitoring)
+        // Este comando solo devuelve el pulso si el usuario tiene ese apartado abierto.
         syncparamsArray[2] = (byte) 0x00;
-
-        // Safe mode: (0x01: safe mode, other values: normal mode)
-        //syncparamsArray[3] = (byte) 0x00;
-
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeData] " + HexUtils.getStringToPrint(syncparamsArray));
 
@@ -2679,6 +2169,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         sendMessage(syncparamsArray);
     }
+
+    // endregion --- Send commands to bracelet ---
 
 
 }

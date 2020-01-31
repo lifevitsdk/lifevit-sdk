@@ -18,7 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import es.lifevit.sdk.LifevitSDKBleDeviceBraceletAT2019;
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKManager;
 import es.lifevit.sdk.LifevitSDKUserData;
@@ -115,27 +114,35 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                 CharSequence[] colors = new CharSequence[]{
                         "0. Get basic info",
                         "1. Get feature list",
-                        "2. Set device time",
-                        "3. Get device time",
-                        "4. Get current day data",
-                        "5. Get steps data",
-                        "6. Get sleep data",
-                        "7. Get heart rate data",
-                        "8. Get step historical data",
-                        "9. Get sleep historical data",
-                        "10. Get heart rate historical data",
-                        "11. Set alarm at 10:05 every Tuesday",
-                        "12. Set steps goal at 700 and sleep time at 8:05",
-                        "13. Set user information",
-                        "14. Set sedentary alarm f_10:00 t_21:30 e_wednesday for 30min",
-                        "15. Set antitheft",
-                        "16. Set left hand",
-                        "17. Set iOS Phone",
-                        "18. Set heart rate interval to 70/120/160 and 220",
-                        "19. Set heart rate monitoring f17:30 t20:30",
-                        "20. Set find phone",
-                        "21. Set notification reminder",
-                        "22. Set sleep monitoring reminder"
+                        "2. Set device time (current time)",
+                        "3. Set device time (21/10/2015 4:29)",
+                        "4. Get device time",
+                        "5. Get current day data summary",
+                        "6. [Day data] Steps",
+                        "7. [Day data] Sleep",
+                        "8. [Day data] Heart Rate",
+                        "9. [Historical] Step",
+                        "10. [Historical] Sleep",
+                        "11. [Historical] Heart Rate",
+                        "12. [Alarm] Set alarm at 10:30 and repeat every day",
+                        "13. [Alarm] Set alarm at 11:40 only for today",
+                        "14. [Alarm] Remove alarms",
+                        "15. Set steps goal to 500 and sleep goal to 6h 30min",
+                        "16. Set steps goal to 7000 and sleep goal to 8h",
+                        "17. Set user information",
+                        "18. Set sedentary alarm f_10:00 t_21:30 e_wednesday for 30min",
+                        "19. Set antitheft",
+                        "20. Set hand: left",
+                        "21. Set hand: right",
+                        "22. Set iOS Phone",
+                        "23. Set heart rate intervals to: 55 (burn fat), 65 (aerobic), 80 (limit) and 100 (user max)",
+                        "24. Set heart rate intervals to: 70 (burn fat), 120 (aerobic), 160 (limit) and 220 (user max)",
+                        "25. Set heart rate monitoring from 17:30 to 20:30",
+                        "26. Set find phone",
+                        "27. Set notification reminder",
+                        "28. Set sleep monitoring reminder",
+                        "29. Get current battery",
+                        "30. Start complete synchronization"
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(BraceletAT2019Activity.this);
@@ -144,63 +151,76 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_GET_BASIC_INFO:
+                            case 0:
                                 manager.bracelet2019GetBasicInfo();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_GET_FEATURE_LIST:
+                            case 1:
                                 manager.bracelet2019GetFeatureList();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_TIME: {
+                            case 2: {
                                 Calendar cal = Calendar.getInstance();
-                                Long time = cal.getTimeInMillis() / 1000;
-
+                                Long time = cal.getTimeInMillis();
                                 manager.bracelet2019SetDeviceTime(time);
                                 break;
                             }
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_GET_DEVICE_TIME:
+                            case 3: {
+                                Calendar cal = Calendar.getInstance();
+                                cal.set(2015, Calendar.OCTOBER, 21, 4, 29);
+                                manager.bracelet2019SetDeviceTime(cal.getTimeInMillis());
+                                break;
+                            }
+                            case 4:
                                 manager.bracelet2019GetDeviceTime();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNC_DATA:
+                            case 5:
                                 manager.bracelet2019SynchronizeData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNC_SPORTS_DATA:
+                            case 6:
                                 manager.bracelet2019SynchronizeSportsData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_SLEEP_DATA:
+                            case 7:
                                 manager.bracelet2019SynchronizeSleepData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HEART_RATE_DATA:
+                            case 8:
                                 manager.bracelet2019SynchronizeHeartRateData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HISTORIC_SPORT_DATA:
+                            case 9:
                                 manager.bracelet2019SynchronizeHistoricSportData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HISTORIC_SLEEP_DATA:
+                            case 10:
                                 manager.bracelet2019SynchronizeHistoricSleepData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HISTORIC_HEART_RATE_DATA:
+                            case 11:
                                 manager.bracelet2019SynchronizeHistoricHeartRateData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_CONFIGURE_ALARM: {
+                            case 12: {
                                 LifevitSDKAlarmTime alarm = new LifevitSDKAlarmTime();
-
                                 alarm.setHour(10);
-                                alarm.setMinute(5);
-
+                                alarm.setMinute(30);
+                                alarm.setAllDays();
                                 manager.bracelet2019ConfigureAlarm(alarm);
                                 break;
                             }
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_GOALS: {
+                            case 13: {
                                 LifevitSDKAlarmTime alarm = new LifevitSDKAlarmTime();
-                                alarm.setHour(10);
-                                alarm.setMinute(5);
-
-                                int steps = 700;
-
-                                manager.bracelet2019SetGoals(steps, alarm);
+                                alarm.setHour(11);
+                                alarm.setMinute(40);
+                                manager.bracelet2019ConfigureAlarm(alarm);
                                 break;
                             }
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_USER_INFORMATION: {
+                            case 14: {
+                                manager.bracelet2019RemoveAlarm(true);
+                                break;
+                            }
+                            case 15: {
+                                manager.bracelet2019SetGoals(500, 6, 30);
+                                break;
+                            }
+                            case 16: {
+                                manager.bracelet2019SetGoals(7000, 8, 0);
+                                break;
+                            }
+                            case 17: {
                                 Calendar cal = Calendar.getInstance();
                                 cal.set(Calendar.YEAR, 1980);
                                 cal.set(Calendar.MONTH, 12 - 1);
@@ -213,58 +233,54 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                 manager.bracelet2019SetUserInformation(user);
                                 break;
                             }
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM: {
+                            case 18: {
                                 LifevitSDKMonitoringAlarm alarm = new LifevitSDKMonitoringAlarm(10, 0, 21, 30, PERIOD_30_MIN, false, false, true, false, false, false, false);
                                 manager.bracelet2019ConfigureBraceletSedentaryAlarm(alarm);
                                 break;
                             }
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_ANTITHEFT:
+                            case 19:
                                 manager.bracelet2019ConfigureAntitheft(true);
                                 break;
-
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_RISE_HAND:
-
+                            case 20:
                                 manager.bracelet2019ConfigureRiseHand(true);
                                 break;
-
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_BATTERY:
-                                manager.bracelet2019GetBattery();
+                            case 21:
+                                manager.bracelet2019ConfigureRiseHand(false);
                                 break;
-
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_ANDROID_PHONE:
+                            case 22:
                                 manager.bracelet2019ConfigureAndroidPhone();
                                 break;
-
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_FIND_PHONE:
-                                manager.bracelet2019ConfigureFindPhone(true);
+                            case 23:
+                                manager.bracelet2019ConfigureHeartRateIntervalSetting(55, 65, 80, 100);
                                 break;
-
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_HEART_RATE_INTERVAL_SETTING:
-
+                            case 24:
                                 manager.bracelet2019ConfigureHeartRateIntervalSetting(70, 120, 160, 220);
                                 break;
-
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_HEART_RATE_MONITORING: {
+                            case 25: {
                                 LifevitSDKMonitoringAlarm monitoring = new LifevitSDKMonitoringAlarm(17, 30, 20, 30);
-
-
                                 manager.bracelet2019ConfigureHeartRateMonitoring(true, true, monitoring);
                                 break;
                             }
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_ACNS: {
+                            case 26:
+                                manager.bracelet2019ConfigureFindPhone(true);
+                                break;
+                            case 27: {
                                 LifevitSDKAppNotification notification = new LifevitSDKAppNotification();
                                 notification.setAlarm(true);
-
                                 manager.bracelet2019ConfigureACNS(notification);
                                 break;
                             }
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SLEEP_MONITORING: {
+                            case 28: {
                                 LifevitSDKMonitoringAlarm monitoring = new LifevitSDKMonitoringAlarm(23, 00, 7, 30);
-
                                 manager.bracelet2019ConfigureSleepMonitoring(true, monitoring);
                                 break;
                             }
-
+                            case 29:
+                                manager.bracelet2019GetBattery();
+                                break;
+                            case 30:
+                                manager.bracelet2019StartSynchronization();
+                                break;
                         }
                     }
                 });

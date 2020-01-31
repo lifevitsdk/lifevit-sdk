@@ -38,6 +38,18 @@ public class LifevitSDKAlarmTime {
     }
 
 
+    public void setAllDays() {
+
+        monday = true;
+        tuesday = true;
+        wednesday = true;
+        thursday = true;
+        friday = true;
+        saturday = true;
+        sunday = true;
+    }
+
+
     public void setOnlyWeekDays() {
 
         monday = true;

@@ -149,10 +149,17 @@ public class BraceletAT2019SendQueue extends Thread {
                                     dgBleDeviceBracelet.sendConfigureAlarm((LifevitSDKAlarmTime) bqi.object[0]);
                                 }
                                 break;
+                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_DELETE_ALARM:
+                                if (bqi.object[0] instanceof Boolean) {
+                                    dgBleDeviceBracelet.sendRemoveAlarm((Boolean) bqi.object[0]);
+                                }
+                                break;
 
                             case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_GOALS:
-                                if (bqi.object[1] instanceof LifevitSDKAlarmTime) {
-                                    dgBleDeviceBracelet.sendSetGoals((int) bqi.object[0], (LifevitSDKAlarmTime) bqi.object[1]);
+                                if (bqi.object[0] instanceof Integer
+                                        && bqi.object[1] instanceof Integer
+                                        && bqi.object[2] instanceof Integer) {
+                                    dgBleDeviceBracelet.sendSetGoals((int) bqi.object[0], (int) bqi.object[1], (int) bqi.object[2]);
                                 }
                                 break;
 
@@ -206,6 +213,15 @@ public class BraceletAT2019SendQueue extends Thread {
                                 if (bqi.object[1] instanceof LifevitSDKMonitoringAlarm) {
                                     dgBleDeviceBracelet.sendConfigureSleepMonitoring((Boolean) bqi.object[0], (LifevitSDKMonitoringAlarm) bqi.object[1]);
                                 }
+                                break;
+                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_BATTERY:
+                                dgBleDeviceBracelet.sendGetBattery();
+                                break;
+                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_START_SYNCHRONIZATION:
+                                dgBleDeviceBracelet.sendStartSynchronizeData();
+                                break;
+                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_REPLY_LAST_SYNCHRONIZATION:
+                                dgBleDeviceBracelet.sendReplyLastSynchronization();
                                 break;
 
                             //protected void sendConfigureACNSActivate() {

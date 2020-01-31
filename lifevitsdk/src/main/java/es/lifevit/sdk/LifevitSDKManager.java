@@ -1582,7 +1582,14 @@ public class LifevitSDKManager {
     public void bracelet2019GetBattery() {
         LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
         if (bracelet != null) {
-            bracelet.sendGetBattery();
+            bracelet.getBattery();
+        }
+    }
+
+    public void bracelet2019StartSynchronization() {
+        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
+        if (bracelet != null) {
+            bracelet.startSynchronization();
         }
     }
 
@@ -1601,10 +1608,17 @@ public class LifevitSDKManager {
         }
     }
 
-    public void bracelet2019SetGoals(int steps, LifevitSDKAlarmTime alarm) {
+    public void bracelet2019RemoveAlarm(boolean deletePrimaryAlarm) {
         LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
         if (bracelet != null) {
-            bracelet.setGoals(steps, alarm);
+            bracelet.removeAlarm(deletePrimaryAlarm);
+        }
+    }
+
+    public void bracelet2019SetGoals(int steps, int sleepHour, int sleepMinute) {
+        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
+        if (bracelet != null) {
+            bracelet.setGoals(steps, sleepHour, sleepMinute);
         }
     }
 
