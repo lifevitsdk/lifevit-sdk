@@ -449,51 +449,171 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
 
+    private String processFeatureByte(byte rx, String title, String func1, String func2, String func3,
+                                      String func4, String func5, String func6, String func7, String func8) {
+
+        StringBuilder message = new StringBuilder();
+
+        if (title != null) {
+            message.append("    - " + title + ": " + String.format("%8s\n", Integer.toBinaryString(rx & 0xFF)).replace(' ', '0'));
+        }
+
+        if (func1 != null) {
+            if ((rx & 0b00000001) > 0) {
+                message.append("        - " + func1 + ": YES\n");
+            } else {
+                message.append("        - " + func1 + ": NO\n");
+            }
+        }
+        if (func2 != null) {
+            if ((rx & 0b00000010) > 0) {
+                message.append("        - " + func2 + ": YES\n");
+            } else {
+                message.append("        - " + func2 + ": NO\n");
+            }
+        }
+        if (func3 != null) {
+            if ((rx & 0b00000100) > 0) {
+                message.append("        - " + func3 + ": YES\n");
+            } else {
+                message.append("        - " + func3 + ": NO\n");
+            }
+        }
+        if (func4 != null) {
+            if ((rx & 0b00001000) > 0) {
+                message.append("        - " + func4 + ": YES\n");
+            } else {
+                message.append("        - " + func4 + ": NO\n");
+            }
+        }
+        if (func5 != null) {
+            if ((rx & 0b00010000) > 0) {
+                message.append("        - " + func5 + ": YES\n");
+            } else {
+                message.append("        - " + func5 + ": NO\n");
+            }
+        }
+        if (func6 != null) {
+            if ((rx & 0b00100000) > 0) {
+                message.append("        - " + func6 + ": YES\n");
+            } else {
+                message.append("        - " + func6 + ": NO\n");
+            }
+        }
+        if (func7 != null) {
+            if ((rx & 0b01000000) > 0) {
+                message.append("        - " + func7 + ": YES\n");
+            } else {
+                message.append("        - " + func7 + ": NO\n");
+            }
+        }
+        if (func8 != null) {
+            if ((rx & 0b10000000) > 0) {
+                message.append("        - " + func8 + ": YES\n");
+            } else {
+                message.append("        - " + func8 + ": NO\n");
+            }
+        }
+        return message.toString();
+    }
+
+
     private void processGetFeatureList(byte[] rx) {
 
-        int main_function = rx[2];
+        byte main_function = rx[2];
         int alarm_count = rx[3];
-        int alarm_type = rx[4];
-        int control = rx[5];
-        int call_notify = rx[6];
-        int msg_notify1 = rx[7];
-        int other = rx[8];
-        int msg_cfg = rx[9];
-        int msg_notify2 = rx[10];
-        int other2 = rx[11];
-        int sport_type0 = rx[12];
-        int sport_type1 = rx[13];
-        int sport_type2 = rx[14];
-        int sport_type3 = rx[15];
-        int main1 = rx[16];
-        int msg_notify3 = rx[17];
+        byte alarm_type = rx[4];
+        byte control = rx[5];
+        byte call_notify = rx[6];
+        byte msg_notify1 = rx[7];
+        byte other = rx[8];
+        byte msg_cfg = rx[9];
+        byte msg_notify2 = rx[10];
+        byte other2 = rx[11];
+        byte sport_type0 = rx[12];
+        byte sport_type1 = rx[13];
+        byte sport_type2 = rx[14];
+        byte sport_type3 = rx[15];
+        byte main1 = rx[16];
+        byte msg_notify3 = rx[17];
         int sport_num_show = rx[18];
-        int lang_type = rx[19];
+        byte lang_type = rx[19];
 
-        String message = ">>> Received get feature list. Data received:\n";
-        message = message + "    - main_function: " + String.format("%8s\n", Integer.toBinaryString(main_function & 0xFF)).replace(' ', '0');
-        message = message + "    - main1: " + String.format("%8s\n", Integer.toBinaryString(main1 & 0xFF)).replace(' ', '0');
-        message = message + "    - alarm_type: " + String.format("%8s\n", Integer.toBinaryString(alarm_type & 0xFF)).replace(' ', '0');
-        message = message + "    - alarm_count: " + String.format("%8s\n", Integer.toBinaryString(alarm_count & 0xFF)).replace(' ', '0');
-        message = message + "    - control: " + String.format("%8s\n", Integer.toBinaryString(control & 0xFF)).replace(' ', '0');
-        message = message + "    - call_notify: " + String.format("%8s\n", Integer.toBinaryString(call_notify & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_notify1: " + String.format("%8s\n", Integer.toBinaryString(msg_notify1 & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_notify2: " + String.format("%8s\n", Integer.toBinaryString(msg_notify2 & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_notify3: " + String.format("%8s\n", Integer.toBinaryString(msg_notify3 & 0xFF)).replace(' ', '0');
-        message = message + "    - msg_cfg: " + String.format("%8s\n", Integer.toBinaryString(msg_cfg & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type0: " + String.format("%8s\n", Integer.toBinaryString(sport_type0 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type1: " + String.format("%8s\n", Integer.toBinaryString(sport_type1 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type2: " + String.format("%8s\n", Integer.toBinaryString(sport_type2 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_type3: " + String.format("%8s\n", Integer.toBinaryString(sport_type3 & 0xFF)).replace(' ', '0');
-        message = message + "    - sport_num_show: " + String.format("%8s\n", Integer.toBinaryString(sport_num_show & 0xFF)).replace(' ', '0');
-        message = message + "    - other: " + String.format("%8s\n", Integer.toBinaryString(other & 0xFF)).replace(' ', '0');
-        message = message + "    - other2: " + String.format("%8s\n", Integer.toBinaryString(other2 & 0xFF)).replace(' ', '0');
-        message = message + "    - lang_type: " + String.format("%8s", Integer.toBinaryString(lang_type & 0xFF)).replace(' ', '0');
+        StringBuilder message = new StringBuilder(">>> Received get feature list. Data received:\n");
 
-        LogUtils.log(Log.DEBUG, CLASS_TAG, message);
+        message.append("    - Alarms count: " + alarm_count);
+        message.append("    - Sports count: " + sport_num_show);
+
+        message.append(processFeatureByte(main_function, "Main functions",
+                "step counting", "sleep monitoring", "single motion", "real-time data",
+                "device upgrade", "heart rate monitoring", "message center", "timeline"));
+
+        message.append(processFeatureByte(main1, "Main functions (1)",
+                "log in", "hid service", "dial1 setting", "shortcut key1 setting",
+                "Separate unit setting", "blood pressure", null, null));
+
+        message.append(processFeatureByte(alarm_type, "Alarm types",
+                "get-up", "sleep", "training", "take medicine",
+                "date", "party", "meeting", "customize"));
+
+        message.append(processFeatureByte(control, "Control functions",
+                "photo shooting", "music", "hid shooting control", "5 heart rate intervals",
+                "Binding timeout confirmation", "Fast sync", "Extended functions", null));
+
+        message.append(processFeatureByte(call_notify, "Call alert",
+                "Call contact", "Call number", null, null,
+                null, null, null, null));
+
+        message.append(processFeatureByte(sport_type0, "Sport types",
+                "walking", "running", "riding", "hiking",
+                "swimming", "mountain climbing", "badminton", "others"));
+
+        message.append(processFeatureByte(sport_type1, "Sports (2)",
+                "fitness", "spinning bike", "Oval ball", "Running machine",
+                "Sit-up", "Push-up", "Dumbbell", "Weight lifting"));
+
+        message.append(processFeatureByte(sport_type2, "Sports (3)",
+                "Aerobics", "Yoga", "rope skipping", "Table tennis",
+                "Basketball", "Football", "Volleyball", "Tennis"));
+
+        message.append(processFeatureByte(sport_type3, "Sports (4)",
+                "Golf", "Baseball", "Skiing", "Roller Skating",
+                "Dancing", "Gym", null, null));
+
+        message.append(processFeatureByte(other, "Other functions",
+                "Sedentary alert", "Anti-lost reminder", "Calling", "Find phone",
+                "Find band", "One-click setting restore", "Wrist sense", "Weather forecast"));
+
+        message.append(processFeatureByte(other2, "Other functions (2)",
+                "static heart rate", "Do not disturb mode", "Display mode", "Heart rate monitoring mode control",
+                "Two-way anti-lost", "All smart reminders", "Display flip 180 degrees", "Do not display heart rate zone values"));
+
+        message.append(processFeatureByte(msg_cfg, "Message functions",
+                "message contact remind", "message number remind", "message remind", null,
+                null, null, null, null));
+
+        message.append(processFeatureByte(msg_notify1, "Messages (2)",
+                "SMS", "Email", null, null,
+                null, "Facebook", "Twitter", null));
+
+        message.append(processFeatureByte(msg_notify2, "Messages (3)",
+                "WhatsApp", "Messenger", "Instagram", "LinkedIn",
+                "Calendar", "Skype", "Alarm event", "Pokemon"));
+
+        message.append(processFeatureByte(msg_notify3, "Messages (4)",
+                null, "Line", "Viber", null,
+                "Gmail", "Outlook", "Snapchat", "Telegram"));
+
+        message.append(processFeatureByte(lang_type, "Languages",
+                "Chinese", "English", "French", "German",
+                "Italian", "Spanish", "Japanese", "Czech"));
+
+        String messageStr = message.toString();
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, messageStr);
 
         if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
+            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(messageStr);
         }
 
         //sendingThread.taskFinished();
