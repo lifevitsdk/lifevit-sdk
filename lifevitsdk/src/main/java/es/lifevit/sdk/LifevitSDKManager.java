@@ -1637,6 +1637,13 @@ public class LifevitSDKManager {
         }
     }
 
+    public void bracelet2019DisableBraceletSedentaryAlarm() {
+        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
+        if (bracelet != null) {
+            bracelet.disableBraceletSedentaryAlarm();
+        }
+    }
+
     public void bracelet2019ConfigureAntitheft(Boolean active) {
         LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
         if (bracelet != null) {

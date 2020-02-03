@@ -101,17 +101,18 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     static final int ACTION_SET_GOALS = 13;
     static final int ACTION_SET_USER_INFORMATION = 14;
     static final int ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM = 15;
-    static final int ACTION_ANTITHEFT = 16;
-    static final int ACTION_RISE_HAND = 17;
-    static final int ACTION_ANDROID_PHONE = 18;
-    static final int ACTION_HEART_RATE_INTERVAL_SETTING = 19;
-    static final int ACTION_HEART_RATE_MONITORING = 20;
-    static final int ACTION_FIND_PHONE = 21;
-    static final int ACTION_ACNS = 22;
-    static final int ACTION_SLEEP_MONITORING = 23;
-    static final int ACTION_BATTERY = 24;
-    static final int ACTION_START_SYNCHRONIZATION = 25;
-    static final int ACTION_REPLY_LAST_SYNCHRONIZATION = 26;
+    static final int ACTION_DISABLE_BRACELET_SEDENTARY_ALARM = 16;
+    static final int ACTION_ANTITHEFT = 17;
+    static final int ACTION_RISE_HAND = 18;
+    static final int ACTION_ANDROID_PHONE = 19;
+    static final int ACTION_HEART_RATE_INTERVAL_SETTING = 20;
+    static final int ACTION_HEART_RATE_MONITORING = 21;
+    static final int ACTION_FIND_PHONE = 22;
+    static final int ACTION_ACNS = 23;
+    static final int ACTION_SLEEP_MONITORING = 24;
+    static final int ACTION_BATTERY = 25;
+    static final int ACTION_START_SYNCHRONIZATION = 26;
+    static final int ACTION_REPLY_LAST_SYNCHRONIZATION = 27;
 
     // endregion --- Constants: Actions to send to BLE device ---
 
@@ -308,11 +309,15 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
     void setUserInformation(LifevitSDKUserData user) {
-        sendingThread.addToQueue(ACTION_SET_USER_INFORMATION, user);
+        sendingThread.addToQueue(ACTION_SET_USER_INFORMATION, (int) user.getHeight(), (int) user.getWeight(), user.getGender(), user.getBirthdate());
     }
 
     void configureBraceletSedentaryAlarm(LifevitSDKMonitoringAlarm alarm) {
         sendingThread.addToQueue(ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM, alarm);
+    }
+
+    void disableBraceletSedentaryAlarm() {
+        sendingThread.addToQueue(ACTION_DISABLE_BRACELET_SEDENTARY_ALARM);
     }
 
     void configureAntitheft(Boolean active) {
@@ -790,6 +795,29 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
 
+    private void processSynchronizeGeneralData(byte[] rx) {
+
+        int totalPackets = Utils.bytesToInt(new byte[]{0, 0, rx[3], rx[2]});
+        int activeDays = rx[4];
+        int sleepDays = rx[5];
+        int heartDays = rx[6];
+
+        String message = ">>> Data received:\n"
+                + "    - Total days: " + totalPackets + "\n"
+                + "    - Days with Sport data: " + activeDays + "\n"
+                + "    - Days with Sleep data: " + sleepDays + "\n"
+                + "    - Days with Heart Rate data: " + heartDays;
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, message);
+
+        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
+            mLifevitSDKManager.getBraceletAT2019Listener().braceletInformation(message);
+        }
+
+        sendingThread.taskFinished();
+    }
+
+
     private void processSynchronizeSportData(byte[] rx) {
 
         int serial = rx[2];
@@ -1072,8 +1100,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         parseSettingsResponse(rx, "Rise hand");
     }
 
-    private void processiOSPhone(byte[] rx) {
-        parseSettingsResponse(rx, "iOS Phone");
+    private void processAndroidPhone(byte[] rx) {
+        parseSettingsResponse(rx, "Android Phone");
     }
 
     private void processHeartRateIntervalSetting(byte[] rx) {
@@ -1203,7 +1231,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
             } else if (rx[0] == 0x03 && rx[1] == 0x23) {
 
-                processiOSPhone(rx);
+                processAndroidPhone(rx);
 
             } else if (rx[0] == 0x03 && rx[1] == 0x24) {
 
@@ -1213,11 +1241,11 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
                 processHeartRateMonitoring(rx);
 
-            } else if (rx[0] == 0x02 && rx[1] == 0x26) {
+            } else if (rx[0] == 0x03 && rx[1] == 0x26) {
 
                 processFindPhone(rx);
 
-            } else if (rx[0] == 0x02 && rx[1] == 0x30) {
+            } else if (rx[0] == 0x03 && rx[1] == 0x30) {
 
                 processConfigureReminder(rx);
 
@@ -1245,18 +1273,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
             if (rx[0] == 0x08 && rx[1] == 0x01) {
 
-                int totalPackets = Utils.bytesToInt(new byte[]{0, 0, rx[3], rx[2]});
-                int activeDays = rx[4];
-                int sleepDays = rx[5];
-                int heartDays = rx[6];
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> Data received:");
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - totalPackets: " + totalPackets);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - activeDays: " + activeDays);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - sleepDays: " + sleepDays);
-                LogUtils.log(Log.DEBUG, CLASS_TAG, "    - heartDays: " + heartDays);
-
-                sendingThread.taskFinished();
+                processSynchronizeGeneralData(rx);
 
             } else if ((rx[0] == 0x08 && rx[1] == 0x03) || (rx[0] == 0x08 && rx[1] == 0x05)) {
 
@@ -1757,18 +1774,19 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         syncparamsArray[2] = (byte) userHeight;
 
-        syncparamsArray[3] = (byte) (userWeight * 100 & 0xFF);
-        syncparamsArray[4] = (byte) ((userWeight * 100 << 8) & 0xFF);
+        syncparamsArray[3] = (byte) ((userWeight * 100 >> 8) & 0xFF);
+        syncparamsArray[4] = (byte) (userWeight * 100 & 0xFF);
 
         syncparamsArray[5] = (byte) userGender;
 
-        Date d = new Date(userBirthday * 1000);
+
+        Date d = new Date(userBirthday);
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
 
-        syncparamsArray[6] = (byte) ((cal.get(Calendar.YEAR)) & 0xFF);
-        syncparamsArray[7] = (byte) ((cal.get(Calendar.YEAR) >> 8) & 0xFF);
+        syncparamsArray[6] = (byte) ((cal.get(Calendar.YEAR) >> 8) & 0xFF);
+        syncparamsArray[7] = (byte) (cal.get(Calendar.YEAR) & 0xFF);
 
         syncparamsArray[8] = (byte) cal.get(Calendar.MONTH);
         syncparamsArray[9] = (byte) cal.get(Calendar.DAY_OF_MONTH);
@@ -1810,7 +1828,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         }
 
 
-        String weekDays = "0";
+        String weekDays = "1"; // Enabled
         weekDays += alarm.isMonday() ? "1" : "0";
         weekDays += alarm.isTuesday() ? "1" : "0";
         weekDays += alarm.isWednesday() ? "1" : "0";
@@ -1821,6 +1839,21 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
 
         syncparamsArray[7] = (byte) Integer.parseInt(weekDays, 2);
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[configureBraceletSedentaryAlarm] " + HexUtils.getStringToPrint(syncparamsArray));
+
+        sendMessage(syncparamsArray);
+    }
+
+
+    protected void sendDisableBraceletSedentaryAlarm() {
+
+        byte[] syncparamsArray = getEmptyArray();
+
+        syncparamsArray[0] = (byte) 0x03;
+        syncparamsArray[1] = (byte) 0x20;
+
+        syncparamsArray[7] = (byte) 0; // All 0 is disabled
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[configureBraceletSedentaryAlarm] " + HexUtils.getStringToPrint(syncparamsArray));
 

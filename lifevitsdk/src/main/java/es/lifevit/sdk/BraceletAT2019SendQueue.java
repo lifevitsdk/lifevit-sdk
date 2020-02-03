@@ -172,6 +172,9 @@ public class BraceletAT2019SendQueue extends Thread {
                                     dgBleDeviceBracelet.sendConfigureBraceletSedentaryAlarm((LifevitSDKMonitoringAlarm) bqi.object[0]);
                                 }
                                 break;
+                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_DISABLE_BRACELET_SEDENTARY_ALARM:
+                                dgBleDeviceBracelet.sendDisableBraceletSedentaryAlarm();
+                                break;
 
                             case LifevitSDKBleDeviceBraceletAT2019.ACTION_ANTITHEFT:
                                 if (bqi.object[0] instanceof Boolean) {

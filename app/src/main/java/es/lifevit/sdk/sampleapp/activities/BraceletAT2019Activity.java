@@ -26,6 +26,7 @@ import es.lifevit.sdk.bracelet.LifevitSDKAppNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKBraceletData;
 import es.lifevit.sdk.bracelet.LifevitSDKHeartbeatData;
 import es.lifevit.sdk.bracelet.LifevitSDKMonitoringAlarm;
+import es.lifevit.sdk.bracelet.LifevitSDKSedentaryAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKSleepData;
 import es.lifevit.sdk.bracelet.LifevitSDKStepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummarySleepData;
@@ -35,8 +36,6 @@ import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
 import es.lifevit.sdk.sampleapp.R;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
 
-import static es.lifevit.sdk.LifevitSDKConstants.GENDER_MALE;
-import static es.lifevit.sdk.bracelet.LifevitSDKSedentaryAlarm.SedentaryIntervals.PERIOD_30_MIN;
 
 public class BraceletAT2019Activity extends AppCompatActivity {
 
@@ -127,22 +126,25 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                         "12. [Alarm] Set alarm at 10:30 and repeat every day",
                         "13. [Alarm] Set alarm at 11:40 only for today",
                         "14. [Alarm] Remove alarms",
-                        "15. Set steps goal to 500 and sleep goal to 6h 30min",
-                        "16. Set steps goal to 7000 and sleep goal to 8h",
-                        "17. Set user information",
-                        "18. Set sedentary alarm f_10:00 t_21:30 e_wednesday for 30min",
-                        "19. Set antitheft",
-                        "20. Set hand: left",
-                        "21. Set hand: right",
-                        "22. Set iOS Phone",
-                        "23. Set heart rate intervals to: 55 (burn fat), 65 (aerobic), 80 (limit) and 100 (user max)",
-                        "24. Set heart rate intervals to: 70 (burn fat), 120 (aerobic), 160 (limit) and 220 (user max)",
-                        "25. Set heart rate monitoring from 17:30 to 20:30",
-                        "26. Set find phone",
-                        "27. Set notification reminder",
-                        "28. Set sleep monitoring reminder",
-                        "29. Get current battery",
-                        "30. Start complete synchronization"
+                        "15. [Goals] Set steps goal to 500 and sleep goal to 6h 30min",
+                        "16. [Goals] Set steps goal to 7000 and sleep goal to 8h",
+                        "17. [User information] Male, 70kg, 1.74m, born 24/12/1980",
+                        "18. [User information] Female, 57kg, 1.62m, born 13/06/1990",
+                        "19. [Sedentary reminder] Enable every 30 min from 8:00 to 18:30 all week days (Mon - Fri)",
+                        "20. [Sedentary reminder] Disable",
+                        "21. [Antitheft] Enable",
+                        "22. [Antitheft] Disable",
+                        "23. [Set hand] Left",
+                        "24. [Set hand] Right",
+                        "25. Configure using an Android Phone",
+                        "26. [Heart rate intervals] 55 (burn fat), 65 (aerobic), 80 (limit) and 100 (user max)",
+                        "27. [Heart rate intervals] 70 (burn fat), 120 (aerobic), 160 (limit) and 220 (user max)",
+                        "28. Set heart rate monitoring from 17:30 to 20:30",
+                        "29. Set find phone",
+                        "30. Set notification reminder",
+                        "31. Set sleep monitoring reminder",
+                        "32. Get current battery",
+                        "33. Start complete synchronization"
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(BraceletAT2019Activity.this);
@@ -221,64 +223,90 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                 break;
                             }
                             case 17: {
+
+                                // Male, 85kg, 1.74m, born 24/12/1980
+
                                 Calendar cal = Calendar.getInstance();
                                 cal.set(Calendar.YEAR, 1980);
-                                cal.set(Calendar.MONTH, 12 - 1);
-                                cal.set(Calendar.YEAR, 24);
+                                cal.set(Calendar.MONTH, 11);
+                                cal.set(Calendar.DAY_OF_MONTH, 24);
 
-                                long birthdate = cal.getTimeInMillis() / 1000;
+                                long birthdate = cal.getTimeInMillis();
 
-                                LifevitSDKUserData user = new LifevitSDKUserData(birthdate, 85, 174, GENDER_MALE);
+                                LifevitSDKUserData user = new LifevitSDKUserData(birthdate, 70, 174, LifevitSDKConstants.GENDER_MALE);
 
                                 manager.bracelet2019SetUserInformation(user);
                                 break;
                             }
                             case 18: {
-                                LifevitSDKMonitoringAlarm alarm = new LifevitSDKMonitoringAlarm(10, 0, 21, 30, PERIOD_30_MIN, false, false, true, false, false, false, false);
+
+                                // Female, 57kg, 1.62m, born 24/12/1980
+
+                                Calendar cal = Calendar.getInstance();
+                                cal.set(Calendar.YEAR, 1990);
+                                cal.set(Calendar.MONTH, 5);
+                                cal.set(Calendar.DAY_OF_MONTH, 13);
+
+                                long birthdate = cal.getTimeInMillis();
+
+                                LifevitSDKUserData user = new LifevitSDKUserData(birthdate, 57, 162, LifevitSDKConstants.GENDER_FEMALE);
+
+                                manager.bracelet2019SetUserInformation(user);
+                                break;
+                            }
+                            case 19: {
+                                LifevitSDKMonitoringAlarm alarm = new LifevitSDKMonitoringAlarm(8, 30, 18, 30, LifevitSDKSedentaryAlarm.SedentaryIntervals.PERIOD_30_MIN, true, true, true, true, true, false, false);
                                 manager.bracelet2019ConfigureBraceletSedentaryAlarm(alarm);
                                 break;
                             }
-                            case 19:
+                            case 20: {
+                                manager.bracelet2019DisableBraceletSedentaryAlarm();
+                                break;
+                            }
+                            case 21:
                                 manager.bracelet2019ConfigureAntitheft(true);
                                 break;
-                            case 20:
-                                manager.bracelet2019ConfigureRiseHand(true);
-                                break;
-                            case 21:
-                                manager.bracelet2019ConfigureRiseHand(false);
-                                break;
                             case 22:
-                                manager.bracelet2019ConfigureAndroidPhone();
+                                manager.bracelet2019ConfigureAntitheft(false);
                                 break;
                             case 23:
-                                manager.bracelet2019ConfigureHeartRateIntervalSetting(55, 65, 80, 100);
+                                manager.bracelet2019ConfigureRiseHand(true);
                                 break;
                             case 24:
+                                manager.bracelet2019ConfigureRiseHand(false);
+                                break;
+                            case 25:
+                                manager.bracelet2019ConfigureAndroidPhone();
+                                break;
+                            case 26:
+                                manager.bracelet2019ConfigureHeartRateIntervalSetting(55, 65, 80, 100);
+                                break;
+                            case 27:
                                 manager.bracelet2019ConfigureHeartRateIntervalSetting(70, 120, 160, 220);
                                 break;
-                            case 25: {
+                            case 28: {
                                 LifevitSDKMonitoringAlarm monitoring = new LifevitSDKMonitoringAlarm(17, 30, 20, 30);
                                 manager.bracelet2019ConfigureHeartRateMonitoring(true, true, monitoring);
                                 break;
                             }
-                            case 26:
+                            case 29:
                                 manager.bracelet2019ConfigureFindPhone(true);
                                 break;
-                            case 27: {
+                            case 30: {
                                 LifevitSDKAppNotification notification = new LifevitSDKAppNotification();
                                 notification.setAlarm(true);
                                 manager.bracelet2019ConfigureACNS(notification);
                                 break;
                             }
-                            case 28: {
+                            case 31: {
                                 LifevitSDKMonitoringAlarm monitoring = new LifevitSDKMonitoringAlarm(23, 00, 7, 30);
                                 manager.bracelet2019ConfigureSleepMonitoring(true, monitoring);
                                 break;
                             }
-                            case 29:
+                            case 32:
                                 manager.bracelet2019GetBattery();
                                 break;
-                            case 30:
+                            case 33:
                                 manager.bracelet2019StartSynchronization();
                                 break;
                         }
