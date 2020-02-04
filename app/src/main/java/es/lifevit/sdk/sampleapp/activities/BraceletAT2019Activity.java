@@ -141,10 +141,11 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                         "27. [Heart rate intervals] 70 (burn fat), 120 (aerobic), 160 (limit) and 220 (user max)",
                         "28. Set heart rate monitoring from 17:30 to 20:30",
                         "29. Set find phone",
-                        "30. Set notification reminder",
-                        "31. Set sleep monitoring reminder",
-                        "32. Get current battery",
-                        "33. Start complete synchronization"
+                        "30. [Set notifications] Enable all",
+                        "31. [Set notifications] Disable all",
+                        "32. Set sleep monitoring reminder",
+                        "33. Get current battery",
+                        "34. Start complete synchronization"
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(BraceletAT2019Activity.this);
@@ -294,19 +295,25 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                 break;
                             case 30: {
                                 LifevitSDKAppNotification notification = new LifevitSDKAppNotification();
-                                notification.setAlarm(true);
+                                notification.setAllNotifications(true);
                                 manager.bracelet2019ConfigureACNS(notification);
                                 break;
                             }
                             case 31: {
+                                LifevitSDKAppNotification notification = new LifevitSDKAppNotification();
+                                notification.setAllNotifications(false);
+                                manager.bracelet2019ConfigureACNS(notification);
+                                break;
+                            }
+                            case 32: {
                                 LifevitSDKMonitoringAlarm monitoring = new LifevitSDKMonitoringAlarm(23, 00, 7, 30);
                                 manager.bracelet2019ConfigureSleepMonitoring(true, monitoring);
                                 break;
                             }
-                            case 32:
+                            case 33:
                                 manager.bracelet2019GetBattery();
                                 break;
-                            case 33:
+                            case 34:
                                 manager.bracelet2019StartSynchronization();
                                 break;
                         }

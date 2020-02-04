@@ -61,6 +61,33 @@ public class LifevitSDKAppNotification {
         this.telegram = telegram;
     }
 
+    public void setAllNotifications(boolean enable) {
+        this.sms = enable;
+        this.email = enable;
+        this.wechat = enable;
+        this.qq = enable;
+        this.weibo = enable;
+        this.facebook = enable;
+        this.twitter = enable;
+        this.whatsApp = enable;
+        this.messenger = enable;
+        this.instagram = enable;
+        this.linkedIn = enable;
+        this.calendar = enable;
+        this.skype = enable;
+        this.alarm = enable;
+        this.pokeman = enable;
+        this.call = enable;
+        this.vKontakte = enable;
+        this.line = enable;
+        this.viber = enable;
+        this.kakaotalk = enable;
+        this.gmail = enable;
+        this.outlook = enable;
+        this.snapchat = enable;
+        this.telegram = enable;
+    }
+
     public boolean isSms() {
         return sms;
     }
@@ -252,13 +279,6 @@ public class LifevitSDKAppNotification {
     public void setTelegram(boolean telegram) {
         this.telegram = telegram;
     }
-
-
-
-
-
-
-
 
 
 }
