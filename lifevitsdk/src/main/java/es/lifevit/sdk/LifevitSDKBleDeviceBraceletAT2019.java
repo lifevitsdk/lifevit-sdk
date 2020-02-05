@@ -113,6 +113,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     static final int ACTION_BATTERY = 25;
     static final int ACTION_START_SYNCHRONIZATION = 26;
     static final int ACTION_REPLY_LAST_SYNCHRONIZATION = 27;
+    static final int ACTION_MESSAGE_RECEIVED = 28;
 
     // endregion --- Constants: Actions to send to BLE device ---
 
@@ -364,6 +365,10 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         sendingThread.addToQueue(ACTION_REPLY_LAST_SYNCHRONIZATION);
     }
 
+    void messageReceived() {
+        sendingThread.addToQueue(ACTION_MESSAGE_RECEIVED);
+    }
+
     // endregion --- "Public methods" ---
 
 
@@ -541,8 +546,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         StringBuilder message = new StringBuilder(">>> Received get feature list. Data received:\n");
 
-        message.append("    - Alarms count: " + alarm_count);
-        message.append("    - Sports count: " + sport_num_show);
+        message.append("    - Alarms count: " + alarm_count + "\n");
+        message.append("    - Sports count: " + sport_num_show + "\n");
 
         message.append(processFeatureByte(main_function, "Main functions",
                 "step counting", "sleep monitoring", "single motion", "real-time data",
@@ -1239,7 +1244,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
     private void processConfigureReminder(byte[] rx) {
         if (rx.length > 2 && rx[2] == -120) {
-            sendConfigureACNSActivate();
+            // sendConfigureACNSActivate();
         }
         parseSettingsResponse(rx, "Notification reminder");
     }
@@ -1372,6 +1377,10 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             } else if (rx[0] == 0x03 && rx[1] == 0x31) {
 
                 processSleepMonitoring(rx);
+
+            } else if (rx[0] == 0x05 && rx[1] == (byte) 0x03) {
+
+                parseSettingsResponse(rx, "Message Received");
 
             } else if (rx[0] == 0x08 && rx[1] == (byte) 0xEE) {
 
@@ -2128,9 +2137,31 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         syncparamsArray[0] = (byte) 0x03;
         syncparamsArray[1] = (byte) 0x30;
-        syncparamsArray[2] = (byte) 0x55;
+        syncparamsArray[2] = (byte) 0x55; // ALL
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[configureACNSActivate] " + HexUtils.getStringToPrint(syncparamsArray));
+
+        sendMessage(syncparamsArray);
+    }
+
+
+    protected void sendMessageReceived() {
+
+        byte[] syncparamsArray = getEmptyArray();
+
+        syncparamsArray[0] = (byte) 0x05;
+        syncparamsArray[1] = (byte) 0x03;
+
+        syncparamsArray[2] = (byte) 0x01; // total packages
+        syncparamsArray[3] = (byte) 0x01; // package number
+
+        syncparamsArray[4] = (byte) 0x01; // 1 = SMS
+
+        syncparamsArray[5] = (byte) 0x00; // length of information content
+        syncparamsArray[6] = (byte) 0x00; // length of telephone number
+        syncparamsArray[7] = (byte) 0x00; // length of contact
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendMessageReceived] " + HexUtils.getStringToPrint(syncparamsArray));
 
         sendMessage(syncparamsArray);
     }
@@ -2152,77 +2183,75 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
                 || (appNotification.isKakaotalk()) || (appNotification.isGmail()) || (appNotification.isOutlook())
                 || (appNotification.isSnapchat()) || (appNotification.isTelegram())) {
 
+            // Switch selectively
             syncparamsArray[2] = (byte) 0x88;
         } else {
+            // Switch off
             syncparamsArray[2] = (byte) 0xAA;
         }
 
-        syncparamsArray[3] = (byte) 0x00;
-        syncparamsArray[4] = (byte) 0x00;
-
-
         if (appNotification.isSms()) {
-            syncparamsArray[3] = (byte) (syncparamsArray[3] | (byte) 0x40);
+            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0b00000010);
         }
 
         if (appNotification.isEmail()) {
-            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0x20);
+            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0b00000100);
         }
 
         if (appNotification.isWechat()) {
-            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0x10);
+            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0b00001000);
         }
 
         if (appNotification.isQq()) {
-            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0x08);
+            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0b00010000);
         }
 
         if (appNotification.isWeibo()) {
-            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0x04);
+            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0b00100000);
         }
 
         if (appNotification.isFacebook()) {
-            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0x02);
+            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0b01000000);
         }
 
         if (appNotification.isTwitter()) {
-            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0x01);
+            syncparamsArray[3] = (byte) (syncparamsArray[3] | 0b10000000);
         }
 
         if (appNotification.isWhatsApp()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x80);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b00000001);
         }
 
         if (appNotification.isMessenger()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x40);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b00000010);
         }
 
         if (appNotification.isInstagram()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x20);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b00000100);
         }
 
         if (appNotification.isLinkedIn()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x10);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b00001000);
         }
 
         if (appNotification.isCalendar()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x08);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b00010000);
         }
 
         if (appNotification.isSkype()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x04);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b00100000);
         }
 
         if (appNotification.isAlarm()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x02);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b01000000);
         }
 
         if (appNotification.isPokeman()) {
-            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0x01);
+            syncparamsArray[4] = (byte) (syncparamsArray[4] | 0b10000000);
         }
 
-        syncparamsArray[5] = (byte) 0x55; //call_switch 85???
-        syncparamsArray[6] = (byte) 0x05; //call_dlay
+        syncparamsArray[5] = (byte) 0x55; // incoming call switch - 85???
+        syncparamsArray[6] = (byte) 0x00; // incoming call delay (in seconds)
 
         syncparamsArray[7] = (byte) 0x00;
         if (appNotification.isvKontakte()) {

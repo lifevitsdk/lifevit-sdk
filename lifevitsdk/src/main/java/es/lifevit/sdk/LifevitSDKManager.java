@@ -1693,6 +1693,13 @@ public class LifevitSDKManager {
         }
     }
 
+    public void bracelet2019SendMessageReceived() {
+        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
+        if (bracelet != null) {
+            bracelet.messageReceived();
+        }
+    }
+
     /*
     public void bracelet2019CancelOp() {
         LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);

@@ -145,7 +145,8 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                         "31. [Set notifications] Disable all",
                         "32. Set sleep monitoring reminder",
                         "33. Get current battery",
-                        "34. Start complete synchronization"
+                        "34. Start complete synchronization",
+                        "35. Send message received"
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(BraceletAT2019Activity.this);
@@ -315,6 +316,9 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                 break;
                             case 34:
                                 manager.bracelet2019StartSynchronization();
+                                break;
+                            case 35:
+                                manager.bracelet2019SendMessageReceived();
                                 break;
                         }
                     }

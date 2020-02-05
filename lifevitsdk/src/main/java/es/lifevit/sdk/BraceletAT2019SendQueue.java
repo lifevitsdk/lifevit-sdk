@@ -226,6 +226,9 @@ public class BraceletAT2019SendQueue extends Thread {
                             case LifevitSDKBleDeviceBraceletAT2019.ACTION_REPLY_LAST_SYNCHRONIZATION:
                                 dgBleDeviceBracelet.sendReplyLastSynchronization();
                                 break;
+                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_MESSAGE_RECEIVED:
+                                dgBleDeviceBracelet.sendMessageReceived();
+                                break;
 
                             //protected void sendConfigureACNSActivate() {
 
