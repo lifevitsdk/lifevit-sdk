@@ -995,6 +995,10 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         } else if (serial == 0x02) {
 
+            if (rx.length < 20) {
+                return;
+            }
+
             int header2_total_steps = Utils.bytesToInt(new byte[]{rx[7], rx[6], rx[5], rx[4]});
             int header2_total_calories = Utils.bytesToInt(new byte[]{rx[11], rx[10], rx[9], rx[8]});
             int header2_total_distance = Utils.bytesToInt(new byte[]{rx[15], rx[14], rx[13], rx[12]});
@@ -1585,7 +1589,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         syncparamsArray[2] = (byte) mode;
 
         // The serial number of the package (1~255), valid only when resending
-        syncparamsArray[3] = (byte) 0x01;
+        syncparamsArray[3] = (byte) 0x00;
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeSportsData] " + HexUtils.getStringToPrint(syncparamsArray));
 
@@ -1603,7 +1607,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         syncparamsArray[2] = (byte) mode;
 
         // The serial number of the package (1~255), valid only when resending
-        syncparamsArray[3] = (byte) 0x01;
+        syncparamsArray[3] = (byte) 0x00;
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeSleepData] " + HexUtils.getStringToPrint(syncparamsArray));
 
@@ -1622,7 +1626,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         syncparamsArray[2] = (byte) mode;
 
         // The serial number of the package (1~255), valid only when resending
-        syncparamsArray[3] = (byte) 0x01;
+        syncparamsArray[3] = (byte) 0x00;
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeHeartRateData] " + HexUtils.getStringToPrint(syncparamsArray));
 
@@ -1641,11 +1645,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         cal.setTimeInMillis(time);
 
         int currentYear = cal.get(Calendar.YEAR);
-        byte lowerByte = (byte) (currentYear & 0xFF);
-        byte upperByte = (byte) ((currentYear >> 8) & 0xFF);
-
-        syncparamsArray[2] = upperByte;
-        syncparamsArray[3] = lowerByte;
+        syncparamsArray[2] = (byte) (currentYear & 0xFF);
+        syncparamsArray[3] = (byte) ((currentYear >> 8) & 0xFF);
 
         syncparamsArray[4] = (byte) (cal.get(Calendar.MONTH) + 1);
         syncparamsArray[5] = (byte) cal.get(Calendar.DAY_OF_MONTH);
@@ -1721,7 +1722,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         syncparamsArray[0] = (byte) 0x08;
         syncparamsArray[1] = (byte) 0x05;
         syncparamsArray[2] = (byte) 0x01;
-        syncparamsArray[3] = (byte) 0x01;
+        syncparamsArray[3] = (byte) 0x00;
 
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[Send sendSynchronizeHistoricSportData] " + HexUtils.getStringToPrint(syncparamsArray));
@@ -1880,10 +1881,10 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         // type (0x00:step， 0x01：calorie， 0x02：distance)
         syncparamsArray[2] = (byte) 0x00;
 
-        syncparamsArray[3] = (byte) ((steps >> 24) & 0xFF);
-        syncparamsArray[4] = (byte) ((steps >> 16) & 0xFF);
-        syncparamsArray[5] = (byte) ((steps >> 8) & 0xFF);
-        syncparamsArray[6] = (byte) (steps & 0xFF);
+        syncparamsArray[3] = (byte) (steps & 0xFF);
+        syncparamsArray[4] = (byte) ((steps >> 8) & 0xFF);
+        syncparamsArray[5] = (byte) ((steps >> 16) & 0xFF);
+        syncparamsArray[6] = (byte) ((steps >> 24) & 0xFF);
 
         syncparamsArray[7] = (byte) sleepHour;
         syncparamsArray[8] = (byte) sleepMinute;
@@ -1903,8 +1904,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         syncparamsArray[2] = (byte) userHeight;
 
-        syncparamsArray[3] = (byte) ((userWeight * 100 >> 8) & 0xFF);
-        syncparamsArray[4] = (byte) (userWeight * 100 & 0xFF);
+        syncparamsArray[3] = (byte) (userWeight * 100 & 0xFF);
+        syncparamsArray[4] = (byte) ((userWeight * 100 >> 8) & 0xFF);
 
         syncparamsArray[5] = (byte) userGender;
 
@@ -1914,8 +1915,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
 
-        syncparamsArray[6] = (byte) ((cal.get(Calendar.YEAR) >> 8) & 0xFF);
-        syncparamsArray[7] = (byte) (cal.get(Calendar.YEAR) & 0xFF);
+        syncparamsArray[6] = (byte) (cal.get(Calendar.YEAR) & 0xFF);
+        syncparamsArray[7] = (byte) ((cal.get(Calendar.YEAR) >> 8) & 0xFF);
 
         syncparamsArray[8] = (byte) cal.get(Calendar.MONTH);
         syncparamsArray[9] = (byte) cal.get(Calendar.DAY_OF_MONTH);
