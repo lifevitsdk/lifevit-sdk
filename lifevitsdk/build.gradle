@@ -1,5 +1,6 @@
 
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 
 android {
     compileSdkVersion project.compileSdkVersion
@@ -30,6 +31,19 @@ android {
         abortOnError false
     }
 }
+
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file:///Users/antonio/Development/LifevitSDKUpload")
+        pom.project {
+            groupId 'es.lifevit'
+            artifactId 'lifevit-sdk'
+            version project.versionName
+        }
+    }
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
