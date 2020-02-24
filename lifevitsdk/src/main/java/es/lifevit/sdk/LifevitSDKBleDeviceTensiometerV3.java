@@ -101,9 +101,6 @@ public class LifevitSDKBleDeviceTensiometerV3 extends LifevitSDKBleDevice {
 
 
     protected void sendDeviceStatus() {
-        if (mLifevitSDKManager.getConnectionListener() != null) {
-            mLifevitSDKManager.getConnectionListener().heartDeviceOnConnectionChanged(mDeviceStatus);
-        }
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "sendDeviceStatus. mDeviceStatus: " + mDeviceStatus);
 
@@ -211,9 +208,6 @@ public class LifevitSDKBleDeviceTensiometerV3 extends LifevitSDKBleDevice {
                 // During medition
                 int temporaryDiastolic = bytes[5] & 0x00FF;
 
-                if (mLifevitSDKManager.getConnectionListener() != null) {
-                    mLifevitSDKManager.getConnectionListener().heartDeviceOnProgressMeasurement(temporaryDiastolic);
-                }
                 if (mLifevitSDKManager.getHeartListener() != null) {
                     mLifevitSDKManager.getHeartListener().heartDeviceOnProgressMeasurement(temporaryDiastolic);
                 }
@@ -222,9 +216,6 @@ public class LifevitSDKBleDeviceTensiometerV3 extends LifevitSDKBleDevice {
 
                 int battery = bytes[7] & 0x00ff;
 
-                if (mLifevitSDKManager.getConnectionListener() != null) {
-                    mLifevitSDKManager.getConnectionListener().heartDeviceOnBatteryResult(battery);
-                }
                 if (mLifevitSDKManager.getHeartListener() != null) {
                     mLifevitSDKManager.getHeartListener().heartDeviceOnBatteryResult(battery);
                 }
@@ -259,9 +250,6 @@ public class LifevitSDKBleDeviceTensiometerV3 extends LifevitSDKBleDevice {
                     result.setErrorCode(LifevitSDKConstants.CODE_LOW_BATTERY);
                 }
 
-                if (mLifevitSDKManager.getConnectionListener() != null) {
-                    mLifevitSDKManager.getConnectionListener().heartDeviceOnResult(result);
-                }
                 if (mLifevitSDKManager.getHeartListener() != null) {
                     mLifevitSDKManager.getHeartListener().heartDeviceOnResult(result);
                 }
@@ -300,9 +288,6 @@ public class LifevitSDKBleDeviceTensiometerV3 extends LifevitSDKBleDevice {
                     lastDiastolic = diastolic;
                     lastPulse = pulse;
 
-                    if (mLifevitSDKManager.getConnectionListener() != null) {
-                        mLifevitSDKManager.getConnectionListener().heartDeviceOnResult(result);
-                    }
                     if (mLifevitSDKManager.getHeartListener() != null) {
                         mLifevitSDKManager.getHeartListener().heartDeviceOnResult(result);
                     }

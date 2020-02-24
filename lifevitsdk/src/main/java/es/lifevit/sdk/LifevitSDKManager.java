@@ -132,8 +132,6 @@ public class LifevitSDKManager {
 
     private static Object lock = new Object();
 
-    @Deprecated
-    private LifevitSDKListener connectionListener;
     private ArrayList<LifevitSDKDeviceListener> deviceListeners = new ArrayList<>();
     private LifevitSDKAllDevicesListener allDevicesListener;
 
@@ -179,19 +177,6 @@ public class LifevitSDKManager {
     private Timer deviceDetectionTimer;
 
 
-    /**
-     * Create instance and set tensiometer listener
-     *
-     * @deprecated use {@link #LifevitSDKManager(Context)} instead.
-     */
-    @Deprecated
-    public LifevitSDKManager(Context context, LifevitSDKListener cl) {
-        this(context);
-        LogUtils.log(Log.DEBUG, CLASS_TAG, "Create manager with old creator.");
-        setConnectionListener(cl);
-    }
-
-
     public LifevitSDKManager(Context context) {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "Create manager with new creator.");
@@ -230,27 +215,6 @@ public class LifevitSDKManager {
 
 
     // -------------------------- Listeners ----------------------- //
-
-    /**
-     * Get connection listener for tensiometer device.
-     *
-     * @deprecated use {@link #getDeviceListeners()} instead.
-     */
-    @Deprecated
-    public LifevitSDKListener getConnectionListener() {
-        return connectionListener;
-    }
-
-
-    /**
-     * Set connection listener for tensiometer device.
-     *
-     * @deprecated use {@link #addDeviceListener(LifevitSDKDeviceListener deviceListener)} instead.
-     */
-    @Deprecated
-    public void setConnectionListener(LifevitSDKListener connectionListener) {
-        this.connectionListener = connectionListener;
-    }
 
 
     public ArrayList<LifevitSDKDeviceListener> getDeviceListeners() {
@@ -361,16 +325,6 @@ public class LifevitSDKManager {
 // -------------------------- Public Methods ----------------------- //
 
 
-    /**
-     * Connects tensiometer device.
-     *
-     * @deprecated use {@link #connectDevice(int deviceType, long scanPeriod)} instead.
-     */
-    @Deprecated
-    public void connectDevice(long scanPeriod) {
-        connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, scanPeriod);
-    }
-
     public void connectDevice(int deviceType, long scanPeriod) {
 //        LogUtils.log(Log.DEBUG, CLASS_TAG, "connectDevice. deviceType = " + LogUtils.getDeviceNameByType(deviceType) + ", scanPeriod: " + scanPeriod);
         connectDevice(deviceType, scanPeriod, null);
@@ -403,9 +357,6 @@ public class LifevitSDKManager {
                         // Device is already connected
                         LogUtils.log(Log.ERROR, CLASS_TAG, "[devicesToScan] Device is already added to scan. Current list: " + printDevicesToScan());
 
-                        if (connectionListener != null) {
-                            connectionListener.heartDeviceOnConnectionChanged(LifevitSDKConstants.STATUS_SCANNING);
-                        }
                         deviceOnConnectionChanged(deviceType, LifevitSDKConstants.STATUS_SCANNING, false);
                         return;
                     } else {
@@ -445,10 +396,6 @@ public class LifevitSDKManager {
                         }
                     }
 
-
-                    if (connectionListener != null) {
-                        connectionListener.heartDeviceOnConnectionChanged(LifevitSDKConstants.STATUS_SCANNING);
-                    }
                     deviceOnConnectionChanged(deviceType, LifevitSDKConstants.STATUS_SCANNING, false);
                 }
             }
@@ -534,10 +481,6 @@ public class LifevitSDKManager {
                 && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             // Return NO permissions
-            if (connectionListener != null) {
-                connectionListener.heartDeviceOnConnectionError(LifevitSDKConstants.CODE_LOCATION_DISABLED);
-            }
-
             if (deviceListeners.size() > 0) {
                 ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);
                 for (LifevitSDKDeviceListener deviceListener : listeners) {
@@ -554,9 +497,6 @@ public class LifevitSDKManager {
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            if (connectionListener != null) {
-                connectionListener.heartDeviceOnConnectionError(LifevitSDKConstants.CODE_BLUETOOTH_DISABLED);
-            }
 
             if (deviceListeners.size() > 0) {
                 ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);
@@ -591,10 +531,6 @@ public class LifevitSDKManager {
 
             if (!gps_enabled && !network_enabled) {
                 // notify user
-                if (connectionListener != null) {
-                    connectionListener.heartDeviceOnConnectionError(LifevitSDKConstants.CODE_LOCATION_TURN_OFF);
-                }
-
                 if (deviceListeners.size() > 0) {
                     ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);
                     for (LifevitSDKDeviceListener deviceListener : listeners) {
@@ -608,17 +544,6 @@ public class LifevitSDKManager {
         }
 
         return true;
-    }
-
-
-    /**
-     * Disconnects tensiometer device.
-     *
-     * @deprecated use {@link #disconnectDevice()} instead.
-     */
-    @Deprecated
-    public void disconnectDevice() {
-        disconnectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER);
     }
 
 
@@ -639,26 +564,9 @@ public class LifevitSDKManager {
             hshDeviceByType.remove(deviceType);
 
         } else {
-            if (connectionListener != null) {
-                // If not connected, nor scanning, tell user that device was already disconnected
-                if (deviceType == LifevitSDKConstants.DEVICE_TENSIOMETER) {
-                    connectionListener.heartDeviceOnConnectionChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
-                }
-            }
             // If not connected, nor scanning, tell user that device was already disconnected
             deviceOnConnectionChanged(deviceType, LifevitSDKConstants.STATUS_DISCONNECTED, false);
         }
-    }
-
-
-    /**
-     * Returns true if tensiometer device is connected.
-     *
-     * @deprecated use {@link #isDeviceConnected(int deviceType)} instead.
-     */
-    @Deprecated
-    public boolean isDeviceConnected() {
-        return isDeviceConnected(LifevitSDKConstants.DEVICE_TENSIOMETER);
     }
 
 
@@ -1096,13 +1004,6 @@ public class LifevitSDKManager {
         hshDeviceByType.remove(device.getType());
 
         deviceOnConnectionChanged(device.getType(), LifevitSDKConstants.STATUS_DISCONNECTED, false);
-
-        if (device instanceof LifevitSDKBleDeviceTensiometer || device instanceof LifevitSDKBleDeviceTensiometerV2 || device instanceof LifevitSDKBleDeviceTensiometerV3) {
-
-            if (connectionListener != null) {
-                connectionListener.heartDeviceOnConnectionChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
-            }
-        }
     }
 
 
@@ -1529,6 +1430,7 @@ public class LifevitSDKManager {
             bracelet.synchronizeData();
         }
     }
+
     /*
     public void bracelet2019EndSynchronizeData() {
         LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
@@ -1731,7 +1633,7 @@ public class LifevitSDKManager {
 
     public void setUpWeightScale(int gender, int ageYears, int heightCm) {
 
-       setUpWeightScale(gender, ageYears, heightCm, LifevitSDKConstants.WEIGHT_UNIT_KG);
+        setUpWeightScale(gender, ageYears, heightCm, LifevitSDKConstants.WEIGHT_UNIT_KG);
     }
 
     public void setUpWeightScale(int gender, int ageYears, int heightCm, int weightUnit) {

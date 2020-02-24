@@ -89,10 +89,6 @@ public class LifevitSDKBleDeviceTensiometer extends LifevitSDKBleDevice {
 
 
     protected void sendDeviceStatus() {
-        if (mLifevitSDKManager.getConnectionListener() != null) {
-            mLifevitSDKManager.getConnectionListener().heartDeviceOnConnectionChanged(mDeviceStatus);
-        }
-
         mLifevitSDKManager.deviceOnConnectionChanged(LifevitSDKConstants.DEVICE_TENSIOMETER, mDeviceStatus, true);
     }
 
@@ -172,9 +168,6 @@ public class LifevitSDKBleDeviceTensiometer extends LifevitSDKBleDevice {
 
                     int pulse = ((pulH << 16) & 0xff00) + (pulL & 0x00ff);
 
-                    if (mLifevitSDKManager.getConnectionListener() != null) {
-                        mLifevitSDKManager.getConnectionListener().heartDeviceOnProgressMeasurement(pulse);
-                    }
                     if (mLifevitSDKManager.getHeartListener() != null) {
                         mLifevitSDKManager.getHeartListener().heartDeviceOnProgressMeasurement(pulse);
                     }
@@ -192,9 +185,6 @@ public class LifevitSDKBleDeviceTensiometer extends LifevitSDKBleDevice {
                     result.setDate(Calendar.getInstance().getTimeInMillis());
                     result.setErrorCode(LifevitSDKConstants.CODE_OK);
 
-                    if (mLifevitSDKManager.getConnectionListener() != null) {
-                        mLifevitSDKManager.getConnectionListener().heartDeviceOnResult(result);
-                    }
                     if (mLifevitSDKManager.getHeartListener() != null) {
                         mLifevitSDKManager.getHeartListener().heartDeviceOnResult(result);
                     }
@@ -231,9 +221,6 @@ public class LifevitSDKBleDeviceTensiometer extends LifevitSDKBleDevice {
                         result.setErrorCode(LifevitSDKConstants.CODE_LOW_BATTERY);
                     }
 
-                    if (mLifevitSDKManager.getConnectionListener() != null) {
-                        mLifevitSDKManager.getConnectionListener().heartDeviceOnResult(result);
-                    }
                     if (mLifevitSDKManager.getHeartListener() != null) {
                         mLifevitSDKManager.getHeartListener().heartDeviceOnResult(result);
                     }
