@@ -142,6 +142,8 @@ public class WeightScaleActivity extends AppCompatActivity {
                 if (isDisconnected) {
                     // Set up device
                     SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, 35, 190, LifevitSDKConstants.WEIGHT_UNIT_KG);
+                    //SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_FEMALE, 35, 190, LifevitSDKConstants.WEIGHT_UNIT_KG);
+
                     // Connect
                     if(uuid!=null && weight_scale_check_connected.isChecked()){
                         SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000, uuid);
@@ -301,10 +303,10 @@ public class WeightScaleActivity extends AppCompatActivity {
 
                         textview_bmr.setText(String.format("%.1f", data.getBmr()) + " Kcal");
                         textview_bone.setText(String.format("%.1f", data.getBone()) + " " + unitStr);
-                        textview_fat.setText(String.format("%.1f", data.getFatPercentage()) + " %");
-                        textview_muscle.setText(String.format("%.1f", data.getMusclePercentage()) + " %");
-                        textview_visceral.setText(String.format("%.1f", data.getVisceralPercentage()) + " %");
-                        textview_water.setText(String.format("%.1f", data.getWaterPercentage()) + " %");
+                        textview_fat.setText(String.format("%.1f %% - %.1f kg", data.getFatPercentage(), data.getFat()));
+                        textview_muscle.setText(String.format("%.1f %% - %.1f kg", data.getMusclePercentage(), data.getMuscle()));
+                        textview_visceral.setText(String.format("%.1f %% - %.1f kg", data.getVisceralPercentage(), data.getVisceral()));
+                        textview_water.setText(String.format("%.1f %% - %.1f kg", data.getWaterPercentage(), data.getWater()));
                         textview_protein.setText(String.format("%.1f", data.getProteinPercentage()) + " %");
                         textview_idealweight.setText(String.format("%.1f", data.getIdealWeight()));
                         textview_bodyage.setText(String.format("%.1f", data.getBodyAge()));

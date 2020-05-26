@@ -239,9 +239,9 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                     data.setWeight(weight);
                     data.setUnit("kg");
                     data.setImc(getBMIWithWeight(weight));
-                    data.setFat(fatPercentage*weight*100);
+                    data.setFat(fatPercentage*weight/100);
                     data.setFatPercentage(fatPercentage);
-                    data.setWater(waterPercentage*weight*100);
+                    data.setWater(waterPercentage*weight/100);
                     data.setWaterPercentage(waterPercentage);
                     data.setMuscle(musclePercentage*weight/100);
                     data.setMusclePercentage(musclePercentage);
@@ -582,6 +582,8 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
         int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
         int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
+
+        LogUtils.log(Log.WARN, TAG, String.format("userHeight: %.2f, userAge: %d, userGender: %d, bia: %.2f", userHeight, userAge, userGender, bia));
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
             return 24.1911 + 0.0463 * userAge - 0.460888 * userHeight + 0.6341581 * weight + 0.0566524 * bia;
