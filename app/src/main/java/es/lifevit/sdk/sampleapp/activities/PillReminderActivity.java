@@ -2,9 +2,9 @@ package es.lifevit.sdk.sampleapp.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,7 +18,6 @@ import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKManager;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
 import es.lifevit.sdk.listeners.LifevitSDKPillReminderListener;
-import es.lifevit.sdk.listeners.LifevitSDKThermometerListener;
 import es.lifevit.sdk.pillreminder.LifevitSDKPillReminderAlarmData;
 import es.lifevit.sdk.pillreminder.LifevitSDKPillReminderAlarmListData;
 import es.lifevit.sdk.pillreminder.LifevitSDKPillReminderData;
@@ -26,8 +25,6 @@ import es.lifevit.sdk.pillreminder.LifevitSDKPillReminderMessageData;
 import es.lifevit.sdk.pillreminder.LifevitSDKPillReminderPerformanceData;
 import es.lifevit.sdk.sampleapp.R;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
-
-import static es.lifevit.sdk.LifevitSDKConstants.PILLREMINDER_REQUEST_GET_LATESTSYNCHRONIZATIONTIME;
 
 public class PillReminderActivity extends AppCompatActivity {
 

@@ -142,7 +142,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
 
     private void initPermissions() {
-        requestPermission(findViewById(R.id.main_activity_main_view), Manifest.permission.ACCESS_COARSE_LOCATION,
+        requestPermission(findViewById(R.id.main_activity_main_view), Manifest.permission.ACCESS_FINE_LOCATION,
                 100, R.string.message_need_location_permission,
                 new BaseAppCompatActivity.RequestAcceptListener() {
                     @Override

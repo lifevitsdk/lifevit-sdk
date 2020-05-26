@@ -12,11 +12,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -92,9 +92,9 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             @Override
             public void onShow(DialogInterface arg0) {
                 int color = ContextCompat.getColor(BaseAppCompatActivity.this, R.color.colorPrimary);
-                dialog.getButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(color);
-                dialog.getButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE).setTextColor(color);
-                dialog.getButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(color);
+                dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(color);
+                dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(color);
+                dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(color);
             }
         });
         dialog.show();

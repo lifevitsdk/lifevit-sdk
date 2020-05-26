@@ -5,9 +5,9 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -347,7 +347,7 @@ class MainActivity : BaseAppCompatActivity() {
                 runOnUiThread {
                     if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
                         // Ask for permissions
-                        requestPermission(findViewById(R.id.main_activity_parent_layout), Manifest.permission.ACCESS_COARSE_LOCATION,
+                        requestPermission(findViewById(R.id.main_activity_parent_layout), Manifest.permission.ACCESS_FINE_LOCATION,
                                 AppConstants.REQUEST_CODE_LOCATION_PERMISSIONS, R.string.enable_location_permission,
                                 object : RequestAcceptListener {
                                     override fun onRequestAccepted(accepted: Boolean, isUserAction: Boolean) {
