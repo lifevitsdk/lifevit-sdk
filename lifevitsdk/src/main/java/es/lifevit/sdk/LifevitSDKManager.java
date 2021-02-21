@@ -797,7 +797,7 @@ public class LifevitSDKManager {
             // We are going to wait some time to find the nearest device
             final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(scanRecord);
             String deviceName = device.getName();
-            String bAdName = badata.getName();
+            String bAdName = badata!=null?badata.getName():deviceName;
             if (deviceName == null) {
                 deviceName = bAdName;
             }

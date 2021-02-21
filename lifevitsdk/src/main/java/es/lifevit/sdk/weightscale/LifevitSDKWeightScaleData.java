@@ -6,15 +6,15 @@ public class LifevitSDKWeightScaleData {
     private double weight;
     private String unit;
     private double imc;
-    private double fat;
+    private double fatRawValue;
     private double fatPercentage;
-    private double water;
+    private double waterRawValue;
     private double waterPercentage;
-    private double muscle;
+    private double muscleRawValue;
     private double musclePercentage;
-    private double visceral;
+    private double visceralRawValue;
     private double visceralPercentage;
-    private double bone;
+    private double boneRawValue;
     private double bonePercentage;
     private double bmr;
    private double proteinPercentage;
@@ -46,12 +46,12 @@ public class LifevitSDKWeightScaleData {
         this.imc = imc;
     }
 
-    public double getFat() {
-        return fat;
+    public double getFatRawValue() {
+        return fatRawValue;
     }
 
-    public void setFat(double fat) {
-        this.fat = fat;
+    public void setFatRawValue(double fatRawValue) {
+        this.fatRawValue = fatRawValue;
     }
 
     public double getFatPercentage() {
@@ -62,12 +62,12 @@ public class LifevitSDKWeightScaleData {
         this.fatPercentage = fatPercentage;
     }
 
-    public double getWater() {
-        return water;
+    public void setWaterRawValue(double waterRawValue) {
+        this.waterRawValue = waterRawValue;
     }
 
-    public void setWater(double water) {
-        this.water = water;
+    public double getWaterRawValue() {
+        return waterRawValue;
     }
 
     public double getWaterPercentage() {
@@ -78,12 +78,12 @@ public class LifevitSDKWeightScaleData {
         this.waterPercentage = waterPercentage;
     }
 
-    public double getMuscle() {
-        return muscle;
+    public double getMuscleRawValue() {
+        return muscleRawValue;
     }
 
-    public void setMuscle(double muscle) {
-        this.muscle = muscle;
+    public void setMuscleRawValue(double muscleRawValue) {
+        this.muscleRawValue = muscleRawValue;
     }
 
     public double getMusclePercentage() {
@@ -94,12 +94,12 @@ public class LifevitSDKWeightScaleData {
         this.musclePercentage = musclePercentage;
     }
 
-    public double getVisceral() {
-        return visceral;
+    public double getVisceralRawValue() {
+        return visceralRawValue;
     }
 
-    public void setVisceral(double visceral) {
-        this.visceral = visceral;
+    public void setVisceralRawValue(double visceralRawValue) {
+        this.visceralRawValue = visceralRawValue;
     }
 
     public double getVisceralPercentage() {
@@ -110,12 +110,12 @@ public class LifevitSDKWeightScaleData {
         this.visceralPercentage = visceralPercentage;
     }
 
-    public double getBone() {
-        return bone;
+    public double getBoneRawValue() {
+        return boneRawValue;
     }
 
-    public void setBone(double bone) {
-        this.bone = bone;
+    public void setBoneRawValue(double boneRawValue) {
+        this.boneRawValue = boneRawValue;
     }
 
     public double getBonePercentage() {
