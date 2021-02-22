@@ -302,11 +302,11 @@ public class WeightScaleActivity extends AppCompatActivity {
                         String unitStr = data.getUnit();
 
                         textview_bmr.setText(String.format("%.1f", data.getBmr()) + " Kcal");
-                        textview_bone.setText(String.format("%.1f", data.getBone()) + " " + unitStr);
-                        textview_fat.setText(String.format("%.1f %% - %.1f kg", data.getFatPercentage(), data.getFat()));
-                        textview_muscle.setText(String.format("%.1f %% - %.1f kg", data.getMusclePercentage(), data.getMuscle()));
-                        textview_visceral.setText(String.format("%.1f %% - %.1f kg", data.getVisceralPercentage(), data.getVisceral()));
-                        textview_water.setText(String.format("%.1f %% - %.1f kg", data.getWaterPercentage(), data.getWater()));
+                        textview_bone.setText(String.format("%.1f", data.getBoneRawValue()) + " " + unitStr);
+                        textview_fat.setText(String.format("%.1f %% - %.1f kg", data.getFatPercentage(), data.getFatRawValue()));
+                        textview_muscle.setText(String.format("%.1f %% - %.1f kg", data.getMusclePercentage(), data.getMuscleRawValue()));
+                        textview_visceral.setText(String.format("%.1f %% - %.1f kg", data.getVisceralPercentage(), data.getVisceralRawValue()));
+                        textview_water.setText(String.format("%.1f %% - %.1f kg", data.getWaterPercentage(), data.getWaterRawValue()));
                         textview_protein.setText(String.format("%.1f", data.getProteinPercentage()) + " %");
                         textview_idealweight.setText(String.format("%.1f", data.getIdealWeight()));
                         textview_bodyage.setText(String.format("%.1f", data.getBodyAge()));
