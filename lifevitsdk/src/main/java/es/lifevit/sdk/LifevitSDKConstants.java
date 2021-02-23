@@ -85,6 +85,11 @@ public class LifevitSDKConstants {
      */
     public static final int DEVICE_BRACELET_AT2019 = 10;
 
+    /**
+     * GLUCOMETER.
+     */
+    public static final int DEVICE_GLUCOMETER = 11;
+
 
     // endregion
 
@@ -177,6 +182,10 @@ public class LifevitSDKConstants {
     public static final int THERMOMETERV2_COMMAND_LAST_MEASURE = 0x0033;
     public static final int THERMOMETERV2_COMMAND_VERSION_NUMBER = 0x0034;
     //public static final int THERMOMETERV2_COMMAND_HISTORICAL_DATA = 0x0035;
+
+    public static final class GlucometerCommand{
+        public static final int START = 0;
+    }
 
     public static final int TEMPERATURE_UNIT_CELSIUS = 0;
     public static final int TEMPERATURE_UNIT_FAHRENHEIT = 1;

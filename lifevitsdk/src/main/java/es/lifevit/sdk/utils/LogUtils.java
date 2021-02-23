@@ -60,6 +60,8 @@ public class LogUtils {
                 return "PILLREMINDER";
             case LifevitSDKConstants.DEVICE_BRACELET_AT2019:
                 return "BRACELET_AT2019";
+            case LifevitSDKConstants.DEVICE_GLUCOMETER:
+                return "GLUCOMETER";
             case LifevitSDKConstants.DEVICE_OTHERS:
                 return "OTHERS";
         }
