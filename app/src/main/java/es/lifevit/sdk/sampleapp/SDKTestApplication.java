@@ -16,6 +16,8 @@ public class SDKTestApplication extends Application {
         instance = this;
         lifevitSDKManager = new LifevitSDKManager(this);
 
+        lifevitSDKManager.setLogLevel(-1);
+
         // startService(new Intent(this, LifeVitTensiService.class));
     }
 

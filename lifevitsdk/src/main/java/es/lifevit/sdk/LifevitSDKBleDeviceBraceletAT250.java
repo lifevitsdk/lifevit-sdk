@@ -439,7 +439,7 @@ public class LifevitSDKBleDeviceBraceletAT250 extends LifevitSDKBleDevice {
                             daysWithData[currentIndex + 7] = ((currentByte & 0b10000000) > 0);
                         }
 
-                        if (BuildConfig.DEBUG_MESSAGES) {
+                        if (LogUtils.isLogEnabled()) {
                             for (int j = 0; j < daysWithData.length; j++) {
                                 LogUtils.log(Log.DEBUG, CLASS_TAG, "Hace " + j + " dias hubo datos: " + daysWithData[j]);
                             }
@@ -617,7 +617,7 @@ public class LifevitSDKBleDeviceBraceletAT250 extends LifevitSDKBleDevice {
                                 cal.set(Calendar.MILLISECOND, 0);
                                 sleepRecord.setDate(cal.getTimeInMillis());
 
-                                if (BuildConfig.DEBUG_MESSAGES) {
+                                if (LogUtils.isLogEnabled()) {
                                     DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
                                     LogUtils.log(Log.DEBUG, CLASS_TAG, "---> SLEEP: Hora: " + timeFormatter.format(cal.getTimeInMillis()) + ", Minutes: " + 15 + ", Deepness: " + (int) deepnessAverage);
                                 }
@@ -825,7 +825,7 @@ public class LifevitSDKBleDeviceBraceletAT250 extends LifevitSDKBleDevice {
     private void resumePacketsAndSend() {
 
         // Just log messages
-        if (BuildConfig.DEBUG_MESSAGES) {
+        if (LogUtils.isLogEnabled()) {
             DateFormat dateTimeFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
             // STEPS PACKETS

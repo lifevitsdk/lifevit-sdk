@@ -10,10 +10,12 @@ import es.lifevit.sdk.LifevitSDKConstants;
 
 public class LogUtils {
 
+    private static int mLogLevel = 0;
+
 
     public static void log(int logLevel, String tag, String message) {
-        if (BuildConfig.DEBUG_MESSAGES) {
 
+        if (LogUtils.isLogEnabled()) {
             if (logLevel < BuildConfig.DEBUG_MESSAGES_LEVEL) {
                 return;
             }
@@ -135,6 +137,20 @@ public class LogUtils {
                 return "MATCH_LOST";
         }
         return "CODE_" + callbackType + "_NOT_FOUND";
+    }
+
+
+    public static boolean isLogEnabled() {
+        return mLogLevel > 0;
+    }
+
+
+    public static boolean setLogLevel(int logLevel) {
+        if (logLevel < -1 || logLevel > 7) {
+            return false;
+        }
+        mLogLevel = logLevel;
+        return true;
     }
 
 

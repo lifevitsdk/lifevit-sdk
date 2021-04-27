@@ -22,7 +22,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelUuid;
 import android.provider.Settings;
-import androidx.core.app.ActivityCompat;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import androidx.core.app.ActivityCompat;
 import es.lifevit.sdk.bracelet.LifevitSDKAT250TimeRange;
 import es.lifevit.sdk.bracelet.LifevitSDKAT500SedentaryReminderTimeRange;
 import es.lifevit.sdk.bracelet.LifevitSDKAlarmTime;
@@ -322,7 +322,12 @@ public class LifevitSDKManager {
     }
 
 
-// -------------------------- Public Methods ----------------------- //
+    public boolean setLogLevel(int logLevel) {
+        return LogUtils.setLogLevel(logLevel);
+    }
+
+
+    // -------------------------- Public Methods ----------------------- //
 
 
     public void connectDevice(int deviceType, long scanPeriod) {
@@ -797,7 +802,7 @@ public class LifevitSDKManager {
             // We are going to wait some time to find the nearest device
             final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(scanRecord);
             String deviceName = device.getName();
-            String bAdName = badata!=null?badata.getName():deviceName;
+            String bAdName = badata != null ? badata.getName() : deviceName;
             if (deviceName == null) {
                 deviceName = bAdName;
             }
