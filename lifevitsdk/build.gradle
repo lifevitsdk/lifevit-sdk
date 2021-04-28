@@ -35,7 +35,8 @@ android {
 
 uploadArchives {
     repositories.mavenDeployer {
-        repository(url: "file:///Users/antonio/Development/AndroidStudioProjects/LifevitSDKUpload")
+//        repository(url: "file:///Users/antonio/Development/AndroidStudioProjects/LifevitSDKUpload")
+        repository(url: "file:///Users/aescanuela/ASProjects/LifevitSDKToPublish")
         pom.project {
             groupId 'es.lifevit'
             artifactId 'lifevit-sdk'
