@@ -6,14 +6,18 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import es.lifevit.sdk.utils.HexUtils;
 import es.lifevit.sdk.utils.LogUtils;
-import es.lifevit.sdk.utils.TemperatureUtils;
 import es.lifevit.sdk.utils.Utils;
 
 
@@ -23,6 +27,13 @@ import es.lifevit.sdk.utils.Utils;
 public class LifevitSDKBleDeviceGlucometer extends LifevitSDKBleDevice {
 
     private final static String TAG = LifevitSDKBleDeviceGlucometer.class.getSimpleName();
+
+    private String mType = "";
+    private String mSnNumber  = null;
+    private int agreement_type;//1:1.0 protocol; 2:2.0 or 3.0 protocol
+    private String mMac;
+    boolean flag = true;//Only receive the result packet once
+    boolean first = true;//Only send the information packet once
 
     public static class Category {
 
@@ -61,8 +72,6 @@ public class LifevitSDKBleDeviceGlucometer extends LifevitSDKBleDevice {
 
     // Write request characteristic
     private static String GLUCOMETER_WRITE_UUID = "00001001-0000-1000-8000-00805f9b34fb";
-
-
 
 
     /**
@@ -142,14 +151,15 @@ public class LifevitSDKBleDeviceGlucometer extends LifevitSDKBleDevice {
         }
         mBluetoothGatt.setCharacteristicNotification(TxChar, true);
 
-        for (BluetoothGattDescriptor descriptor: TxChar.getDescriptors()){
+        for (BluetoothGattDescriptor descriptor : TxChar.getDescriptors()) {
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+            write(descriptor);
         }
 
-        BluetoothGattDescriptor descriptor = TxChar.getDescriptor(UUID.fromString(GLUCOMETER_CLIENT_CHARACTERISTIC_CONFIG_UUID));
+      /*  BluetoothGattDescriptor descriptor = TxChar.getDescriptor(UUID.fromString(GLUCOMETER_CLIENT_CHARACTERISTIC_CONFIG_UUID));
         descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
 
-        write(descriptor);
+        write(descriptor);*/
     }
 
     protected void sendMessage(byte[] data) {
@@ -171,7 +181,7 @@ public class LifevitSDKBleDeviceGlucometer extends LifevitSDKBleDevice {
 
     protected void characteristicReadProcessData(BluetoothGattCharacteristic characteristic) {
 
-        LogUtils.log(Log.DEBUG, TAG, "characteristicReadProcessData: "  +characteristic.getUuid());
+        LogUtils.log(Log.DEBUG, TAG, "characteristicReadProcessData: " + characteristic.getUuid());
         // This is special handling for the Heart Rate Measurement profile. Data
         // parsing is carried out as per profile specifications.
         if (UUID.fromString(GLUCOMETER_NOTIFY_UUID).equals(characteristic.getUuid())) {
@@ -184,11 +194,24 @@ public class LifevitSDKBleDeviceGlucometer extends LifevitSDKBleDevice {
 
 
     protected void getResults() {
+        sendCommand(Category.RESULT);
+    }
+
+    protected void getInfo() {
+        sendCommand(Category.INFO);
+    }
+
+    protected void sendConfirmPacket() {
+        sendCommand(Category.CONFIRM);
+    }
+
+    protected void sendCommand(int command) {
         byte byte0 = 0x5a;
-        byte byte1 = 0x0b;
-        byte byte2 = Category.CONFIRM;
+        byte byte1 = 0x0a;
+        byte byte2 = (byte) command;
 
         Calendar cal = Calendar.getInstance();
+        //cal.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         int year = cal.get(Calendar.YEAR) - 2000;
         byte byte3 = (byte) year;
         int month = cal.get(Calendar.MONTH) + 1;
@@ -199,10 +222,25 @@ public class LifevitSDKBleDeviceGlucometer extends LifevitSDKBleDevice {
         byte byte6 = (byte) hour;
         int minute = cal.get(Calendar.MINUTE);
         byte byte7 = (byte) minute;
-        byte[] crc = calculateCRC(new byte[]{byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7});
+        int second = cal.get(Calendar.SECOND);
+        byte byte8 = (byte) second;
+        //byte[] crc = calculateCRC(new byte[]{byte0, byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8});
+
+
+        int index9 = byte0 + byte1 + byte2 + byte3 + byte4 + byte5 + byte6 + byte7 + byte8 + 2;
+        if (index9 > 255) {
+            index9 = index9 % 255;
+        }
+
+        /*byte[] values = {byte0, byte1, byte2,
+                byte3, byte4,
+                byte5, byte6, byte7, byte8, crc[3], crc[2], crc[1], (byte) index9};*/
         byte[] values = {byte0, byte1, byte2,
                 byte3, byte4,
-                byte5, byte6,byte7, crc[3], crc[2], crc[1]};
+                byte5, byte6, byte7, byte8, (byte) index9};
+
+        //values = new byte[]{(byte) 0x5a, (byte) 0x0a, (byte) 0x00,
+        //        (byte) 0x15, (byte) 0x02, (byte) 0x18, (byte) 0x0f, (byte) 0x04, (byte) 0x2c, (byte) 0xd4};
 
         sendMessage(values);
     }
@@ -244,24 +282,137 @@ public class LifevitSDKBleDeviceGlucometer extends LifevitSDKBleDevice {
             byte command = buffer[2];
 
             if (command == Category.START_PACKET) {
-                LogUtils.log(Log.DEBUG, TAG, "Start packet" );
+                LogUtils.log(Log.DEBUG, TAG, "Start packet");
 
-            }
-            else if (command == Category.PROCEDURE) {
-                LogUtils.log(Log.DEBUG, TAG, "Procedure packet" );
+            } else if (command == Category.PROCEDURE) {
+                LogUtils.log(Log.DEBUG, TAG, "Procedure packet");
 
-            }
-            else if (command == Category.RESULT) {
-                LogUtils.log(Log.DEBUG, TAG, "Result packet" );
+            } else if (command == Category.RESULT) {
+                LogUtils.log(Log.DEBUG, TAG, "Result packet");
+
+                checkResult(buffer);
 
             } else if (command == Category.END_PACKET) {
-                LogUtils.log(Log.DEBUG, TAG, "End packet" );
+                LogUtils.log(Log.DEBUG, TAG, "End packet");
 
-            }else if (command == Category.INFO) {
-                LogUtils.log(Log.DEBUG, TAG, "Info packet" );
+            } else if (command == Category.CONFIRM) {
+                LogUtils.log(Log.DEBUG, TAG, "Confirm packet");
+
+            } else if (command == Category.END) {
+                LogUtils.log(Log.DEBUG, TAG, "FINAL END");
+
+            } else if (command == Category.INFO) {
+                LogUtils.log(Log.DEBUG, TAG, "Info packet");
+                checkBLEInfo(buffer);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkBLEInfo(byte[] data) {
+        if (null == data) return;
+        byte index0 = data[0];
+        if (index0 != 85) return;
+        byte index2 = data[2];
+        if (index2 == 0) {
+            first = false;
+            if ( data.length  == 15 ||  data.length  == 18) {
+                agreement_type = 2;
+                //Brand
+                mType = getTypeStr(data[4]);
+                byte[] snArray = new byte[9];
+                System.arraycopy(data, 8, snArray, 0, 9);
+                mSnNumber = Utils.bytetoString(snArray);
+
+                LogUtils.log(Log.DEBUG, TAG, String.format("Type: %s, SN: %s", mType, mSnNumber));
+
+            } else {
+                agreement_type = 1;
+            }
+            //sendCommand(Category.CONFIRM);
+
+        }
+    }
+
+    private void checkResult(byte[] data) {
+        if (null == data) return;
+        byte index0 = data[0];
+        if (index0 != 85) return;
+        byte index2 = data[2];
+        if (index2 == 3) {//Device upload results
+
+            byte index3 = data[3];//Year
+            byte index4 = data[4];//Month
+            byte index5 = data[5];//Day
+            byte index6 = data[6];//Hour
+            byte index7 = data[7];//Minute
+            byte[] valueArr = {data[10], data[9]};
+            String strValue = Utils.encodeHexStr(valueArr);//10+9 Convert to decimal
+            int value = Integer.valueOf(strValue, 16);
+            String valueStr = Utils.formatTo1((double) value / 18);
+
+            if (flag) {
+                if (!TextUtils.isEmpty(mSnNumber)) {
+                    String str = String.format("\nSN:%s---Customer code:%s\nDate：20%s-%s-%s %s:%s，\nBlood sugar value:%smmol/L", mSnNumber, mType
+                            , String.format("%02d", (int) index3), String.format("%02d", (int) index4), String.format("%02d", (int) index5),
+                            String.format("%02d", (int) index6), String.format("%02d", (int) index7), valueStr);
+
+                    LogUtils.log(Log.DEBUG, TAG, str);
+                } else {
+                    String str = String.format("\nCustomer code:%s\nDate：20%s-%s-%s %s:%s，\nBlood sugar value:%smmol/L", mType
+                            , String.format("%02d", (int) index3), String.format("%02d", (int) index4), String.format("%02d", (int) index5),
+                            String.format("%02d", (int) index6), String.format("%02d", (int) index7), valueStr);
+
+                    LogUtils.log(Log.DEBUG, TAG, str);
+                }
+
+                //Se confirma la recepción del paquete 3...
+                sendCommand(Category.RESULT);
+
+            } else {
+                if (!TextUtils.isEmpty(mSnNumber)) {
+                    String str = String.format("\nSN:%s---Customer code:%s\ndate：20%s-%s-%s %s:%s，\nHistorical memory:%smmol/L", mSnNumber, mType
+                            , String.format("%02d", (int) index3), String.format("%02d", (int) index4), String.format("%02d", (int) index5),
+                            String.format("%02d", (int) index6), String.format("%02d", (int) index7), valueStr);
+
+                    LogUtils.log(Log.DEBUG, TAG, str);
+                } else {
+                    String str = String.format("\nCustomer code:%s\ndate：20%s-%s-%s %s:%s，\nHistorical memory:%smmol/L", mType
+                            , String.format("%02d", (int) index3), String.format("%02d", (int) index4), String.format("%02d", (int) index5),
+                            String.format("%02d", (int) index6), String.format("%02d", (int) index7), valueStr);
+
+                    LogUtils.log(Log.DEBUG, TAG, str);
+                }
+
+
+                //Se confirma la recepción del paquete 3...
+                sendCommand(Category.RESULT);
+            }
+            flag = false;
+        } else if (index2 == 5) {
+            LogUtils.log(Log.DEBUG, TAG, "05 end package received");
+            flag = true;
+        }
+    }
+
+
+    private String getTypeStr(byte type) {
+
+        switch ((int) type){
+            case Client.APPLE:
+                return "APPLE";
+            case Client.GALLERY:
+                return "GALLERY";
+            case Client.HAIER:
+                return "HAIER";
+            case Client.KANWEI:
+                return "KANWEI";
+            case Client.XIAOMI:
+                return "XIAOMI";
+            default:
+                return "Bioland";
+
         }
     }
 

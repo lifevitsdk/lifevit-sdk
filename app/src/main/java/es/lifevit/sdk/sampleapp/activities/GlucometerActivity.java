@@ -88,7 +88,13 @@ public class GlucometerActivity extends AppCompatActivity {
                     final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
 
                     CharSequence[] colors = new CharSequence[]{
-                            "0. Send command to Glucomenter"
+                            "0. Send command INFO to Glucomenter",
+                            "1. Send command START_PACKET to Glucomenter",
+                            "2. Send command PROCEDURE to Glucomenter",
+                            "3. Send command RESULT to Glucomenter",
+                            "4. Send command END_PACKET to Glucomenter",
+                            "5. Send command CONFIRM to Glucomenter",
+                            "6. Send command END to Glucomenter"
                     };
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(GlucometerActivity.this);
@@ -98,7 +104,25 @@ public class GlucometerActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.START);
+                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.INFO);
+                                    break;
+                                case 1:
+                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.START_PACKET);
+                                    break;
+                                case 2:
+                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.PROCEDURE);
+                                    break;
+                                case 3:
+                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.RESULT);
+                                    break;
+                                case 4:
+                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.END_PACKET);
+                                    break;
+                                case 5:
+                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.CONFIRM);
+                                    break;
+                                case 6:
+                                    manager.sendGlucometerCommand(LifevitSDKConstants.GlucometerCommand.END);
                                     break;
 
 

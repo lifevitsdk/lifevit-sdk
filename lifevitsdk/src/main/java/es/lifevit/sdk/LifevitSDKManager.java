@@ -1157,9 +1157,33 @@ public class LifevitSDKManager {
         LifevitSDKBleDevice device = getDeviceByType(LifevitSDKConstants.DEVICE_GLUCOMETER);
         if (device != null && device instanceof LifevitSDKBleDeviceGlucometer) {
             switch (command){
-                case LifevitSDKConstants.GlucometerCommand.START:
+                case LifevitSDKConstants.GlucometerCommand.INFO:
 
-                    ((LifevitSDKBleDeviceGlucometer) device).getResults();
+                    ((LifevitSDKBleDeviceGlucometer) device).getInfo();
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.START_PACKET:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.START_PACKET);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.PROCEDURE:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.PROCEDURE);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.RESULT:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.RESULT);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.END_PACKET:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.END_PACKET);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.CONFIRM:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.CONFIRM);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.END:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.END);
                     break;
             }
         }

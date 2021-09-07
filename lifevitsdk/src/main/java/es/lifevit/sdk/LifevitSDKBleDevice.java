@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -82,7 +83,7 @@ public abstract class LifevitSDKBleDevice {
 
     protected abstract void startReceiver(String action, Intent intent);
 
-    protected void sendDeviceStatus(){
+    protected void sendDeviceStatus() {
 
         mLifevitSDKManager.deviceOnConnectionChanged(getType(), mDeviceStatus, true);
     }
@@ -175,18 +176,26 @@ public abstract class LifevitSDKBleDevice {
 
                 @Override
                 // New services discovered
-                public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                public void onServicesDiscovered(final BluetoothGatt gatt, int status) {
                     LogUtils.log(Log.DEBUG, CLASS_TAG, "onServicesDiscovered. Status: " + LogUtils.getGattStatusName(status));
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        enableDeviceNotification();
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(gatt!=null) {
+                                    enableDeviceNotification();
 
-                        for ( BluetoothGattService deviceService : gatt.getServices()) {
-                                BluetoothGattCharacteristic characteristic = deviceService.getCharacteristic(UUID.fromString(SERIAL_UUID));
-                                if (characteristic != null) {
-                                    gatt.readCharacteristic(characteristic);
+                                    for (BluetoothGattService deviceService : gatt.getServices()) {
+                                        BluetoothGattCharacteristic characteristic = deviceService.getCharacteristic(UUID.fromString(SERIAL_UUID));
+                                        if (characteristic != null) {
+                                            gatt.readCharacteristic(characteristic);
+                                        }
+
+                                    }
                                 }
 
-                        }
+                            }
+                        }, 500);
                     }
                 }
 
@@ -197,7 +206,7 @@ public abstract class LifevitSDKBleDevice {
                     super.onCharacteristicRead(gatt, characteristic, status);
                     LogUtils.log(Log.DEBUG, CLASS_TAG, "onCharacteristicRead. Status: " + LogUtils.getGattStatusName(status));
 
-                    if(characteristic.getUuid().toString().equalsIgnoreCase(SERIAL_UUID)){
+                    if (characteristic.getUuid().toString().equalsIgnoreCase(SERIAL_UUID)) {
                         serialNumber = characteristic.getStringValue(0);
                         Log.d(LifevitSDKConstants.TAG, "Serial number: " + serialNumber);
                     }
@@ -292,7 +301,7 @@ public abstract class LifevitSDKBleDevice {
         }
     }
 
-    public void onDescriptorWritten(BluetoothGattDescriptor descriptor){
+    public void onDescriptorWritten(BluetoothGattDescriptor descriptor) {
 
     }
 
