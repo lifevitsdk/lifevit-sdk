@@ -20,7 +20,7 @@ public class WeightScaleActivity extends AppCompatActivity {
 
 
     TextView textview_connection_result, textview_measurement_info;
-    TextView textview_bmr, textview_bone, textview_fat, textview_muscle, textview_visceral, textview_water, textview_weight, textview_info, textview_protein, textview_bodyage, textview_idealweight, textview_obesity;
+    TextView textview_bmr, textview_bone, textview_fat, textview_muscle, textview_visceral, textview_water, textview_weight, textview_info, textview_protein, textview_bodyage, textview_idealweight, textview_obesity, textview_bia;
 
     Button button_connect, weight_scale_button_clear_results, weight_scale_button_history;
     private CheckBox weight_scale_check_connected;
@@ -125,6 +125,7 @@ public class WeightScaleActivity extends AppCompatActivity {
         textview_obesity = findViewById(R.id.weight_scale_textview_measurement_obesity);
         textview_idealweight = findViewById(R.id.weight_scale_textview_measurement_idealweight);
         textview_bodyage = findViewById(R.id.weight_scale_textview_measurement_bodyage);
+        textview_bia = findViewById(R.id.weight_scale_textview_measurement_bia);
 
 
         button_connect = findViewById(R.id.weight_scale_button_connect);
@@ -175,6 +176,7 @@ public class WeightScaleActivity extends AppCompatActivity {
                 textview_weight.setText("---");
                 textview_bone.setText("---");
                 textview_info.setText("---");
+                textview_bia.setText("---");
             }
         });
     }
@@ -278,6 +280,7 @@ public class WeightScaleActivity extends AppCompatActivity {
                         textview_idealweight.setText("");
                         textview_obesity.setText("");
                         textview_bodyage.setText("");
+                        textview_bia.setText("---");
 
                         textview_weight.setText(String.format("%.1f %s (measuring)", weight, unit == LifevitSDKConstants.WEIGHT_UNIT_KG ? "Kg" : "Lb"));
                     }
@@ -313,6 +316,13 @@ public class WeightScaleActivity extends AppCompatActivity {
                         textview_obesity.setText(String.format("%.1f", data.getObesityPercentage()) + " %");
 
                         textview_weight.setText(String.format("%.1f %s", data.getWeight(), unitStr));
+                        if(data.getBia()!=null){
+
+                            textview_bia.setText(String.format("%.1f", data.getBia()));
+                        }
+                        else {
+                            textview_bia.setText("---");
+                        }
                     }
                 });
             }

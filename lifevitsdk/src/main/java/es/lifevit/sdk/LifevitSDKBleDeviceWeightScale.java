@@ -254,6 +254,7 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                     data.setIdealWeight(this.getIdealBodyWeight());
                     data.setProteinPercentage(this.getProteinPercentage(data.getMusclePercentage()));
                     data.setObesityPercentage(this.getObesityPercentage(weight));
+                    data.setBia(bia);
                     mLifevitSDKManager.getWeightScaleListener().onScaleMeasurementAllValues(data);                }
             }
         } else if (UUID.fromString(ISSC_CHAR_RX_UUID).equals(characteristic.getUuid())) {

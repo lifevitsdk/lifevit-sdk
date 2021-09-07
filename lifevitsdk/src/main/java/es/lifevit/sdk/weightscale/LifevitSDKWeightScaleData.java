@@ -20,7 +20,16 @@ public class LifevitSDKWeightScaleData {
    private double proteinPercentage;
    private double idealWeight;
    private double obesityPercentage;
-   private double bodyAge;
+    private double bodyAge;
+    private Double bia = null;
+
+    public Double getBia() {
+        return bia;
+    }
+
+    public void setBia(Double bia) {
+        this.bia = bia;
+    }
 
     public double getWeight() {
         return weight;
