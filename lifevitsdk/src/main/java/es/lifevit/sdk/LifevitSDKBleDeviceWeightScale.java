@@ -587,9 +587,9 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         LogUtils.log(Log.WARN, TAG, String.format("userHeight: %.2f, userAge: %d, userGender: %d, bia: %.2f", userHeight, userAge, userGender, bia));
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
-            return 24.1911 + 0.0463 * userAge - 0.460888 * userHeight + 0.6341581 * weight + 0.0566524 * bia;
+            return 24.1911 + (0.0463 * userAge) - (0.460888 * userHeight) + (0.6341581 * weight) + (0.0566524 * bia);
         }
-        return 43.1912 + 0.0443 * userAge - 0.5008 * userHeight + 0.7042 * weight + 0.0449 * bia;
+        return 43.1912 + (0.0443 * userAge) - (0.5008 * userHeight) + (0.7042 * weight) + (0.0449 * bia);
     }
 
     public double getPercentageWaterWithWeight(double weight, double bia) {
@@ -617,9 +617,9 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
-            return 66.4907 - 0.1919 * userAge + 0.2279 * userHeight - 0.402 * weight - 0.0514 * bia;
+            return 66.4907 - (0.1919 * userAge) + (0.2279 * userHeight) - (0.402 * weight) - (0.0514 * bia);
         }
-        return 58.4907 - 0.1919 * userAge + 0.2278 * userHeight - 0.402 * weight - 0.0514 * bia;
+        return 58.4907 - (0.1919 * userAge) + (0.2278 * userHeight) - (0.402 * weight) - (0.0514 * bia);
     }
 
     public double getBMRWithWeight(double weight, double bia) {

@@ -156,15 +156,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Water: " />
+                android:text="Muscle: " />
 
             <TextView
-                android:id="@+id/weight_scale_textview_measurement_water"
+                android:id="@+id/weight_scale_textview_measurement_muscle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="---" />
 
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -176,10 +177,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Muscle: " />
+                android:text="Water: " />
 
             <TextView
-                android:id="@+id/weight_scale_textview_measurement_muscle"
+                android:id="@+id/weight_scale_textview_measurement_water"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="---" />
@@ -216,10 +217,31 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Visceral fat: " />
+                android:text="Bone: " />
 
             <TextView
-                android:id="@+id/weight_scale_textview_measurement_visceral"
+                android:id="@+id/weight_scale_textview_measurement_bone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Body age: " />
+
+            <TextView
+                android:id="@+id/weight_scale_textview_measurement_bodyage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="---" />
@@ -236,10 +258,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bone: " />
+                android:text="Visceral fat: " />
 
             <TextView
-                android:id="@+id/weight_scale_textview_measurement_bone"
+                android:id="@+id/weight_scale_textview_measurement_visceral"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="---" />
@@ -276,50 +298,30 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Obesity: " />
-
-            <TextView
-                android:id="@+id/weight_scale_textview_measurement_obesity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="---" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/default_half_padding"
-            android:paddingTop="@dimen/default_half_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Body age: " />
-
-            <TextView
-                android:id="@+id/weight_scale_textview_measurement_bodyage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="---" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/default_half_padding"
-            android:paddingTop="@dimen/default_half_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Ideal Weight: " />
 
             <TextView
                 android:id="@+id/weight_scale_textview_measurement_idealweight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_half_padding"
+            android:paddingTop="@dimen/default_half_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Obesity: " />
+
+            <TextView
+                android:id="@+id/weight_scale_textview_measurement_obesity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="---" />
