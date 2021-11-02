@@ -2,14 +2,15 @@ package es.lifevit.sdk.sampleapp.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,15 +32,15 @@ import es.lifevit.sdk.bracelet.LifevitSDKSleepData;
 import es.lifevit.sdk.bracelet.LifevitSDKStepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummarySleepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummaryStepData;
-import es.lifevit.sdk.listeners.LifevitSDKBraceletAT2019Listener;
+import es.lifevit.sdk.listeners.LifevitSDKBraceletVitalListener;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
 import es.lifevit.sdk.sampleapp.R;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
 
 
-public class BraceletAT2019Activity extends AppCompatActivity {
+public class BraceletVitalActivity extends AppCompatActivity {
 
-    private static final String TAG = BraceletAT2019Activity.class.getSimpleName();
+    private static final String TAG = BraceletVitalActivity.class.getSimpleName();
 
     TextView textview_connection_result, textview_info;
     Button button_connect, button_command;
@@ -50,7 +51,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bracelet_at2019);
+        setContentView(R.layout.activity_bracelet_vital);
 
         initComponents();
         initListeners();
@@ -59,16 +60,16 @@ public class BraceletAT2019Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (SDKTestApplication.getInstance().getLifevitSDKManager().isDeviceConnected(LifevitSDKConstants.DEVICE_BRACELET_AT2019)) {
+        if (SDKTestApplication.getInstance().getLifevitSDKManager().isDeviceConnected(LifevitSDKConstants.DEVICE_BRACELET_VITAL)) {
             button_connect.setText("Disconnect");
             isDisconnected = false;
             textview_connection_result.setText("Connected");
-            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT2019Activity.this, android.R.color.holo_green_dark));
+            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletVitalActivity.this, android.R.color.holo_green_dark));
         } else {
             button_connect.setText("Connect");
             isDisconnected = true;
             textview_connection_result.setText("Disconnected");
-            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT2019Activity.this, android.R.color.holo_red_dark));
+            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletVitalActivity.this, android.R.color.holo_red_dark));
         }
         initSdk();
     }
@@ -78,7 +79,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         SDKTestApplication.getInstance().getLifevitSDKManager().removeDeviceListener(cl);
-        SDKTestApplication.getInstance().getLifevitSDKManager().setBraceletAT2019Listener(null);
+        SDKTestApplication.getInstance().getLifevitSDKManager().setBraceletVitalListener(null);
     }
 
 
@@ -98,9 +99,9 @@ public class BraceletAT2019Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isDisconnected) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT2019, 10000);
+                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_VITAL, 10000);
                 } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
+                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
                 }
             }
         });
@@ -149,79 +150,62 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                         "35. Send message received"
                 };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(BraceletAT2019Activity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(BraceletVitalActivity.this);
                 builder.setTitle("Select command");
                 builder.setItems(colors, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                manager.bracelet2019GetBasicInfo();
                                 break;
                             case 1:
-                                manager.bracelet2019GetFeatureList();
                                 break;
                             case 2: {
                                 Calendar cal = Calendar.getInstance();
                                 Long time = cal.getTimeInMillis();
-                                manager.bracelet2019SetDeviceTime(time);
                                 break;
                             }
                             case 3: {
                                 Calendar cal = Calendar.getInstance();
                                 cal.set(2015, Calendar.OCTOBER, 21, 4, 29);
-                                manager.bracelet2019SetDeviceTime(cal.getTimeInMillis());
                                 break;
                             }
                             case 4:
-                                manager.bracelet2019GetDeviceTime();
                                 break;
                             case 5:
-                                manager.bracelet2019SynchronizeData();
                                 break;
                             case 6:
-                                manager.bracelet2019SynchronizeSportsData();
                                 break;
                             case 7:
-                                manager.bracelet2019SynchronizeSleepData();
                                 break;
                             case 8:
-                                manager.bracelet2019SynchronizeHeartRateData();
                                 break;
                             case 9:
-                                manager.bracelet2019SynchronizeHistoricSportData();
                                 break;
                             case 10:
-                                manager.bracelet2019SynchronizeHistoricSleepData();
                                 break;
                             case 11:
-                                manager.bracelet2019SynchronizeHistoricHeartRateData();
                                 break;
                             case 12: {
                                 LifevitSDKAlarmTime alarm = new LifevitSDKAlarmTime();
                                 alarm.setHour(10);
                                 alarm.setMinute(30);
                                 alarm.setAllDays();
-                                manager.bracelet2019ConfigureAlarm(alarm);
                                 break;
                             }
                             case 13: {
                                 LifevitSDKAlarmTime alarm = new LifevitSDKAlarmTime();
                                 alarm.setHour(11);
                                 alarm.setMinute(40);
-                                manager.bracelet2019ConfigureAlarm(alarm);
                                 break;
                             }
                             case 14: {
-                                manager.bracelet2019RemoveAlarm(true);
                                 break;
                             }
                             case 15: {
-                                manager.bracelet2019SetGoals(500, 6, 30);
                                 break;
                             }
                             case 16: {
-                                manager.bracelet2019SetGoals(7000, 8, 0);
                                 break;
                             }
                             case 17: {
@@ -237,7 +221,6 @@ public class BraceletAT2019Activity extends AppCompatActivity {
 
                                 LifevitSDKUserData user = new LifevitSDKUserData(birthdate, 70, 174, LifevitSDKConstants.GENDER_MALE);
 
-                                manager.bracelet2019SetUserInformation(user);
                                 break;
                             }
                             case 18: {
@@ -253,72 +236,55 @@ public class BraceletAT2019Activity extends AppCompatActivity {
 
                                 LifevitSDKUserData user = new LifevitSDKUserData(birthdate, 57, 162, LifevitSDKConstants.GENDER_FEMALE);
 
-                                manager.bracelet2019SetUserInformation(user);
                                 break;
                             }
                             case 19: {
                                 LifevitSDKMonitoringAlarm alarm = new LifevitSDKMonitoringAlarm(8, 30, 18, 30, LifevitSDKSedentaryAlarm.SedentaryIntervals.PERIOD_30_MIN, true, true, true, true, true, false, false);
-                                manager.bracelet2019ConfigureBraceletSedentaryAlarm(alarm);
+
                                 break;
                             }
                             case 20: {
-                                manager.bracelet2019DisableBraceletSedentaryAlarm();
                                 break;
                             }
                             case 21:
-                                manager.bracelet2019ConfigureAntitheft(true);
                                 break;
                             case 22:
-                                manager.bracelet2019ConfigureAntitheft(false);
                                 break;
                             case 23:
-                                manager.bracelet2019ConfigureRiseHand(true);
                                 break;
                             case 24:
-                                manager.bracelet2019ConfigureRiseHand(false);
                                 break;
                             case 25:
-                                manager.bracelet2019ConfigureAndroidPhone();
                                 break;
                             case 26:
-                                manager.bracelet2019ConfigureHeartRateIntervalSetting(55, 65, 80, 100);
                                 break;
                             case 27:
-                                manager.bracelet2019ConfigureHeartRateIntervalSetting(70, 120, 160, 220);
                                 break;
                             case 28: {
                                 LifevitSDKMonitoringAlarm monitoring = new LifevitSDKMonitoringAlarm(17, 30, 20, 30);
-                                manager.bracelet2019ConfigureHeartRateMonitoring(true, true, monitoring);
                                 break;
                             }
                             case 29:
-                                manager.bracelet2019ConfigureFindPhone(true);
                                 break;
                             case 30: {
                                 LifevitSDKAppNotification notification = new LifevitSDKAppNotification();
                                 notification.setAllNotifications(true);
-                                manager.bracelet2019ConfigureACNS(notification);
                                 break;
                             }
                             case 31: {
                                 LifevitSDKAppNotification notification = new LifevitSDKAppNotification();
                                 notification.setAllNotifications(false);
-                                manager.bracelet2019ConfigureACNS(notification);
                                 break;
                             }
                             case 32: {
                                 LifevitSDKMonitoringAlarm monitoring = new LifevitSDKMonitoringAlarm(23, 00, 7, 30);
-                                manager.bracelet2019ConfigureSleepMonitoring(true, monitoring);
                                 break;
                             }
                             case 33:
-                                manager.bracelet2019GetBattery();
                                 break;
                             case 34:
-                                manager.bracelet2019StartSynchronization();
                                 break;
                             case 35:
-                                manager.bracelet2019SendMessageReceived();
                                 break;
                         }
                     }
@@ -335,7 +301,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
 
             @Override
             public void deviceOnConnectionError(int deviceType, final int errorCode) {
-                if (deviceType != LifevitSDKConstants.DEVICE_BRACELET_AT2019) {
+                if (deviceType != LifevitSDKConstants.DEVICE_BRACELET_VITAL) {
                     return;
                 }
                 runOnUiThread(new Runnable() {
@@ -356,7 +322,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
 
             @Override
             public void deviceOnConnectionChanged(int deviceType, final int status) {
-                if (deviceType != LifevitSDKConstants.DEVICE_BRACELET_AT2019) {
+                if (deviceType != LifevitSDKConstants.DEVICE_BRACELET_VITAL) {
                     return;
                 }
 
@@ -368,25 +334,25 @@ public class BraceletAT2019Activity extends AppCompatActivity {
                                 button_connect.setText("Connect");
                                 isDisconnected = true;
                                 textview_connection_result.setText("Disconnected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT2019Activity.this, android.R.color.holo_red_dark));
+                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletVitalActivity.this, android.R.color.holo_red_dark));
                                 break;
                             case LifevitSDKConstants.STATUS_SCANNING:
                                 button_connect.setText("Stop scan");
                                 isDisconnected = false;
                                 textview_connection_result.setText("Scanning");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT2019Activity.this, android.R.color.holo_blue_dark));
+                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletVitalActivity.this, android.R.color.holo_blue_dark));
                                 break;
                             case LifevitSDKConstants.STATUS_CONNECTING:
                                 button_connect.setText("Disconnect");
                                 isDisconnected = false;
                                 textview_connection_result.setText("Connecting");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT2019Activity.this, android.R.color.holo_orange_dark));
+                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletVitalActivity.this, android.R.color.holo_orange_dark));
                                 break;
                             case LifevitSDKConstants.STATUS_CONNECTED:
                                 button_connect.setText("Disconnect");
                                 isDisconnected = false;
                                 textview_connection_result.setText("Connected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT2019Activity.this, android.R.color.holo_green_dark));
+                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletVitalActivity.this, android.R.color.holo_green_dark));
                                 break;
                         }
                     }
@@ -394,7 +360,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
             }
         };
 
-        LifevitSDKBraceletAT2019Listener bListener = new LifevitSDKBraceletAT2019Listener() {
+        LifevitSDKBraceletVitalListener bListener = new LifevitSDKBraceletVitalListener() {
 
 
             @Override
@@ -633,7 +599,7 @@ public class BraceletAT2019Activity extends AppCompatActivity {
 
         // Create connection helper
         SDKTestApplication.getInstance().getLifevitSDKManager().addDeviceListener(cl);
-        SDKTestApplication.getInstance().getLifevitSDKManager().setBraceletAT2019Listener(bListener);
+        SDKTestApplication.getInstance().getLifevitSDKManager().setBraceletVitalListener(bListener);
     }
 
 

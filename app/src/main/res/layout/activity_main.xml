@@ -23,6 +23,12 @@
             android:text="Pastillero" />
 
         <Button
+            android:id="@+id/button_bracelet_vital"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bracelet Vital 2021" />
+
+        <Button
             android:id="@+id/button_bracelet_at500hr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,12 +87,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Scan all devices" />
-
-        <Button
-            android:id="@+id/button_bracelet_at2019"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pulsera AT-2019" />
 
     </LinearLayout>
 </ScrollView>

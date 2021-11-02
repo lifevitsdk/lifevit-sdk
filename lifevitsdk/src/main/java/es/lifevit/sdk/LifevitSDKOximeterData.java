@@ -7,10 +7,10 @@ package es.lifevit.sdk;
 public class LifevitSDKOximeterData {
 
     private long date;
-    private int spO2;
-    private int pi;
-    private int rpm;
-    private int lpm;
+    private Integer spO2;
+    private Integer pi;
+    private Integer rpm;
+    private Integer lpm;
 
     public long getDate() {
         return date;
@@ -20,36 +20,35 @@ public class LifevitSDKOximeterData {
         this.date = date;
     }
 
-    public int getSpO2() {
+    public Integer getSpO2() {
         return spO2;
     }
 
-    public void setSpO2(int spO2) {
+    public void setSpO2(Integer spO2) {
         this.spO2 = spO2;
     }
 
-    public int getPi() {
+    public Integer getPi() {
         return pi;
     }
 
-    public void setPi(int pi) {
+    public void setPi(Integer pi) {
         this.pi = pi;
     }
 
-    public int getRpm() {
+    public Integer getRpm() {
         return rpm;
     }
 
-    public void setRpm(int rpm) {
+    public void setRpm(Integer rpm) {
         this.rpm = rpm;
     }
 
-    public int getLpm() {
+    public Integer getLpm() {
         return lpm;
     }
 
-    public void setLpm(int lpm) {
+    public void setLpm(Integer lpm) {
         this.lpm = lpm;
     }
-    
 }

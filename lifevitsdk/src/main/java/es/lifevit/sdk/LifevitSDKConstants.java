@@ -81,9 +81,9 @@ public class LifevitSDKConstants {
     public static final int DEVICE_PILL_REMINDER = 9;
 
     /**
-     * AT-2019 bracelet.
+     * VITAL bracelet.
      */
-    public static final int DEVICE_BRACELET_AT2019 = 10;
+    public static final int DEVICE_BRACELET_VITAL = 10;
 
 
     // endregion

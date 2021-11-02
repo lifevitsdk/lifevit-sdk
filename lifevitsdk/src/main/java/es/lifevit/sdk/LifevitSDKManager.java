@@ -46,9 +46,9 @@ import es.lifevit.sdk.bracelet.LifevitSDKSedentaryAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKTensioBraceletMeasurementInterval;
 import es.lifevit.sdk.listeners.LifevitSDKAllDevicesListener;
 import es.lifevit.sdk.listeners.LifevitSDKBabyTempBT125Listener;
-import es.lifevit.sdk.listeners.LifevitSDKBraceletAT2019Listener;
 import es.lifevit.sdk.listeners.LifevitSDKBraceletAT250Listener;
 import es.lifevit.sdk.listeners.LifevitSDKBraceletListener;
+import es.lifevit.sdk.listeners.LifevitSDKBraceletVitalListener;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
 import es.lifevit.sdk.listeners.LifevitSDKHeartListener;
 import es.lifevit.sdk.listeners.LifevitSDKOximeterListener;
@@ -144,7 +144,7 @@ public class LifevitSDKManager {
     private LifevitSDKWeightScaleListener weightScaleListener;
     private LifevitSDKBabyTempBT125Listener babyTempBT125Listener;
     private LifevitSDKPillReminderListener pillReminderListener;
-    private LifevitSDKBraceletAT2019Listener braceletAT2019Listener;
+    private LifevitSDKBraceletVitalListener braceletVitalListener;
 
 
     // Dispositivos conectados
@@ -309,12 +309,12 @@ public class LifevitSDKManager {
         this.pillReminderListener = pillReminderListener;
     }
 
-    public LifevitSDKBraceletAT2019Listener getBraceletAT2019Listener() {
-        return braceletAT2019Listener;
+    public LifevitSDKBraceletVitalListener getBraceletVitalListener() {
+        return braceletVitalListener;
     }
 
-    public void setBraceletAT2019Listener(LifevitSDKBraceletAT2019Listener braceletAT2019Listener) {
-        this.braceletAT2019Listener = braceletAT2019Listener;
+    public void setBraceletVitalListener(LifevitSDKBraceletVitalListener braceletVitalListener) {
+        this.braceletVitalListener = braceletVitalListener;
     }
 
     protected HandlerThread getmHandlerThread() {
@@ -586,6 +586,8 @@ public class LifevitSDKManager {
                 return LifevitSDKBleDeviceTensiometerV2.getUUIDs();
             case LifevitSDKConstants.DEVICE_BRACELET_AT500HR:
                 return LifevitSDKBleDeviceBraceletAT500HR.getUUIDs();
+            case LifevitSDKConstants.DEVICE_BRACELET_VITAL:
+                return LifevitSDKBleDeviceBraceletVital.getUUIDs();
             case LifevitSDKConstants.DEVICE_BRACELET_AT250:
                 return LifevitSDKBleDeviceBraceletAT250.getUUIDs();
             case LifevitSDKConstants.DEVICE_OXIMETER:
@@ -600,8 +602,6 @@ public class LifevitSDKManager {
                 return LifevitSDKBleDeviceBabyTempBT125.getUUIDs();
             case LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER:
                 return LifevitSDKBleDeviceBraceletAT250FirmwareUpdater.getUUIDs();
-            case LifevitSDKConstants.DEVICE_BRACELET_AT2019:
-                return LifevitSDKBleDeviceBraceletAT2019.getUUIDs();
         }
         return null;
     }
@@ -724,7 +724,10 @@ public class LifevitSDKManager {
                 deviceType = LifevitSDKConstants.DEVICE_TENSIOMETER;
             } else if (LifevitSDKBleDeviceBraceletAT500HR.isAt500HrBraceletDevice(dName)) {
                 deviceType = LifevitSDKConstants.DEVICE_BRACELET_AT500HR;
-            } else if (LifevitSDKBleDeviceBraceletAT250.isBraceletAT250Device(dName)) {
+            }else if (LifevitSDKBleDeviceBraceletVital.matchDevice(dName)) {
+                deviceType = LifevitSDKConstants.DEVICE_BRACELET_VITAL;
+            }
+            else if (LifevitSDKBleDeviceBraceletAT250.isBraceletAT250Device(dName)) {
                 deviceType = LifevitSDKConstants.DEVICE_BRACELET_AT250;
             } else if (LifevitSDKBleDeviceOximeter.isOximeterDevice(dName)) {
                 deviceType = LifevitSDKConstants.DEVICE_OXIMETER;
@@ -742,8 +745,6 @@ public class LifevitSDKManager {
                 deviceType = LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER;
             } else if (LifevitSDKBleDevicePillReminder.matchDeviceName(dName) || LifevitSDKBleDevicePillReminder.matchDeviceName(result.getAdvertisedName())) {
                 deviceType = LifevitSDKConstants.DEVICE_PILL_REMINDER;
-            } else if (LifevitSDKBleDeviceBraceletAT2019.isAt2019BraceletDevice(dName)) {
-                deviceType = LifevitSDKConstants.DEVICE_BRACELET_AT2019;
             }
 
             if (deviceType != LifevitSDKConstants.DEVICE_OTHERS) {
@@ -942,6 +943,10 @@ public class LifevitSDKManager {
 
                 bleDevice = new LifevitSDKBleDeviceBraceletAT500HR(device, this);
 
+            }else if (LifevitSDKBleDeviceBraceletVital.matchDevice(device)) {
+
+                bleDevice = new LifevitSDKBleDeviceBraceletVital(device, this);
+
             } else if (LifevitSDKBleDeviceBraceletAT250.matchDevice(device)) {
 
                 bleDevice = new LifevitSDKBleDeviceBraceletAT250(device, this);
@@ -978,9 +983,6 @@ public class LifevitSDKManager {
 
                 bleDevice = new LifevitSDKBleDevicePillReminder(device, this);
 
-            } else if (LifevitSDKBleDeviceBraceletAT2019.matchDevice(device)) {
-
-                bleDevice = new LifevitSDKBleDeviceBraceletAT2019(device, this);
             }
 
             if (bleDevice != null) {
@@ -1146,6 +1148,10 @@ public class LifevitSDKManager {
         if (bracelet500HR != null) {
             return bracelet500HR.isRunning();
         }
+        LifevitSDKBleDeviceBraceletVital braceletVital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (braceletVital != null) {
+            //return braceletVital.isRunning();
+        }
         return false;
     }
 
@@ -1158,6 +1164,11 @@ public class LifevitSDKManager {
             } else {
                 bracelet500HR.startExercise();
             }
+        }
+
+        LifevitSDKBleDeviceBraceletVital braceletVital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (braceletVital != null) {
+
         }
     }
 
@@ -1393,241 +1404,6 @@ public class LifevitSDKManager {
         }
     }
 
-
-    // endregion
-
-
-    // region --- Bracelet AT2019 ---
-
-    public void bracelet2019GetBasicInfo() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.getBasicInfo();
-        }
-    }
-
-    public void bracelet2019GetFeatureList() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.getFeatureList();
-        }
-    }
-
-    public void bracelet2019SetDeviceTime(Long time) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.setTime(time);
-        }
-    }
-
-
-    public void bracelet2019GetDeviceTime() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.getDeviceTime();
-        }
-    }
-
-    public void bracelet2019SynchronizeData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.synchronizeData();
-        }
-    }
-
-    /*
-    public void bracelet2019EndSynchronizeData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.endSynchronizeData();
-        }
-    }
-    */
-    public void bracelet2019SynchronizeSportsData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.synchronizeSportsData();
-        }
-    }
-
-    public void bracelet2019SynchronizeSleepData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.synchronizeSleepData();
-        }
-    }
-
-    public void bracelet2019SynchronizeHeartRateData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.synchronizeHeartRateData();
-        }
-    }
-
-    public void bracelet2019SynchronizeHistoricSportData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.synchronizeSportsData();
-        }
-    }
-
-    public void bracelet2019SynchronizeHistoricSleepData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.synchronizeHistoricSleepData();
-        }
-    }
-
-    public void bracelet2019SynchronizeHistoricHeartRateData() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.synchronizeHistoricHeartRateData();
-        }
-    }
-
-    public void bracelet2019GetBattery() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.getBattery();
-        }
-    }
-
-    public void bracelet2019StartSynchronization() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.startSynchronization();
-        }
-    }
-
-    public void bracelet2019ConfigureAndroidPhone() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureAndroidPhone();
-        }
-    }
-
-
-    public void bracelet2019ConfigureAlarm(LifevitSDKAlarmTime alarm) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureAlarm(alarm);
-        }
-    }
-
-    public void bracelet2019RemoveAlarm(boolean deletePrimaryAlarm) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.removeAlarm(deletePrimaryAlarm);
-        }
-    }
-
-    public void bracelet2019SetGoals(int steps, int sleepHour, int sleepMinute) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.setGoals(steps, sleepHour, sleepMinute);
-        }
-    }
-
-    public void bracelet2019SetUserInformation(LifevitSDKUserData user) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.setUserInformation(user);
-        }
-    }
-
-
-    public void bracelet2019ConfigureBraceletSedentaryAlarm(LifevitSDKMonitoringAlarm alarm) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureBraceletSedentaryAlarm(alarm);
-        }
-    }
-
-    public void bracelet2019DisableBraceletSedentaryAlarm() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.disableBraceletSedentaryAlarm();
-        }
-    }
-
-    public void bracelet2019ConfigureAntitheft(Boolean active) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureAntitheft(active);
-        }
-    }
-
-    public void bracelet2019ConfigureRiseHand(Boolean leftHand) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureRiseHand(leftHand);
-        }
-    }
-
-    public void bracelet2019ConfigureHeartRateIntervalSetting(int burnFatThreshold, int aerobicExercise, int limitExercise, int userMaxHR) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureHeartRateIntervalSetting(burnFatThreshold, aerobicExercise, limitExercise, userMaxHR);
-        }
-    }
-
-    public void bracelet2019ConfigureHeartRateMonitoring(Boolean enabled, Boolean timeIntervalEnabled, LifevitSDKSedentaryAlarm monitoringTime) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureHeartRateMonitoring(enabled, timeIntervalEnabled, monitoringTime);
-        }
-    }
-
-    public void bracelet2019ConfigureFindPhone(Boolean enabled) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureFindPhone(enabled);
-        }
-    }
-
-    public void bracelet2019ConfigureACNS(LifevitSDKAppNotification appNotification) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureACNS(appNotification);
-        }
-    }
-
-    public void bracelet2019ConfigureSleepMonitoring(Boolean enabled, LifevitSDKMonitoringAlarm monitoringTime) {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.configureSleepMonitoring(enabled, monitoringTime);
-        }
-    }
-
-    public void bracelet2019SendMessageReceived() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.messageReceived();
-        }
-    }
-
-    /*
-    public void bracelet2019CancelOp() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.cancelOp();
-        }
-    }
-
-    public void bracelet2019Bind() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.sendBind();
-        }
-    }
-
-    public void bracelet2019Unbind() {
-        LifevitSDKBleDeviceBraceletAT2019 bracelet = (LifevitSDKBleDeviceBraceletAT2019) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT2019);
-        if (bracelet != null) {
-            bracelet.sendUnbind();
-        }
-    }
-    */
 
     // endregion
 

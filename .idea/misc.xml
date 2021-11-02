@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/activity_bracelet_vital.xml" value="0.19739583333333333" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.30104166666666665" />
         <entry key="app/src/main/res/layout/activity_weight_scale.xml" value="0.1490036231884058" />
       </map>
     </option>

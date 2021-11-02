@@ -32,16 +32,175 @@ import es.lifevit.sdk.utils.Utils;
 /**
  * Created by aescanuela on 26/1/16.
  */
-public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
+public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
 
-    private final static String CLASS_TAG = LifevitSDKBleDeviceBraceletAT2019.class.getSimpleName();
+    public static class Constants {
+        //2025E COMANDS
+        public static byte DATA_SET_MILE = (byte) 0x81;
+        public static byte DATA_SET_KM = (byte) 0x80;
+        public static byte DATA_GET_MILE = (byte) 0x01;
+        public static byte DATA_GET_KM = (byte) 0x00;
 
-    private static final String DEVICE_NAME = "ID132Color HR";
-    private static final String DEVICE_SECOND_NAME = "ID130Plus Color HR";
+        public static byte DATA_SET_HOUR_12_DISPLAY = (byte) 0x81;
+        public static byte DATA_SET_HOUR_24_DISPLAY = (byte) 0x80;
+        public static byte DATA_GET_HOUR_12_DISPLAY = (byte) 0x01;
+        public static byte DATA_GET_HOUR_24_DISPLAY = (byte) 0x00;
+
+        public static byte DATA_SET_ENABLE = (byte) 0x81;
+        public static byte DATA_SET_DISABLE = (byte) 0x80;
+        public static byte DATA_GET_ENABLED = (byte) 0x01;
+        public static byte DATA_GET_DISABLED = (byte) 0x00;
+
+        public static byte DATA_SET_FAHRENHEIT = (byte) 0x81;
+        public static byte DATA_SET_CELSIUS = (byte) 0x80;
+        public static byte DATA_GET_FAHRENHEIT = (byte) 0x01;
+        public static byte DATA_GET_CELSIUS = (byte) 0x00;
+
+        public static byte DATA_SET_CHINESE = (byte) 0x81;
+        public static byte DATA_SET_ENGLISH = (byte) 0x80;
+        public static byte DATA_GET_CHINESE = (byte) 0x01;
+        public static byte DATA_GET_ENGLISH = (byte) 0x00;
+
+        public static byte DATA_OPERATION_DELETE = (byte) 0x99;
+        public static byte DATA_OPERATION_READ_MOST_RECENT = (byte) 0x00;
+        public static byte DATA_OPERATION_READ_SPECIFIED = (byte) 0x01;
+        public static byte DATA_OPERATION_NEXT = (byte) 0x02;
+
+        public static byte SPORT_RUN = (byte) 0x00;
+        public static byte SPORT_CYCLING = (byte) 0x01;
+        public static byte SPORT_BADMINTON = (byte) 0x02;
+        public static byte SPORT_FOOTBALL = (byte) 0x03;
+        public static byte SPORT_TENNIS = (byte) 0x04;
+        public static byte SPORT_YOGA = (byte) 0x05;
+        public static byte SPORT_BREATH = (byte) 0x06;
+        public static byte SPORT_DANCE = (byte) 0x07;
+        public static byte SPORT_BASKETBALL = (byte) 0x08;
+        public static byte SPORT_WALK = (byte) 0x09;
+        public static byte SPORT_GYM = (byte) 0x10;
+        public static byte SPORT_CRICKET = (byte) 0x11;
+        public static byte SPORT_HIKING = (byte) 0x12;
+        public static byte SPORT_AEROBICS = (byte) 0x13;
+        public static byte SPORT_PINGPONG = (byte) 0x14;
+        public static byte SPORT_ROPEJUMP = (byte) 0x15;
+        public static byte SPORT_SITUPS = (byte) 0x16;
+        public static byte SPORT_VOLLEYBALL = (byte) 0x17;
+
+
+        public static byte CONTROL_START = (byte) 0x01;
+        public static byte CONTROL_PAUSE = (byte) 0x02;
+        public static byte CONTROL_CONTINUE = (byte) 0x03;
+        public static byte CONTROL_END = (byte) 0x04;
+
+        public static byte MULTIMEDIA_CONTROL_PLAY = (byte) 0x01;
+        public static byte MULTIMEDIA_CONTROL_PAUSE = (byte) 0x00;
+        public static byte MULTIMEDIA_CONTROL_PREVIOUS = (byte) 0x02;
+        public static byte MULTIMEDIA_CONTROL_NEXT = (byte) 0x03;
+        public static byte MULTIMEDIA_CONTROL_VOLUME_DOWN = (byte) 0x04;
+        public static byte MULTIMEDIA_CONTROL_VOLUME_UP = (byte) 0x05;
+
+        public static byte FIRMWARE_COMMAND_CALL_OPERATION = (byte) 0x01;
+        public static byte FIRMWARE_COMMAND_TAKE_PICTURE = (byte) 0x02;
+        public static byte FIRMWARE_COMMAND_MUSIC_CONTROL = (byte) 0x03;
+        public static byte FIRMWARE_COMMAND_FIND_PHONE = (byte) 0x04;
+
+        public static byte HEALTH_MEASUREMENT_HRV = (byte) 0x01;
+        public static byte HEALTH_MEASUREMENT_HEARTRATE = (byte) 0x02;
+        public static byte HEALTH_MEASUREMENT_BLOODOXYGEN = (byte) 0x03;
+
+        public static byte UNLOCK_UNLOCK_CODE = (byte) 0x01;
+        public static byte UNLOCK_ENTER_BINDING_PAGE = (byte) 0x02;
+
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_NOT_STARTED = 0;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_IN_PROGRESS = 1;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_TIME_OUT = 2;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_COMPLETED = 3;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_LOW_POWER = 4;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_CHARGING_OFF = 5;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_CLOSED_IN_ADVANCE = 6;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_CLOSED_FACTORY_RESET = 7;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_CLOSED_SPORT_MODE = 8;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_CLOSED_SOS_MODE = 9;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_WEAK_SIGNAL = 10;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_NO_SKIN_CONTACT = 11;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_SKIN_CONTACT = 12;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_CALIBRATION_COMPLETE = 13;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_CALIBRATION_FAILED = 14;
+        public static int REQUEST_ECG_STATUS_MEASUREMENT_DONT_MOVE_ALERT = 255;
+
+        public static byte REQUEST_SET_TIME = (byte) 0x01;
+        public static byte REQUEST_GET_TIME = (byte) 0x41;
+        public static byte REQUEST_SET_USER_PERSONAL_INFORMATION = (byte) 0x02;
+        public static byte REQUEST_GET_USER_PERSONAL_INFORMATION = (byte) 0x42;
+        public static byte REQUEST_SET_DEVICE_PARAMETERS = (byte) 0x03;
+        public static byte REQUEST_GET_DEVICE_PARAMETERS = (byte) 0x04;
+        public static byte REQUEST_SET_DEVICE_NEW_PARAMETERS = (byte) 0x06;
+        public static byte REQUEST_GET_DEVICE_NEW_PARAMETERS = (byte) 0x07;
+        public static byte REQUEST_SET_REALTIME_STEP_COUNTING = (byte) 0x09;
+        public static byte REQUEST_GET_BLOOD_OXYGEN_DATA = (byte) 0x60;
+        public static byte REQUEST_GET_AUTOMATIC_BLOOD_OXYGEN_DATA = (byte) 0x66;
+        public static byte REQUEST_GET_TEMPERATURE_DATA = (byte) 0x62;
+        public static byte REQUEST_GET_AUTOMATIC_TEMPERATURE_DATA = (byte) 0x65;
+        public static byte REQUEST_GET_HEART_RATE_DATA = (byte) 0x54;
+        public static byte REQUEST_GET_SINGLE_HEART_RATE_DATA = (byte) 0x55;
+        public static byte REQUEST_GET_ECG_START_DATA_UPLOADING = (byte) 0x99;
+        public static byte REQUEST_GET_ECG_STOP_DATA_UPLOADING = (byte) 0x98;
+        public static byte REQUEST_GET_ECG_MEASUREMENT_STATUS = (byte) 0x9C;
+        public static byte REQUEST_GET_ECG_MEASUREMENT = (byte) 0xAA;
+        public static byte REQUEST_GET_ECG_WAVEFORM_SAVED = (byte) 0x71;
+        public static byte REQUEST_SET_AUTOMATIC_BLOOD_OXYGEN_DETECTION = (byte) 0x29;
+        public static byte REQUEST_SET_AUTOMATIC_HEART_RATE_DETECTION = (byte) 0x2A;
+        public static byte REQUEST_GET_AUTOMATIC_HEART_RATE_DETECTION = (byte) 0x2B;
+        public static byte REQUEST_GET_HRV_DATA = (byte) 0x56;
+        public static byte REQUEST_GET_TOTAL_STEPS_DATA = (byte) 0x51;
+        public static byte REQUEST_GET_DETAILED_STEPS_DATA = (byte) 0x52;
+        public static byte REQUEST_GET_DETAILED_SLEEP_DATA = (byte) 0x53;
+        public static byte REQUEST_SET_ACTIVITY_PERIOD = (byte) 0x25;
+        public static byte REQUEST_GET_ACTIVITY_PERIOD = (byte) 0x26;
+        public static byte REQUEST_SPORT_MODE_CONTROL_ENABLE = (byte) 0x19;
+        public static byte REQUEST_APP_HEART_BEAT_PACKET = (byte) 0x17;
+        public static byte REQUEST_BRACELET_HEART_BEAT_PACKET = (byte) 0x18;
+        public static byte REQUEST_BRACELET_HEALTH_MEASUREMENT_CONTROL = (byte) 0x28;
+        public static byte REQUEST_FIRMWARE_COMMAND = (byte) 0x16;
+        public static byte REQUEST_SOS_FUNCTION = (byte) 0xFE;
+        public static byte REQUEST_GET_DEVICE_BATTERY = (byte) 0x13;
+        public static byte REQUEST_UNLOCK_QR_CODE = (byte) 0xB0;
+        public static byte REQUEST_GET_SPORTS_DATA = (byte) 0x5C;
+        public static byte REQUEST_SET_TARGET_STEPS = (byte) 0x0B;
+        public static byte REQUEST_GET_TARGET_STEPS = (byte) 0x4B;
+        public static byte REQUEST_GET_MAC_ADDRESS = (byte) 0x22;
+
+        public static byte ERROR_SET_TIME = (byte) 0x81;
+        public static byte ERROR_GET_TIME = (byte) 0xC1;
+        public static byte ERROR_SET_USER_PERSONAL_INFORMATION = (byte) 0x82;
+        public static byte ERROR_GET_USER_PERSONAL_INFORMATION = (byte) 0xC2;
+        public static byte ERROR_SET_DEVICE_PARAMETERS = (byte) 0x83;
+        public static byte ERROR_GET_DEVICE_PARAMETERS = (byte) 0x84;
+        public static byte ERROR_SET_DEVICE_NEW_PARAMETERS = (byte) 0x86;
+        public static byte ERROR_GET_DEVICE_NEW_PARAMETERS = (byte) 0x87;
+        public static byte ERROR_SET_REALTIME_STEP_COUNTING = (byte) 0x89;
+        public static byte ERROR_SET_AUTOMATIC_BLOOD_OXYGEN_DETECTION = (byte) 0xAA;
+        public static byte ERROR_GET_AUTOMATIC_HEART_RATE_DETECTION = (byte) 0xAB;
+        public static byte ERROR_SET_ACTIVITY_PERIOD = (byte) 0xA5;
+        public static byte ERROR_GET_ACTIVITY_PERIOD = (byte) 0xA6;
+        public static byte ERROR_GET_DEVICE_BATTERY = (byte) 0x93;
+        public static byte ERROR_SET_TARGET_STEPS = (byte) 0x8B;
+        public static byte ERROR_GET_TARGET_STEPS = (byte) 0xCB;
+        public static byte ERROR_GET_MAC_ADDRESS = (byte) 0xA2;
+    }
+
+
+    private final static String CLASS_TAG = LifevitSDKBleDeviceBraceletVital.class.getSimpleName();
+
+    private static final String DEVICE_NAME = "J2025E";
+    private static final String DEVICE_SECOND_NAME = "J2025E";
 
     private ArrayList<LifevitSDKHeartbeatData> heartRateDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKStepData> stepDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKSleepData> sleepDataArray = new ArrayList<>();
+    private ArrayList<LifevitSDKOximeterData> oximeterDataArray = new ArrayList<>();
+    private ArrayList<LifevitSDKSleepData> bloodPressureDataArray = new ArrayList<>();
+    private ArrayList<LifevitSDKSleepData> temperatureDataArray = new ArrayList<>();
+    private ArrayList<LifevitSDKSleepData> sportsDataArray = new ArrayList<>();
 
     private long recordDate;
     private int packetDurationInMinutes;
@@ -56,7 +215,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
      */
 
     // Sending queue, to send instructions to device
-    static BraceletAT2019SendQueue sendingThread;
+    static BraceletVitalSendQueue sendingThread;
 
 
     /**
@@ -64,64 +223,23 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
      */
 
     // Custom service (primary service)
-    private static final String UUID_SERVICE = "00000af0-0000-1000-8000-00805f9b34fb";
+    private static final String UUID_SERVICE = "0000fff0-0000-1000-8000-00805f9b34fb";
 
     // Properties: WRITE, WRITE_NO_RESPONS (client can write, and write with response, on this characteristic)
     // Write Type: WRITE REQUEST (will give you a response back telling you the write was successful)
     // Descriptors:
     // 1. Characteristic user description, UUID: 0x2901 (read-only, provides a textual user description for a characteristic value)
-    protected static final String UUID_WRITE_CHARACTERISTIC = "00000AF6-0000-1000-8000-00805f9b34fb";
+    protected static final String UUID_WRITE_CHARACTERISTIC = "0000fff6-0000-1000-8000-00805f9b34fb";
 
     // Properties: NOTIFY (allows the server to use the Handle Value Notification ATT operation on this characteristic )
     // Descriptors:
     // 1. Client Characteristic Configuration, UUID: 0x2902 (defines how the characteristic may be configured by a specific client)
-    protected static final String UUID_NOTIFY_CHARACTERISTIC_READ = "00000AF7-0000-1000-8000-00805f9b34fb";
-
-
-    protected static final String UUID_WRITE_CHARACTERISTIC_2 = "00000AF1-0000-1000-8000-00805f9b34fb";
-
-    protected static final String UUID_NOTIFY_CHARACTERISTIC_READ_2 = "00000AF2-0000-1000-8000-00805f9b34fb";
-
-
-    // region --- Constants: Actions to send to BLE device ---
-
-    static final int ACTION_GET_BASIC_INFO = 0;
-    static final int ACTION_GET_FEATURE_LIST = 1;
-    static final int ACTION_SET_TIME = 2;
-    static final int ACTION_GET_DEVICE_TIME = 3;
-    static final int ACTION_SYNC_DATA = 4;
-    static final int ACTION_SYNC_SPORTS_DATA = 5;
-    static final int ACTION_SYNCHRONIZE_SLEEP_DATA = 6;
-    static final int ACTION_SYNCHRONIZE_HEART_RATE_DATA = 7;
-    static final int ACTION_SYNCHRONIZE_HISTORIC_SPORT_DATA = 8;
-    static final int ACTION_SYNCHRONIZE_HISTORIC_SLEEP_DATA = 9;
-    static final int ACTION_SYNCHRONIZE_HISTORIC_HEART_RATE_DATA = 10;
-    static final int ACTION_CONFIGURE_ALARM = 11;
-    static final int ACTION_DELETE_ALARM = 12;
-    static final int ACTION_SET_GOALS = 13;
-    static final int ACTION_SET_USER_INFORMATION = 14;
-    static final int ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM = 15;
-    static final int ACTION_DISABLE_BRACELET_SEDENTARY_ALARM = 16;
-    static final int ACTION_ANTITHEFT = 17;
-    static final int ACTION_RISE_HAND = 18;
-    static final int ACTION_ANDROID_PHONE = 19;
-    static final int ACTION_HEART_RATE_INTERVAL_SETTING = 20;
-    static final int ACTION_HEART_RATE_MONITORING = 21;
-    static final int ACTION_FIND_PHONE = 22;
-    static final int ACTION_ACNS = 23;
-    static final int ACTION_SLEEP_MONITORING = 24;
-    static final int ACTION_BATTERY = 25;
-    static final int ACTION_START_SYNCHRONIZATION = 26;
-    static final int ACTION_REPLY_LAST_SYNCHRONIZATION = 27;
-    static final int ACTION_MESSAGE_RECEIVED = 28;
-
-    // endregion --- Constants: Actions to send to BLE device ---
-
+    protected static final String UUID_NOTIFY_CHARACTERISTIC_READ = "0000fff7-0000-1000-8000-00805f9b34fb";
 
     // region --- Device methods ---
 
 
-    protected LifevitSDKBleDeviceBraceletAT2019(BluetoothDevice dev, LifevitSDKManager manager) {
+    protected LifevitSDKBleDeviceBraceletVital(BluetoothDevice dev, LifevitSDKManager manager) {
 
         this.mBluetoothDevice = dev;
         this.mLifevitSDKManager = manager;
@@ -130,7 +248,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
     @Override
     protected int getType() {
-        return LifevitSDKConstants.DEVICE_BRACELET_AT2019;
+        return LifevitSDKConstants.DEVICE_BRACELET_VITAL;
     }
 
 
@@ -144,7 +262,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         mDeviceType = getDevice().getName();
 
-        sendingThread = new BraceletAT2019SendQueue(this);
+        sendingThread = new BraceletVitalSendQueue(this);
         sendingThread.start();
     }
 
@@ -165,7 +283,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     }
 
 
-    protected static boolean isAt2019BraceletDevice(String name) {
+    protected static boolean matchDevice(String name) {
         return DEVICE_NAME.equalsIgnoreCase(name) || DEVICE_SECOND_NAME.equalsIgnoreCase(name);
     }
 
@@ -182,7 +300,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
 
     protected void sendDeviceStatus() {
-        mLifevitSDKManager.deviceOnConnectionChanged(LifevitSDKConstants.DEVICE_BRACELET_AT2019, mDeviceStatus, true);
+        mLifevitSDKManager.deviceOnConnectionChanged(LifevitSDKConstants.DEVICE_BRACELET_VITAL, mDeviceStatus, true);
 
 //        if (mDeviceStatus == LifevitSDKConstants.STATUS_CONNECTED) {
 //            sendUserHeight();
@@ -226,25 +344,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             }
         }
 
-        // --- Second characteristic
-
-        BluetoothGattCharacteristic txCharacteristic2 = RxService.getCharacteristic(UUID.fromString(UUID_NOTIFY_CHARACTERISTIC_READ_2));
-
-        if (txCharacteristic2 == null) {
-            LogUtils.log(Log.ERROR, CLASS_TAG, "Tx charateristic2 not found!");
-            return;
-        }
-
-        mBluetoothGatt.setCharacteristicNotification(txCharacteristic2, true);
-
-        for (BluetoothGattDescriptor descriptor : txCharacteristic2.getDescriptors()) {
-
-            // It's a notify characteristic
-            if (descriptor != null) {
-                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                write(descriptor);
-            }
-        }
     }
 
 
@@ -253,7 +352,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
     // region --- Public methods to give orders to bracelet ---
 
-    void getBasicInfo() {
+    /*void getBasicInfo() {
         sendingThread.addToQueue(ACTION_GET_BASIC_INFO);
     }
 
@@ -368,16 +467,10 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
     void messageReceived() {
         sendingThread.addToQueue(ACTION_MESSAGE_RECEIVED);
     }
-
+*/
     // endregion --- "Public methods" ---
 
-
     protected void sendMessage(byte[] data) {
-        sendMessage(data, 1);
-    }
-
-
-    protected void sendMessage(byte[] data, int characteristic) {
 
         if (mBluetoothGatt == null) {
             LogUtils.log(Log.ERROR, CLASS_TAG, "sendMessage: mBluetoothGatt is null");
@@ -391,11 +484,8 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         BluetoothGattCharacteristic RxChar;
 
-        if (characteristic == 1) {
-            RxChar = RxService.getCharacteristic(UUID.fromString(UUID_WRITE_CHARACTERISTIC));
-        } else {
-            RxChar = RxService.getCharacteristic(UUID.fromString(UUID_WRITE_CHARACTERISTIC_2));
-        }
+        RxChar = RxService.getCharacteristic(UUID.fromString(UUID_WRITE_CHARACTERISTIC));
+
 
         if (RxChar == null) {
             LogUtils.log(Log.ERROR, CLASS_TAG, "Rx charateristic not found!");
@@ -692,11 +782,11 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
             }
         }
 
-        if (mLifevitSDKManager.getBraceletAT2019Listener() != null) {
-            mLifevitSDKManager.getBraceletAT2019Listener().braceletDataReceived(braceletData);
+        if (mLifevitSDKManager.getBraceletVitalListener() != null) {
+            mLifevitSDKManager.getBraceletVitalListener().braceletDataReceived(braceletData);
         }
 
-        replyLastSynchronization();
+        //replyLastSynchronization();
 
         sendingThread.taskFinished();
     }
@@ -1396,39 +1486,6 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
                 sendingThread.taskFinished();
             }
 
-        } else if (characteristic.getUuid().equals(UUID.fromString(UUID_NOTIFY_CHARACTERISTIC_READ_2))) {
-
-            byte[] rx = characteristic.getValue();
-
-            String resultsStr = new String(rx);
-
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "characteristicReadProcessData(2) - RECEIVED (byte format): " + HexUtils.getStringToPrint(rx));
-
-            if (rx[0] == 0x08 && rx[1] == 0x01) {
-
-                processSynchronizeGeneralData(rx);
-
-            } else if ((rx[0] == 0x08 && rx[1] == 0x03) || (rx[0] == 0x08 && rx[1] == 0x05)) {
-
-                processSynchronizeSportData(rx);
-
-            } else if ((rx[0] == 0x08 && rx[1] == 0x04) || (rx[0] == 0x08 && rx[1] == 0x06)) {
-
-                processSynchronizeSleepData(rx);
-
-            } else if ((rx[0] == 0x08 && rx[1] == 0x07) || (rx[0] == 0x08 && rx[1] == 0x08)) {
-
-                processSynchronizeHeartRateData(rx);
-
-            } else if (rx[0] == 0x08 && rx[1] == (byte) 0xEE) {
-
-                processEndData();
-
-            } else {
-
-                LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> NO CASE BRACELET AT2019");
-                sendingThread.taskFinished();
-            }
         }
     }
 
@@ -1479,7 +1536,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendStartSynchronizeData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
 
@@ -1492,7 +1549,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendReplyLastSynchronization] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
 
         sendingThread.taskFinished();
     }
@@ -1510,7 +1567,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendEndSynchronizeData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
 
@@ -1593,7 +1650,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeSportsData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
     protected void sendSynchronizeSleepData(int mode) {
@@ -1611,7 +1668,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeSleepData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
 
@@ -1630,7 +1687,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendSynchronizeHeartRateData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
 
@@ -1727,7 +1784,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[Send sendSynchronizeHistoricSportData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
     protected void sendSynchronizeHistoricSleepData() {
@@ -1742,7 +1799,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[Send sendSynchronizeHistoricSleepData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
     protected void sendSynchronizeHistoricHeartRateData() {
@@ -1757,7 +1814,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[Send sendSynchronizeHistoricHeartRateData] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
 
@@ -1844,7 +1901,7 @@ public class LifevitSDKBleDeviceBraceletAT2019 extends LifevitSDKBleDevice {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[Send getNotificationStatus] " + HexUtils.getStringToPrint(syncparamsArray));
 
-        sendMessage(syncparamsArray, 2);
+        sendMessage(syncparamsArray);
     }
 
 
