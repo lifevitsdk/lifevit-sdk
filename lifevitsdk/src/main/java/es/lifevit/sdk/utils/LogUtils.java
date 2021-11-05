@@ -13,6 +13,13 @@ public class LogUtils {
     private static int mLogLevel = 0;
 
 
+    public static void debug(String message) {
+        log(Log.DEBUG, LifevitSDKConstants.TAG, message);
+    }
+    public static void log(int logLevel, String message) {
+        log(logLevel, LifevitSDKConstants.TAG, message);
+    }
+
     public static void log(int logLevel, String tag, String message) {
 
         if (LogUtils.isLogEnabled()) {
@@ -60,8 +67,8 @@ public class LogUtils {
                 return "BRACELET_AT250_FIRMWARE_UPDATER";
             case LifevitSDKConstants.DEVICE_PILL_REMINDER:
                 return "PILLREMINDER";
-            case LifevitSDKConstants.DEVICE_BRACELET_AT2019:
-                return "BRACELET_AT2019";
+            case LifevitSDKConstants.DEVICE_BRACELET_VITAL:
+                return "BRACELET_VITAL";
             case LifevitSDKConstants.DEVICE_OTHERS:
                 return "OTHERS";
         }

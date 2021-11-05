@@ -13,19 +13,13 @@ import es.lifevit.sdk.bracelet.LifevitSDKSummaryStepData;
 
 public interface LifevitSDKBraceletVitalListener {
 
-    void braceletCurrentStepsReceived(LifevitSDKStepData stepData);
+    void braceletSOS();
 
-    void braceletStepsReceived(List<LifevitSDKStepData> stepData);
-
-    void braceletSummaryStepsReceived(LifevitSDKSummaryStepData stepData);
-
-    void braceletSummarySleepReceived(LifevitSDKSummarySleepData sleepData);
+    void braceletOperation(int operation);
 
     void braceletInformation(Object message);
 
     void braceletError(int errorCode);
 
     void braceletCurrentBattery(int battery);
-
-    void braceletDataReceived(LifevitSDKBraceletData braceletData);
 }

@@ -35,12 +35,12 @@ public abstract class LifevitSDKBleDevice {
      * Attributes
      */
 
-    BluetoothDevice mBluetoothDevice;
-    LifevitSDKManager mLifevitSDKManager;
-    int mDeviceStatus = LifevitSDKConstants.STATUS_DISCONNECTED;
-    BluetoothGatt mBluetoothGatt;
-    Context mContext;
-    boolean mFirstTime;
+    protected BluetoothDevice mBluetoothDevice;
+    protected LifevitSDKManager mLifevitSDKManager;
+    protected int mDeviceStatus = LifevitSDKConstants.STATUS_DISCONNECTED;
+    protected BluetoothGatt mBluetoothGatt;
+    protected Context mContext;
+    protected boolean mFirstTime;
 
     /**
      * Device states constants

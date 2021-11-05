@@ -2,15 +2,32 @@ package es.lifevit.sdk.utils;
 
 
 public class HexUtils {
-    public static byte[] hexToBytes(String hexString) {
 
-        String[] split = hexString.split(", ");
+    public static byte hexToByte(String hex){
+        return (byte) (short) Short.decode(hex);
+    }
+
+    public static byte[] hexToBytes(String hexString) {
+        return  hexToBytes(hexString, ", ");
+    }
+        public static byte[] hexToBytes(String hexString, String separator) {
+        String[] split = hexString.split(separator);
         byte[] arr = new byte[split.length];
         for (int i = 0; i < split.length; i++) {
             arr[i] = (byte) (short) Short.decode(split[i]);
         }
 
         return arr;
+    }
+
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();

@@ -3,6 +3,7 @@ package es.lifevit.sdk.bracelet;
 public class LifevitSDKAppNotification {
 
 
+
     private boolean sms = false;
     private boolean email = false;
     private boolean wechat = false;
@@ -27,6 +28,8 @@ public class LifevitSDKAppNotification {
     private boolean outlook = false;
     private boolean snapchat = false;
     private boolean telegram = false;
+    private boolean vkclient = false; //Only Vital
+    private boolean mobileInformation = false;
 
     public LifevitSDKAppNotification() {
     }
@@ -280,5 +283,11 @@ public class LifevitSDKAppNotification {
         this.telegram = telegram;
     }
 
+    public boolean isVkclient() {
+        return vkclient;
+    }
 
+    public void setVkclient(boolean vkclient) {
+        this.vkclient = vkclient;
+    }
 }

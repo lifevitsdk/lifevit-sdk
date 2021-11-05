@@ -9,6 +9,11 @@ import es.lifevit.sdk.bracelet.LifevitSDKAlarmTime;
 import es.lifevit.sdk.bracelet.LifevitSDKAppNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKMonitoringAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKSedentaryAlarm;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalActivityPeriod;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarms;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalScreenNotification;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
 import es.lifevit.sdk.utils.LogUtils;
 
 
@@ -32,7 +37,7 @@ public class BraceletVitalSendQueue extends Thread {
     /**
      * Inner class
      */
-    protected class BraceletVitalQueueItem {
+    protected static class BraceletVitalQueueItem {
         public int action;
         public Object[] object;
 
@@ -99,162 +104,160 @@ public class BraceletVitalSendQueue extends Thread {
                         LogUtils.log(Log.DEBUG, TAG, "Sending action to bracelet: " + bqi.action);
 
                         switch (bqi.action) {
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_GET_BASIC_INFO:
-                                dgBleDeviceBracelet.sendGetBasicInfo();
+                            case LifevitSDKBleDeviceBraceletVital.Action.SHOW_QR:
+                                dgBleDeviceBracelet.sendQRCode((Boolean) bqi.object[0]);
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_REALTIME:
+                                dgBleDeviceBracelet.sendRealtimeCounting((Boolean) bqi.object[0], (Boolean) bqi.object[1]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_TIME:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_SET_TIME);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_TIME:
+                                dgBleDeviceBracelet.sendSetTime((Long) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_MAC_ADDRESS:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_MAC_ADDRESS);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_GET_FEATURE_LIST:
-                                dgBleDeviceBracelet.sendGetFeatureList();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_DEVICE_BATTERY:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_DEVICE_BATTERY);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_TIME:
-                                if (bqi.object[0] instanceof Long) {
-                                    dgBleDeviceBracelet.sendSetTime((Long) bqi.object[0]);
-                                }
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_USER_INFO:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_USER_PERSONAL_INFORMATION);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_GET_DEVICE_TIME:
-                                dgBleDeviceBracelet.sendGetDeviceTime();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_USER_INFO:
+                                dgBleDeviceBracelet.sendSetUserInfo((LifevitSDKUserData) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_DEVICE_PARAMS:
+                                dgBleDeviceBracelet.sendSetParameters((LifevitSDKBraceletParams) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_DEVICE_NEW_PARAMS:
+                                dgBleDeviceBracelet.sendSetNewParameters((LifevitSDKBraceletParams) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_DEVICE_PARAMS:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_DEVICE_PARAMETERS);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNC_DATA:
-                                dgBleDeviceBracelet.sendSynchronizeData();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_DEVICE_NEW_PARAMS:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_DEVICE_NEW_PARAMETERS);
 
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_STEP_GOAL:
+                                dgBleDeviceBracelet.sendSetTargetSteps((Integer) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_STEP_GOAL:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_TARGET_STEPS);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNC_SPORTS_DATA:
-                                dgBleDeviceBracelet.sendSynchronizeSportsData(1);
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_SLEEP_DATA:
-                                dgBleDeviceBracelet.sendSynchronizeSleepData(1);
-                                break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HEART_RATE_DATA:
-                                dgBleDeviceBracelet.sendSynchronizeHeartRateData(1);
-                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_BLOOD_OXY:
+                                dgBleDeviceBracelet.sendGetOxymeterData();
 
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_BLOOD_OXY_AUTO:
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HISTORIC_SPORT_DATA:
-                                dgBleDeviceBracelet.sendSynchronizeHistoricSportData();
+                                dgBleDeviceBracelet.sendGetPeriodicOxymeterData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HISTORIC_SLEEP_DATA:
-                                dgBleDeviceBracelet.sendSynchronizeHistoricSleepData();
-                                break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SYNCHRONIZE_HISTORIC_HEART_RATE_DATA:
-                                dgBleDeviceBracelet.sendSynchronizeHistoricHeartRateData();
-                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_ACTIVITY_PERIOD:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_ACTIVITY_PERIOD);
 
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_ACTIVITY_PERIOD:
+                                dgBleDeviceBracelet.sendSetActivityPeriod((LifevitSDKVitalActivityPeriod) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_HR:
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_CONFIGURE_ALARM:
-                                if (bqi.object[0] instanceof LifevitSDKAlarmTime) {
-                                    dgBleDeviceBracelet.sendConfigureAlarm((LifevitSDKAlarmTime) bqi.object[0]);
-                                }
+                                dgBleDeviceBracelet.sendGetHeartRateData();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_DELETE_ALARM:
-                                if (bqi.object[0] instanceof Boolean) {
-                                    dgBleDeviceBracelet.sendRemoveAlarm((Boolean) bqi.object[0]);
-                                }
-                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_HR_AUTO:
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_GOALS:
-                                if (bqi.object[0] instanceof Integer
-                                        && bqi.object[1] instanceof Integer
-                                        && bqi.object[2] instanceof Integer) {
-                                    dgBleDeviceBracelet.sendSetGoals((int) bqi.object[0], (int) bqi.object[1], (int) bqi.object[2]);
-                                }
+                                dgBleDeviceBracelet.sendGetPeriodicHeartRateData();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_HRV:
+                                dgBleDeviceBracelet.sendGetVitals();
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_SPORT_MODE:
+                                dgBleDeviceBracelet.sendStartSport((Integer)bqi.object[0],(Integer)bqi.object[1],(Integer)bqi.object[2],(Integer)bqi.object[3]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_OXY_PERIOD:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_AUTOMATIC_HEART_RATE_DETECTION);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_OXY_PERIOD:
+                                dgBleDeviceBracelet.sendSetBloodPressurePeriod((LifevitSDKVitalPeriod) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_HR_PERIOD:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_AUTOMATIC_HEART_RATE_DETECTION);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_HR_PERIOD:
+                                dgBleDeviceBracelet.sendSetHeartRatePeriod((LifevitSDKVitalPeriod) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_SPORT_DATA:
+                                dgBleDeviceBracelet.sendGetSportsData();
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SET_USER_INFORMATION:
-                                dgBleDeviceBracelet.sendSetUserInformation((int) bqi.object[0], (int) bqi.object[1], (int) bqi.object[2], (long) bqi.object[3]);
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_STEPS:
+                                dgBleDeviceBracelet.sendGetTotalDaySteps();
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_CONFIGURE_BRACELET_SEDENTARY_ALARM:
-                                if (bqi.object[0] instanceof LifevitSDKMonitoringAlarm) {
-                                    dgBleDeviceBracelet.sendConfigureBraceletSedentaryAlarm((LifevitSDKMonitoringAlarm) bqi.object[0]);
-                                }
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_DISABLE_BRACELET_SEDENTARY_ALARM:
-                                dgBleDeviceBracelet.sendDisableBraceletSedentaryAlarm();
-                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.STEP_SYNC:
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_ANTITHEFT:
-                                if (bqi.object[0] instanceof Boolean) {
-                                    dgBleDeviceBracelet.sendConfigureAntitheft((Boolean) bqi.object[0]);
-                                }
+                                dgBleDeviceBracelet.sendGetDetailedStepsData();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SLEEP_SYNC:
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_RISE_HAND:
-                                if (bqi.object[0] instanceof Boolean) {
-                                    dgBleDeviceBracelet.sendConfigureRiseHand((Boolean) bqi.object[0]);
-                                }
+                                dgBleDeviceBracelet.sendGetDetailedSleepData();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_TEMPERATURE:
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_ANDROID_PHONE:
-                                dgBleDeviceBracelet.sendConfigureAndroidPhone();
+                                dgBleDeviceBracelet.sendGetTemperatureData();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_TEMPERATURE_AUTO:
+                                dgBleDeviceBracelet.sendGetPeriodicTemperatureData();
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_HEART_RATE_INTERVAL_SETTING:
-                                dgBleDeviceBracelet.sendConfigureHeartRateIntervalSetting((int) bqi.object[0], (int) bqi.object[1], (int) bqi.object[2], (int) bqi.object[3]);
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.ECG_START:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_ECG_START_DATA_UPLOADING);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_HEART_RATE_MONITORING:
-                                if (bqi.object[2] instanceof LifevitSDKSedentaryAlarm) {
-                                    dgBleDeviceBracelet.sendConfigureHeartRateMonitoring((Boolean) bqi.object[0], (Boolean) bqi.object[1], (LifevitSDKSedentaryAlarm) bqi.object[2]);
-                                }
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.ECG_STATUS:
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_ECG_MEASUREMENT_STATUS);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_FIND_PHONE:
-                                dgBleDeviceBracelet.sendConfigureFindPhone((Boolean) bqi.object[0]);
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.ECG_WAVEFORM:
+                                dgBleDeviceBracelet.sendGetECGWaveform();
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_ACNS:
-                                if (bqi.object[0] instanceof LifevitSDKAppNotification) {
-                                    dgBleDeviceBracelet.sendConfigureACNS((LifevitSDKAppNotification) bqi.object[0]);
-                                }
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.HRV_START:
+                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKBleDeviceBraceletVital.Data.VITALS, true);
 
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_SLEEP_MONITORING:
-                                if (bqi.object[1] instanceof LifevitSDKMonitoringAlarm) {
-                                    dgBleDeviceBracelet.sendConfigureSleepMonitoring((Boolean) bqi.object[0], (LifevitSDKMonitoringAlarm) bqi.object[1]);
-                                }
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_BATTERY:
-                                dgBleDeviceBracelet.sendGetBattery();
-                                break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_START_SYNCHRONIZATION:
-                                dgBleDeviceBracelet.sendStartSynchronizeData();
-                                break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_REPLY_LAST_SYNCHRONIZATION:
-                                dgBleDeviceBracelet.sendReplyLastSynchronization();
-                                break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_MESSAGE_RECEIVED:
-                                dgBleDeviceBracelet.sendMessageReceived();
-                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.HR_START:
+                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKBleDeviceBraceletVital.Data.HR, true);
 
-                            //protected void sendConfigureACNSActivate() {
-
-                                /*
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_GET_REAL_TIME_DATA:
-                                if (bqi.object instanceof Boolean) {
-                                    dgBleDeviceBracelet.sendGetRealTimeData((Boolean) bqi.object);
-                                }
                                 break;
-                                 */
+                            case LifevitSDKBleDeviceBraceletVital.Action.OXY_START:
+                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKBleDeviceBraceletVital.Data.OXYMETER, true);
 
-                                /*
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_END_SYNC_DATA:
-                                dgBleDeviceBracelet.sendEndSynchronizeData();
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_ALARMS:
+                                dgBleDeviceBracelet.sendSetAlarms((LifevitSDKVitalAlarms) bqi.object[0]);
 
-                                 */
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_REMINDERS:
+                                dgBleDeviceBracelet.sendSetNotification((LifevitSDKVitalScreenNotification) bqi.object[0]);
 
-                                /*
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_BIND:
-                                    dgBleDeviceBracelet.sendBind();
                                 break;
-                            case LifevitSDKBleDeviceBraceletAT2019.ACTION_UNBIND:
-                                    dgBleDeviceBracelet.sendUnbind();;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_WEATHER:
+                                dgBleDeviceBracelet.sendSetWeather((LifevitSDKVitalWeather) bqi.object[0]);
+
                                 break;
-                                */
+                            default:
+
+                                LogUtils.log(Log.DEBUG, TAG, "ACTION NOT IN QUEUE: " + bqi.action);
+                                taskFinished();
+                                break;
 
                         }
                     } else {

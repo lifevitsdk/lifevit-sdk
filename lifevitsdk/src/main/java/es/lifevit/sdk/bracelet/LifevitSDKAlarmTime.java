@@ -5,16 +5,16 @@ public class LifevitSDKAlarmTime {
 
     private boolean isSecondaryAlarm = false;
 
-    private int hour = 0;
-    private int minute = 0;
+    protected int hour = 0;
+    protected int minute = 0;
 
-    private boolean monday = false;
-    private boolean tuesday = false;
-    private boolean wednesday = false;
-    private boolean thursday = false;
-    private boolean friday = false;
-    private boolean saturday = false;
-    private boolean sunday = false;
+    protected boolean monday = false;
+    protected boolean tuesday = false;
+    protected boolean wednesday = false;
+    protected boolean thursday = false;
+    protected boolean friday = false;
+    protected boolean saturday = false;
+    protected boolean sunday = false;
 
 
     public LifevitSDKAlarmTime() {

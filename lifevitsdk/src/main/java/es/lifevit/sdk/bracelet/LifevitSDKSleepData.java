@@ -1,6 +1,8 @@
 package es.lifevit.sdk.bracelet;
 
 
+import java.util.Date;
+
 public class LifevitSDKSleepData {
     private long date;
     private int sleepDuration, sleepDeepness;
@@ -27,5 +29,16 @@ public class LifevitSDKSleepData {
 
     public void setSleepDeepness(int sleepDeepness) {
         this.sleepDeepness = sleepDeepness;
+    }
+
+    @Override
+    public String toString() {
+
+        Date d = new Date(date);
+        return "LifevitSDKSleepData{" +
+                "date=" + d +
+                ", sleepDuration=" + sleepDuration +
+                ", sleepDeepness=" + sleepDeepness +
+                '}';
     }
 }

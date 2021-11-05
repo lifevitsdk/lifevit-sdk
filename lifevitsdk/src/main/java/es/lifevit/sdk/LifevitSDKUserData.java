@@ -1,11 +1,14 @@
 package es.lifevit.sdk;
 
+import es.lifevit.sdk.utils.Utils;
+
 public class LifevitSDKUserData {
 
-    private long birthdate;
+    private Long birthdate;
     private long weight;
     private long height;
     private int gender;
+    private Integer age;
 
     public LifevitSDKUserData(long birthdate, long weight, long height, int gender) {
 
@@ -16,6 +19,27 @@ public class LifevitSDKUserData {
 
     }
 
+    public LifevitSDKUserData(int age, long weight, long height, int gender) {
+
+        this.setAge(age);
+        this.setWeight(weight);
+        this.setHeight(height);
+        this.setGender(gender);
+
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Integer getAge() {
+
+        if (age == null && birthdate != null) {
+            return Utils.getAge(birthdate);
+        }
+
+        return age;
+    }
 
     public long getBirthdate() {
         return birthdate;
@@ -50,7 +74,14 @@ public class LifevitSDKUserData {
     }
 
 
-
-
-
+    @Override
+    public String toString() {
+        return "LifevitSDKUserData{" +
+                "birthdate=" + birthdate +
+                ", weight=" + weight +
+                ", height=" + height +
+                ", gender=" + gender +
+                ", age=" + age +
+                '}';
+    }
 }

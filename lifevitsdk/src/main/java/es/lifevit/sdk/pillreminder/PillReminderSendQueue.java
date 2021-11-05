@@ -8,14 +8,11 @@ package es.lifevit.sdk.pillreminder;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import es.lifevit.sdk.LifevitSDKBleDeviceBraceletAT250;
 import es.lifevit.sdk.LifevitSDKBleDevicePillReminder;
 import es.lifevit.sdk.LifevitSDKConstants;
-import es.lifevit.sdk.bracelet.LifevitSDKAT250TimeRange;
 import es.lifevit.sdk.utils.LogUtils;
 
 

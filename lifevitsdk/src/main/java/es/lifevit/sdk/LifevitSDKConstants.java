@@ -9,6 +9,20 @@ import no.nordicsemi.android.dfu.DfuBaseService;
 
 public class LifevitSDKConstants {
 
+    public static final class BraceletCallback {
+        public static final int HANG_UP = 0, PHOTO = 1, MUSIC_PLAY = 2, MUSIC_PAUSE = 3, MUSIC_PREVIOUS= 4, MUSIC_NEXT = 5, MUSIC_VOLUME_UP = 6, MUSIC_VOLUME_DOWN = 7, FIND_PHONE = 8;
+    }
+
+    public static final class VitalOperation {
+        static final int SHOW_QR = 0, SET_TIME = 1, GET_TIME = 2, SET_USER_INFO = 3, GET_USER_INFO = 4, SET_DEVICE_PARAMS = 5, GET_DEVICE_PARAMS = 6, GET_MAC_ADDRESS = 7, SET_STEP_GOAL = 8,
+                GET_STEP_GOAL = 9, GET_DEVICE_BATTERY = 10, SET_DEVICE_NEW_PARAMS = 11, GET_DEVICE_NEW_PARAMS = 12,
+                GET_BLOOD_OXY = 12, GET_BLOOD_OXY_AUTO = 13, SET_PERIODIC_OXY = 14, GET_PERIODIC_OXY = 15,
+                GET_TEMPERATURE = 16, GET_TEMPERATURE_AUTO = 17, GET_HR = 18, GET_HR_PERIOD = 19, GET_HR_AUTO = 20,
+                ECG_START = 21, ECG_STATUS = 22, ECG_WAVEFORM = 23, GET_HRV = 24,
+                SET_REALTIME = 25, GET_STEPS = 26, STEP_SYNC = 27, SLEEP_SYNC = 28,
+                SET_ACTIVITY_PERIOD = 29, GET_ACTIVITY_PERIOD = 30, SET_SPORT_MODE = 31,
+                HRV_START = 32, HR_START = 33, OXY_START = 34, GET_SPORT_DATA = 35;
+    }
 
     public static final class WeightScale{
         public static final int TYPE1 = 1, TYPE2 =2;

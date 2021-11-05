@@ -71,7 +71,7 @@ public class LifevitSDKBleDeviceOximeter extends LifevitSDKBleDevice {
     }
 
 
-    protected static UUID[] getUUIDs() {
+    public static UUID[] getUUIDs() {
         UUID[] uuidArray = new UUID[1];
         uuidArray[0] = UUID.fromString(OXIMETER_UUID_SERVICE);
         return uuidArray;

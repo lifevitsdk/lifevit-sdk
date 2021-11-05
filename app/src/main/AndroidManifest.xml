@@ -59,7 +59,7 @@
             android:name=".activities.PillReminderActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.BraceletAT2019Activity"
+            android:name=".activities.BraceletVitalActivity"
             android:screenOrientation="portrait" />
 
         <service
