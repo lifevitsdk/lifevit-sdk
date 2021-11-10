@@ -1,12 +1,11 @@
 package es.lifevit.sdk.bracelet;
 
+import es.lifevit.sdk.LifevitSDKConstants;
+
 public class LifevitSDKVitalAlarm extends LifevitSDKAlarmTime {
-    public class Type {
-        public static final int ALARM = 1, MEDICATION = 2, DRINK_WATER = 3;
-    }
 
     private boolean enabled = false;
-    private int type = Type.ALARM;
+    private LifevitSDKConstants.BraceletVitalAlarmType type = LifevitSDKConstants.BraceletVitalAlarmType.ALARM;
 
     private String text = "Alarm";
 
@@ -18,11 +17,11 @@ public class LifevitSDKVitalAlarm extends LifevitSDKAlarmTime {
         this.enabled = enabled;
     }
 
-    public int getType() {
+    public LifevitSDKConstants.BraceletVitalAlarmType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(LifevitSDKConstants.BraceletVitalAlarmType type) {
         this.type = type;
     }
 

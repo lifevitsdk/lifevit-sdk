@@ -59,6 +59,17 @@ public class LifevitSDKConstants {
         }
     }
 
+    public enum BraceletVitalAlarmType {
+        ALARM(0x01),
+        MEDICATION(0x02),
+        DRINK_WATER(0x03);
+        public final int value;
+
+        BraceletVitalAlarmType(int value) {
+            this.value = value;
+        }
+    }
+
     public enum BraceletVitalPeriodWorkingMode {
         OFF(0x00),
         TIME_PERIOD(0x01),

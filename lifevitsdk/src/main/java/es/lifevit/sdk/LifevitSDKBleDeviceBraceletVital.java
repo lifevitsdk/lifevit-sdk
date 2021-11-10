@@ -706,7 +706,7 @@ if(release){
                 processAutomaticOxygenPeriod(rx);
             } */
             else if (command == Constants.REQUEST_SET_AUTOMATIC_DETECTION) {
-                processAutomaticPeriod(rx);
+                sendSuccessfulCommand(getActionForCommand(command), true);
             } else if (command == Constants.REQUEST_GET_AUTOMATIC_DETECTION) {
                 processAutomaticPeriod(rx);
             } else if (command == Constants.REQUEST_BRACELET_HEALTH_MEASUREMENT_CONTROL) {
@@ -2415,7 +2415,7 @@ if(release){
         bytes[1] = (byte) total;
         bytes[2] = (byte) index;
         bytes[3] = (byte) (data.isEnabled() ? 0x01 : 0x00);
-        bytes[4] = (byte) data.getType();
+        bytes[4] = (byte) data.getType().value;
         bytes[5] = HexUtils.hexToByte(String.format("0x%2d", data.getHour()).replace(" ", "0"));
         bytes[6] = HexUtils.hexToByte(String.format("0x%2d", data.getMinute()).replace(" ", "0"));
         bytes[7] = ByteUtils.getWeekByte(data.isMonday(), data.isTuesday(), data.isWednesday(), data.isThursday(), data.isFriday(), data.isSaturday(), data.isSunday());
