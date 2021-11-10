@@ -43,7 +43,6 @@ import es.lifevit.sdk.bracelet.LifevitSDKAt500HrAlarmTime;
 import es.lifevit.sdk.bracelet.LifevitSDKTensioBraceletMeasurementInterval;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalActivityPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarm;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarms;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalScreenNotification;
