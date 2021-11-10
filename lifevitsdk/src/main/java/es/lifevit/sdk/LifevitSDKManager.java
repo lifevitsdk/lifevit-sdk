@@ -42,6 +42,7 @@ import es.lifevit.sdk.bracelet.LifevitSDKAT500SedentaryReminderTimeRange;
 import es.lifevit.sdk.bracelet.LifevitSDKAt500HrAlarmTime;
 import es.lifevit.sdk.bracelet.LifevitSDKTensioBraceletMeasurementInterval;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalActivityPeriod;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarms;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
@@ -1206,7 +1207,7 @@ public class LifevitSDKManager {
     /**
      * Get Vital MAC
      */
-    public void getBraceletMAC() {
+    public void getVitalMACAddress() {
         /*LifevitSDKBleDeviceBraceletAT500HR bracelet500HR = (LifevitSDKBleDeviceBraceletAT500HR) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_AT500HR);
         if (bracelet500HR != null) {
             bracelet500HR.getPaceMinutesPerKm();
@@ -1228,44 +1229,11 @@ public class LifevitSDKManager {
             bracelet500HR.updateUserWeigth((int) data.getWeight());
 
         }
-        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
-        if (vital != null) {
-            vital.updateUserInformation(data);
-        }
+        setVitalUserInformation(data);
         braceletAT250SetPersonalInfo((int) data.getHeight(), (int) data.getWeight(), data.getGender(), data.getAge());
     }
 
-    /**
-     * Set Vital bracelet parameters
-     * @param data
-     */
-    public void setBraceletParameters(LifevitSDKBraceletParams data) {
-        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
-        if (vital != null) {
-            vital.updateParamaters(data);
-        }
-    }
 
-    /**
-     * Get Vital bracelet parameters
-     */
-    public void getBraceletParameters() {
-        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
-        if (vital != null) {
-            vital.getParameters();
-        }
-    }
-
-    /**
-     * Get Vital Bracelet User Information
-     */
-    public void getBraceletUserInformation() {
-
-        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
-        if (vital != null) {
-            vital.getUserInformation();
-        }
-    }
 
 
     /**
@@ -1467,30 +1435,96 @@ public class LifevitSDKManager {
 
     public void setBraceletTargetSteps(int targetSteps) {
         braceletAT250SetTargetSteps(targetSteps);
-        LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
-        if (bracelet != null) {
-            bracelet.setTargetSteps(targetSteps);
-        }
+        setVitalStepsGoal(targetSteps);
     }
 
     public void getBraceletTargetSteps() {
-        LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
-        if (bracelet != null) {
-            bracelet.getTargetSteps();
-        }
+        getVitalStepsGoal();
+
     }
 
     // endregion
 
     // region --- Bracelet VITAL Methods ---
 
-    public boolean setVitalSportMode(Integer mode, Integer sport, Integer level, Integer period) {
-        LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+    public boolean setVitalStepsGoal(int targetSteps) {
+    LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            bracelet.setSportsMode(mode, sport, level, period);
+        bracelet.setTargetSteps(targetSteps);
             return true;
         }
         return false;
+    }
+
+    public boolean getVitalStepsGoal() {
+        LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (bracelet != null) {
+            bracelet.getTargetSteps();
+            return true;
+        }
+        return false;
+
+    }
+
+    public boolean startVitalSportMode(LifevitSDKConstants.BraceletVitalSportType sport, LifevitSDKConstants.BraceletVitalMeditationLevel level, Integer period) {
+        LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (bracelet != null) {
+            bracelet.setSportsMode(0x01, sport, level, period);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean stopVitalSportMode(LifevitSDKConstants.BraceletVitalSportType sport) {
+        LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (bracelet != null) {
+            bracelet.setSportsMode(0x04, sport, null, null);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Set Vital bracelet parameters
+     * @param data
+     */
+    public void setVitalParameters(LifevitSDKVitalParams data) {
+        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (vital != null) {
+            vital.updateParamaters(data);
+        }
+    }
+
+    /**
+     * Get Vital bracelet parameters
+     */
+    public void getVitalParameters() {
+        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (vital != null) {
+            vital.getParameters();
+        }
+    }
+
+    /**
+     * Set user information for AT250/AT500/Vital
+     * @param data
+     */
+    public void setVitalUserInformation(LifevitSDKUserData data) {
+        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (vital != null) {
+            vital.updateUserInformation(data);
+        }
+    }
+
+    /**
+     * Get Vital Bracelet User Information
+     */
+    public void getVitalUserInformation() {
+
+        LifevitSDKBleDeviceBraceletVital vital = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (vital != null) {
+            vital.getUserInformation();
+        }
     }
 
     public boolean setVitalActivityPeriod(LifevitSDKVitalActivityPeriod period) {
@@ -1515,33 +1549,34 @@ public class LifevitSDKManager {
     public boolean setVitalPeriodicConfiguration(LifevitSDKVitalPeriod period){
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            switch(period.getType()) {
-                case LifevitSDKBleDeviceBraceletVital.Data
-                        .OXYMETER:
-                    bracelet.setBloodPressurePeriod(period);
-                    return true;
-                case LifevitSDKBleDeviceBraceletVital.Data
-                        .HR:
-                    bracelet.setHeartRatePeriod(period);
-                    return true;
+            if(period.getType().value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
+
+                bracelet.setBloodPressurePeriod(period);
+            }else if(period.getType().value == LifevitSDKConstants.BraceletVitalDataType.HR.value){
+
+                bracelet.setHeartRatePeriod(period);
+            }else if(period.getType().value == LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value){
+
+                bracelet.setTemperaturePeriod(period);
             }
         }
         return false;
     }
 
-    public boolean getVitalPeriodicConfiguration(int type){
+    public boolean getVitalPeriodicConfiguration(LifevitSDKConstants.BraceletVitalDataType type){
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            switch(type) {
-                case LifevitSDKBleDeviceBraceletVital.Data
-                        .OXYMETER:
-                    bracelet.getBloodPressurePeriod();
-                    return true;
-                case LifevitSDKBleDeviceBraceletVital.Data
-                        .HR:
-                    bracelet.getHeartRatePeriod();
-                    return true;
+            if(type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
+
+                bracelet.getBloodPressurePeriod();
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.HR.value){
+
+                bracelet.getHeartRatePeriod();
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value){
+
+                bracelet.getTemperaturePeriod();
             }
+
         }
         return false;
     }
@@ -1562,86 +1597,107 @@ public class LifevitSDKManager {
         return false;
     }
 
-    public boolean setVitalAlarms(LifevitSDKVitalAlarms data){
+    public boolean setVitalAlarms(List<LifevitSDKVitalAlarm> data){
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
+
+            if(data.size()>10){
+                if(braceletVitalListener!=null){
+                    braceletVitalListener.braceletVitalError(bracelet.getIdentifier(), LifevitSDKConstants.BraceletVitalError.ERROR_MAX_ALARMS, LifevitSDKConstants.BraceletVitalCommand.SET_ALARMS);
+                }
+                return false;
+            }
+
             bracelet.setAlarms(data);
+            return true;
         }
         return false;
     }
 
-    public void getVitalData(int type) {
+    public void getVitalData(LifevitSDKConstants.BraceletVitalDataType type) {
         getVitalData(type, false);
     }
-    public void getVitalData(int type, boolean periodic) {
+    public void getVitalData(LifevitSDKConstants.BraceletVitalDataType type, boolean periodic) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            switch (type) {
-                case LifevitSDKBleDeviceBraceletVital.Data.OXYMETER:
-                    if (periodic) {
-                        bracelet.getOximeterPeriodicData();
-                    } else {
-                        bracelet.getOximeterData();
-                    }
-                    break;
-                case LifevitSDKBleDeviceBraceletVital.Data.TEMPERATURE:
-                    if (periodic) {
-                        bracelet.getTemperaturePeriodicData();
-                    } else {
-                        bracelet.getTemperatureData();
-                    }
-                    break;
-                case LifevitSDKBleDeviceBraceletVital.Data.HR:
-                    if (periodic) {
-                        bracelet.getHeartRatePeriodicData();
-                    } else {
-                        bracelet.getHeartRateData();
-                    }
-                    break;
-                case LifevitSDKBleDeviceBraceletVital.Data.VITALS:
+            if(type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
 
-                    bracelet.getVitals();
+                if (periodic) {
+                    bracelet.getOximeterPeriodicData();
+                } else {
+                    bracelet.getOximeterData();
+                }
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value){
 
-                    break;
-                case LifevitSDKBleDeviceBraceletVital.Data.SPORTS:
+                if (periodic) {
+                    bracelet.getTemperaturePeriodicData();
+                } else {
+                    bracelet.getTemperatureData();
+                }
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.HR.value){
 
-                    bracelet.getSportsData();
+                if (periodic) {
+                    bracelet.getHeartRatePeriodicData();
+                } else {
+                    bracelet.getHeartRateData();
+                }
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.VITALS.value){
 
-                    break;
-                case LifevitSDKBleDeviceBraceletVital.Data.SLEEP:
+                bracelet.startVital();
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.SPORTS.value){
 
-                    bracelet.getDetailedSleep();
+                bracelet.getSportsData();
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.SLEEP.value){
 
-                    break;
-                case LifevitSDKBleDeviceBraceletVital.Data.STEPS:
+                bracelet.getDetailedSleep();
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.STEPS.value){
 
-                    bracelet.getDetailedSteps();
-
-                    break;
+                bracelet.getDetailedSteps();
             }
         }
     }
 
-    public void startVitalHealthMeasurement(int type) {
+    public boolean startVitalHealthMeasurement(final LifevitSDKConstants.BraceletVitalDataType type) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            switch (type) {
-                case LifevitSDKBleDeviceBraceletVital.Data.OXYMETER:
+            if(type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
 
-                    bracelet.startOximeter();
+                bracelet.startOxymeter();
+                return true;
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.HR.value){
 
-                    break;
+                bracelet.startHeartRate();
+                return true;
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.VITALS.value){
 
-                case LifevitSDKBleDeviceBraceletVital.Data.HR:
-                    bracelet.startHeartRate();
-                    break;
-                case LifevitSDKBleDeviceBraceletVital.Data.VITALS:
-
-                    bracelet.startVital();
-
-                    break;
+                bracelet.startVital();
+                return true;
             }
+
         }
+
+        return false;
+    }
+
+    public boolean stopVitalHealthMeasurement(final LifevitSDKConstants.BraceletVitalDataType type) {
+        LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
+        if (bracelet != null) {
+            if(type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
+
+                bracelet.stopOxymeter();
+                return true;
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.HR.value){
+
+                bracelet.stopHeartRate();
+                return true;
+            }else if(type.value == LifevitSDKConstants.BraceletVitalDataType.VITALS.value){
+
+                bracelet.stopVital();
+                return true;
+            }
+
+        }
+        return false;
     }
 
     public void showVitalQR(boolean show) {

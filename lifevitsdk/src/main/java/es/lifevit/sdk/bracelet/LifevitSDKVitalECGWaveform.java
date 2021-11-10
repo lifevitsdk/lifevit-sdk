@@ -2,12 +2,12 @@ package es.lifevit.sdk.bracelet;
 
 import java.util.ArrayList;
 
-public class LifevitSDKBraceletECGWaveformData {
+public class LifevitSDKVitalECGWaveform {
     private long date;
-    private int ecgPoint;
+    private int totalPoints;
     private int hrv, heartrate;
     //private int mood; //DEPRECATED
-    private ArrayList<Integer> ecgData;
+    private ArrayList<Integer> ecgData = new ArrayList<>();
 
     public long getDate() {
         return date;
@@ -17,12 +17,12 @@ public class LifevitSDKBraceletECGWaveformData {
         this.date = date;
     }
 
-    public int getEcgPoint() {
-        return ecgPoint;
+    public void setTotalPoints(int totalPoints) {
+        this.totalPoints = totalPoints;
     }
 
-    public void setEcgPoint(int ecgPoint) {
-        this.ecgPoint = ecgPoint;
+    public int getTotalPoints() {
+        return totalPoints;
     }
 
     public int getHrv() {
@@ -47,5 +47,16 @@ public class LifevitSDKBraceletECGWaveformData {
 
     public void setEcgData(ArrayList<Integer> ecgData) {
         this.ecgData = ecgData;
+    }
+
+    @Override
+    public String toString() {
+        return "LifevitSDKBraceletECGWaveformData{" +
+                "date=" + date +
+                ", totalPoints=" + totalPoints +
+                ", hrv=" + hrv +
+                ", heartrate=" + heartrate +
+                ", ecgData=" + ecgData +
+                '}';
     }
 }

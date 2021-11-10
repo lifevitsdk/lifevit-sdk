@@ -9,23 +9,92 @@ import no.nordicsemi.android.dfu.DfuBaseService;
 
 public class LifevitSDKConstants {
 
-    public static final class BraceletCallback {
-        public static final int HANG_UP = 0, PHOTO = 1, MUSIC_PLAY = 2, MUSIC_PAUSE = 3, MUSIC_PREVIOUS= 4, MUSIC_NEXT = 5, MUSIC_VOLUME_UP = 6, MUSIC_VOLUME_DOWN = 7, FIND_PHONE = 8;
+    public enum BraceletVitalNotification {
+        STOP_CALL(0xff), CALL(0), INFO(1), WECHAT(2), FACEBOOK(3), INSTAGRAM(4), SKYPE(5), TELEGRAM(6), TWITTER(7), VKCLIENT(8), WHATSAPP(9), QQ(10), LINKEDIN(11);
+        public final int value;
+
+        private BraceletVitalNotification(int value) {
+            this.value = value;
+        }
     }
 
-    public static final class VitalOperation {
-        static final int SHOW_QR = 0, SET_TIME = 1, GET_TIME = 2, SET_USER_INFO = 3, GET_USER_INFO = 4, SET_DEVICE_PARAMS = 5, GET_DEVICE_PARAMS = 6, GET_MAC_ADDRESS = 7, SET_STEP_GOAL = 8,
-                GET_STEP_GOAL = 9, GET_DEVICE_BATTERY = 10, SET_DEVICE_NEW_PARAMS = 11, GET_DEVICE_NEW_PARAMS = 12,
-                GET_BLOOD_OXY = 12, GET_BLOOD_OXY_AUTO = 13, SET_PERIODIC_OXY = 14, GET_PERIODIC_OXY = 15,
-                GET_TEMPERATURE = 16, GET_TEMPERATURE_AUTO = 17, GET_HR = 18, GET_HR_PERIOD = 19, GET_HR_AUTO = 20,
-                ECG_START = 21, ECG_STATUS = 22, ECG_WAVEFORM = 23, GET_HRV = 24,
-                SET_REALTIME = 25, GET_STEPS = 26, STEP_SYNC = 27, SLEEP_SYNC = 28,
-                SET_ACTIVITY_PERIOD = 29, GET_ACTIVITY_PERIOD = 30, SET_SPORT_MODE = 31,
-                HRV_START = 32, HR_START = 33, OXY_START = 34, GET_SPORT_DATA = 35;
+    public enum BraceletVitalDataType {
+        HR(0), TEMPERATURE(1), OXYMETER(2), VITALS(3), STEPS(4), SLEEP(5), SPORTS(6);
+        public final int value;
+
+        private BraceletVitalDataType(int value) {
+            this.value = value;
+        }
     }
 
-    public static final class WeightScale{
-        public static final int TYPE1 = 1, TYPE2 =2;
+    public enum BraceletVitalSportType {
+        RUN(0x00), CYCLING(0x01), BADMINTON(0x02), FOOTBALL(0x03),
+        TENNIS(0x04), YOGA(0x05), BREATH(0x06), DANCE(0x07),
+        BASKETBALL(0x08),
+        WALK(0x09),
+        GYM(0x10),
+        CRICKET(0x11),
+        HIKING(0x12),
+        AEROBICS(0x13),
+        PINGPONG(0x14),
+        ROPEJUMP(0x15),
+        SITUPS(0x16),
+        VOLLEYBALL(0x17);
+
+        public final int value;
+
+        private BraceletVitalSportType(int value) {
+            this.value = value;
+        }
+    }
+
+    public enum BraceletVitalMeditationLevel {
+        SMALL_TIME(0x00),
+        MEDIUM_TIME(0x01),
+        LONG_TIME(0x02);
+        public final int value;
+
+        private BraceletVitalMeditationLevel(int value) {
+            this.value = value;
+        }
+    }
+
+    public enum BraceletVitalPeriodWorkingMode {
+        OFF(0x00),
+        TIME_PERIOD(0x01),
+        TIME_INTERVAL(0x02);
+        public final int value;
+
+        BraceletVitalPeriodWorkingMode(int value) {
+            this.value = value;
+        }
+    }
+
+    public enum BraceletVitalOperation {
+        HANG_UP(0), PHOTO(1), MUSIC_PLAY(2), MUSIC_PAUSE(3), MUSIC_PREVIOUS(4), MUSIC_NEXT(5), MUSIC_VOLUME_UP(6), MUSIC_VOLUME_DOWN(7), FIND_PHONE(8);
+
+        public final int value;
+
+        private BraceletVitalOperation(int value) {
+            this.value = value;
+        }
+    }
+
+    public enum BraceletVitalCommand {
+        SET_TIME, GET_TIME, REALTIME, GET_STEPS_GOAL, SET_STEPS_GOAL, GET_AUTOMATIC_PERIOD, GET_ACTIVITY_PERIOD,
+        SET_ACTIVITY_PERIOD, GET_MAC_ADDRESS, SET_REALTIME, SET_DEVICE_PARAMETERS, GET_DEVICE_PARAMETERS, SET_USER_INFO,
+        GET_USER_INFO, GET_BATTERY, SET_AUTOMATIC_PERIOD, HEALTH_MEASUREMENT, GET_TOTAL_STEPS, GET_STEPS, GET_SLEEP,
+        GET_HR, GET_HR_AUTO, GET_OXY, GET_OXY_AUTO, GET_VITALS, GET_SPORTS, GET_TEMPERATURE, GET_TEMPERATURE_AUTO,
+        START_ECG, GET_ECG_STATUS, GET_ECG_DATA, GET_ECG_TEMP_DATA,
+        GET_ECG_WAVEFORM, SHOW_QR, SET_ALARMS, START_SPORT, DISTANCE, SET_WEATHER, UNKNOWN, GET_VITALS_MEASURE, GET_HR_MEASURE, GET_OXY_MEASURE;
+    }
+
+    public enum BraceletVitalError {
+        ERROR_SENDING_COMMAND, ERROR_MAX_ALARMS, ERROR_MAX_PERIOD, ERROR_HR_SETTING, ERROR_SCREEN_SETTING, ERROR_DIAL_INTERFACE, ERROR_INVALID_TIMES, ERROR_PERIOD_INTERVAL, ERROR_MAX_STEPS
+    }
+
+    public static final class WeightScale {
+        public static final int TYPE1 = 1, TYPE2 = 2;
     }
 
 
@@ -300,7 +369,6 @@ public class LifevitSDKConstants {
     // Sport types?
     protected static final int SPORTS_TYPE_RUN = 3;
     protected static final int SPORTS_TYPE_WALK = 2;
-
 
 
     // endregion

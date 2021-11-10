@@ -1,6 +1,6 @@
 package es.lifevit.sdk.bracelet;
 
-public class LifevitSDKBraceletECGData {
+public class LifevitSDKVitalECGData {
 
     private int identifier;
     private long date;

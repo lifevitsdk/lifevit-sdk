@@ -4,7 +4,7 @@ import es.lifevit.sdk.bracelet.LifevitSDKAppNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalNotification;
 import es.lifevit.sdk.utils.Utils;
 
-public class LifevitSDKBraceletParams {
+public class LifevitSDKVitalParams {
 
     public boolean checkValidDeviceParameters() {
         return true;
@@ -28,7 +28,7 @@ public class LifevitSDKBraceletParams {
 
     private LifevitSDKVitalNotification notifications = new LifevitSDKVitalNotification();
 
-    public LifevitSDKBraceletParams(){
+    public LifevitSDKVitalParams(){
 
     }
 

@@ -2,7 +2,9 @@ package es.lifevit.sdk.listeners;
 
 import java.util.List;
 
+import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.bracelet.LifevitSDKBraceletData;
+import es.lifevit.sdk.bracelet.LifevitSDKResponse;
 import es.lifevit.sdk.bracelet.LifevitSDKStepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummarySleepData;
 import es.lifevit.sdk.bracelet.LifevitSDKSummaryStepData;
@@ -13,13 +15,11 @@ import es.lifevit.sdk.bracelet.LifevitSDKSummaryStepData;
 
 public interface LifevitSDKBraceletVitalListener {
 
-    void braceletSOS();
+    void braceletVitalSOS(String device);
 
-    void braceletOperation(int operation);
+    void braceletVitalOperation(String device, LifevitSDKConstants.BraceletVitalOperation operation);
 
-    void braceletInformation(Object message);
+    void braceletVitalInformation(String device, LifevitSDKResponse message);
 
-    void braceletError(int errorCode);
-
-    void braceletCurrentBattery(int battery);
+    void braceletVitalError(String device, LifevitSDKConstants.BraceletVitalError error, LifevitSDKConstants.BraceletVitalCommand command);
 }

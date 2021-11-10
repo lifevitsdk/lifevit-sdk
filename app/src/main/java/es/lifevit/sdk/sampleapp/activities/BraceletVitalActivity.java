@@ -12,17 +12,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import es.lifevit.sdk.LifevitSDKBleDeviceBraceletVital;
-import es.lifevit.sdk.LifevitSDKBraceletParams;
+import es.lifevit.sdk.LifevitSDKVitalParams;
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKManager;
 import es.lifevit.sdk.LifevitSDKUserData;
+import es.lifevit.sdk.bracelet.LifevitSDKResponse;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalActivityPeriod;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarms;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
@@ -122,12 +122,12 @@ public class BraceletVitalActivity extends AppCompatActivity {
                         "12. Get Device Battery",
                         "13. Get Blood Oxygen Data",
                         "14. Get Automatic Blood Oxygen Data",
-                        "15. Set Automatic Blood Oxygen Data Period",
-                        "16. Get Automatic Blood Oxygen Data Period",
+                        "15. Set Period Blood Oxygen",
+                        "16. Get Period BloodOxygen",
                         "17. Get Temperature Data",
                         "18. Get Automatic Temperature Data",
                         "19. Get Heart Rate Data",
-                        "20. Get Single Heart Rate Data",
+                        "20. Get Automatic Heart Rate Data",
                         "21. Set Automatic Heart Rate Detection Data",
                         "22. Start ECG",
                         "23. ECG Measurement Status",
@@ -140,14 +140,22 @@ public class BraceletVitalActivity extends AppCompatActivity {
                         "30. Get Detailed Sleep Data",
                         "31. Set Activity Period",
                         "32. Get Activity Period",
-                        "33. Set Sport Mode",
-                        "34. Start HRV",
-                        "35. Start HeartRate",
-                        "36. Start Blood Oxygen Test",
-                        "37. Get sports Data",
-                        "38. Set Alarms",
-                        "39. Set screen notification",
-                        "40. Set weather",
+                        "33. Start Sport Mode",
+                        "34. Stop Sport Mode",
+                        "35. Start HRV",
+                        "36. Stop HRV",
+                        "37. Start HeartRate",
+                        "38. Stop HeartRate",
+                        "39. Start Blood Oxygen Test",
+                        "40. Stop Blood Oxygen Test",
+                        "41. Get sports Data",
+                        "42. Set Alarms",
+                        "43. Set Call notification",
+                        "44. Stop Call notification",
+                        "45. Set Linkedin notification",
+                        "46. Set weather",
+                        "47. Set Period Temperature",
+                        "48. Get Period Temperature",
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(BraceletVitalActivity.this);
@@ -180,21 +188,21 @@ public class BraceletVitalActivity extends AppCompatActivity {
                                 LifevitSDKUserData data = new LifevitSDKUserData(37, 92, 190, LifevitSDKConstants.GENDER_MALE);
                                 manager.setBraceletUserInformation(data);
                             }
-                                break;
+                            break;
                             case 6:
-                                manager.getBraceletUserInformation();
+                                manager.getVitalUserInformation();
                                 break;
                             case 7: {
-                                LifevitSDKBraceletParams data = new LifevitSDKBraceletParams();
+                                LifevitSDKVitalParams data = new LifevitSDKVitalParams();
 
-                                manager.setBraceletParameters(data);
+                                manager.setVitalParameters(data);
                             }
-                                break;
+                            break;
                             case 8:
-                                manager.getBraceletParameters();
+                                manager.getVitalParameters();
                                 break;
                             case 9:
-                                manager.getBraceletMAC();
+                                manager.getVitalMACAddress();
                                 break;
                             case 10:
                                 manager.setBraceletTargetSteps(7000);
@@ -207,11 +215,11 @@ public class BraceletVitalActivity extends AppCompatActivity {
                                 break;
                             }
                             case 13: {
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.OXYMETER, false);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.OXYMETER, false);
                                 break;
                             }
                             case 14: {
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.OXYMETER, true);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.OXYMETER, true);
                                 break;
                             }
                             case 15: {
@@ -219,8 +227,8 @@ public class BraceletVitalActivity extends AppCompatActivity {
 
                                 //Set periodic health data
                                 LifevitSDKVitalPeriod period = new LifevitSDKVitalPeriod();
-                                period.setType(LifevitSDKBleDeviceBraceletVital.Data.OXYMETER);
-                                period.setThursday(true);
+                                period.setType(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
+                                period.setWorkingMode(LifevitSDKConstants.BraceletVitalPeriodWorkingMode.TIME_PERIOD);
                                 period.setStartHour(10);
                                 period.setEndHour(14);
                                 period.setWeekDays(true);
@@ -229,40 +237,41 @@ public class BraceletVitalActivity extends AppCompatActivity {
                             }
                             case 16: {
                                 //Get oximeter period
-                                manager.getVitalPeriodicConfiguration(LifevitSDKBleDeviceBraceletVital.Data.OXYMETER);
+                                manager.getVitalPeriodicConfiguration(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
                                 break;
                             }
                             case 17: {
 
 
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.TEMPERATURE, false);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE, false);
                                 break;
                             }
                             case 18: {
 
 
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.TEMPERATURE, true);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE, true);
                                 break;
                             }
                             case 19: {
 
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.HR, false);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.HR, false);
                                 break;
                             }
                             case 20: {
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.HR, true);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.HR, true);
                                 break;
                             }
-                            case 21:
+                            case 21: {
                                 //Set periodic health data
                                 LifevitSDKVitalPeriod period = new LifevitSDKVitalPeriod();
-                                period.setType(LifevitSDKBleDeviceBraceletVital.Data.HR);
-                                period.setThursday(true);
+                                period.setType(LifevitSDKConstants.BraceletVitalDataType.HR);
+                                period.setWorkingMode(LifevitSDKConstants.BraceletVitalPeriodWorkingMode.TIME_PERIOD);
                                 period.setStartHour(10);
-                                period.setEndHour(14);
+                                period.setEndHour(20);
                                 period.setWeekDays(true);
                                 manager.setVitalPeriodicConfiguration(period);
-                                break;
+                            }
+                            break;
                             case 22:
                                 manager.startVitalECG();
                                 break;
@@ -274,7 +283,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
                                 break;
                             case 25:
                                 //GET HRV DATA
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.VITALS);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.VITALS);
                                 break;
                             case 26:
                                 //Set realtime counting on
@@ -292,11 +301,11 @@ public class BraceletVitalActivity extends AppCompatActivity {
                             }
                             case 29:
                                 //Get detailed step data
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.STEPS);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.STEPS);
                                 break;
                             case 30: {
                                 //Get detailed sleep data
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.SLEEP);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.SLEEP);
                                 break;
                             }
                             case 31: {
@@ -316,44 +325,102 @@ public class BraceletVitalActivity extends AppCompatActivity {
                             case 33:
                                 //Set sport mode
                                 //manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.SPORTS);
-                                manager.setVitalSportMode(0, 0, 0 ,60);
+                                manager.startVitalSportMode(LifevitSDKConstants.BraceletVitalSportType.BREATH, LifevitSDKConstants.BraceletVitalMeditationLevel.MEDIUM_TIME, 60);
                                 break;
                             case 34:
-                                manager.startVitalHealthMeasurement(LifevitSDKBleDeviceBraceletVital.Data.VITALS);
+                                //Set sport mode
+                                //manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.SPORTS);
+                                manager.stopVitalSportMode(LifevitSDKConstants.BraceletVitalSportType.BREATH);
                                 break;
                             case 35:
-                                manager.startVitalHealthMeasurement(LifevitSDKBleDeviceBraceletVital.Data.HR);
+                                manager.startVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.VITALS);
                                 break;
                             case 36:
-                                manager.startVitalHealthMeasurement(LifevitSDKBleDeviceBraceletVital.Data.OXYMETER);
+                                manager.stopVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.VITALS);
                                 break;
                             case 37:
-                                manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.SPORTS);
+                                manager.startVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.HR);
                                 break;
                             case 38:
+                                manager.stopVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.HR);
+                                break;
+                            case 39:
+                                manager.startVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
+                                break;
+                            case 40:
+                                manager.stopVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
+                                break;
+                            case 41:
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.SPORTS);
+                                break;
+                            case 42:
                                 //SET ALARMS
-                                LifevitSDKVitalAlarms alarms = new LifevitSDKVitalAlarms();
-                                alarms.getAlarm1().setEnabled(true);
-                                alarms.getAlarm1().setOnlyWeekDays();
 
-                                alarms.getAlarm1().setHour( Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-                                alarms.getAlarm1().setMinute( Calendar.getInstance().get(Calendar.MINUTE) + 1);
+                                LifevitSDKVitalAlarm alarm = new LifevitSDKVitalAlarm();
+                                alarm.setEnabled(true);
+                                alarm.setOnlyWeekDays();
+
+                                alarm.setHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+                                alarm.setMinute(Calendar.getInstance().get(Calendar.MINUTE) + 1);
+
+                                ArrayList<LifevitSDKVitalAlarm> alarms = new ArrayList<>();
+                                alarms.add(alarm);
 
                                 manager.setVitalAlarms(alarms);
                                 break;
-                            case 39:
+                            case 43:
                                 //SET NOTIF
+                                {
                                 LifevitSDKVitalScreenNotification notif = new LifevitSDKVitalScreenNotification();
-                                notif.setType(LifevitSDKVitalScreenNotification.Type.CALL);
+                                notif.setType(LifevitSDKConstants.BraceletVitalNotification.CALL);
                                 notif.setContact("LIFEVIT");
                                 notif.setText("Check our new SDK for the VITAL Bracelet. Great medical features!");
                                 manager.setVitalNotification(notif);
+                        }
                                 break;
-                            case 40:
+                            case 44:
+                                //SET NOTIF
+                            {
+                                LifevitSDKVitalScreenNotification notif = new LifevitSDKVitalScreenNotification();
+                                notif.setType(LifevitSDKConstants.BraceletVitalNotification.STOP_CALL);
+                                notif.setContact("LIFEVIT");
+                                notif.setText("Check our new SDK for the VITAL Bracelet. Great medical features!");
+                                manager.setVitalNotification(notif);
+                            }
+                            break;
+                            case 45:
+                                //SET NOTIF
+                            {
+                                LifevitSDKVitalScreenNotification notif = new LifevitSDKVitalScreenNotification();
+                                notif.setType(LifevitSDKConstants.BraceletVitalNotification.LINKEDIN);
+                                notif.setContact("LIFEVIT");
+                                notif.setText("Check our new SDK for the VITAL Bracelet. Great medical features!");
+                                manager.setVitalNotification(notif);
+                            }
+                            break;
+                            case 46:
                                 //SET WEATHER
                                 LifevitSDKVitalWeather weather = new LifevitSDKVitalWeather();
                                 manager.setVitalWeather(weather);
                                 break;
+                            case 47: {
+                                //Set temperature period
+
+                                //Set periodic health data
+                                LifevitSDKVitalPeriod period = new LifevitSDKVitalPeriod();
+                                period.setType(LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE);
+                                period.setWorkingMode(LifevitSDKConstants.BraceletVitalPeriodWorkingMode.TIME_PERIOD);
+                                period.setStartHour(10);
+                                period.setEndHour(14);
+                                period.setWeekDays(true);
+                                manager.setVitalPeriodicConfiguration(period);
+                                break;
+                            }
+                            case 48: {
+                                //Get oximeter period
+                                manager.getVitalPeriodicConfiguration(LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE);
+                                break;
+                            }
                         }
                     }
                 });
@@ -434,38 +501,21 @@ public class BraceletVitalActivity extends AppCompatActivity {
 
 
             @Override
-            public void braceletInformation(final Object message) {
+            public void braceletVitalInformation(String device, final LifevitSDKResponse response) {
                 synchronized (textview_info) {
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            if (message != null) {
+                            if (response != null) {
 
-                                //if (message.getClass().isInstance("java.lang.String")) {
-                                if (message instanceof Long) {
                                     String text = textview_info.getText().toString();
                                     text = "";
                                     text += "\n";
-
-                                    Date d = new Date((Long) message);
-
-                                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                    String strDate = dateFormat.format(d);
-
-                                    text += dateFormat.format(d);
-
+                                    text += response.toString();
                                     textview_info.setText(text);
-                                    Log.d(TAG, "[braceletInformation] " + text);
-                                }
-                                else{
-                                    String text = textview_info.getText().toString();
-                                    text = "";
-                                    text += "\n";
-                                    text += message.toString();
-                                    textview_info.setText(text);
-                                }
+
                             }
                         }
                     });
@@ -473,14 +523,14 @@ public class BraceletVitalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void braceletError(final int errorCode) {
+            public void braceletVitalError(String device, final LifevitSDKConstants.BraceletVitalError error, LifevitSDKConstants.BraceletVitalCommand command) {
                 synchronized (textview_info) {
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            if (errorCode == LifevitSDKConstants.CODE_WRONG_PARAMETERS) {
+                            if (error == LifevitSDKConstants.BraceletVitalError.ERROR_SENDING_COMMAND) {
                                 String text = textview_info.getText().toString();
                                 text += "\n";
                                 text += "Wrong parameters.";
@@ -493,23 +543,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void braceletCurrentBattery(final int battery) {
-                synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += "Current battery level: " + battery;
-                            textview_info.setText(text);
-                            Log.d(TAG, "[braceletCurrentBattery] " + text);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void braceletOperation(final int operation) {
+            public void braceletVitalOperation(String device, final LifevitSDKConstants.BraceletVitalOperation operation) {
                 synchronized (textview_info) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -525,7 +559,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void braceletSOS() {
+            public void braceletVitalSOS(String device) {
                 synchronized (textview_info) {
                     runOnUiThread(new Runnable() {
                         @Override

@@ -3,14 +3,11 @@ package es.lifevit.sdk;
 
 import android.util.Log;
 
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import es.lifevit.sdk.bracelet.LifevitSDKAlarmTime;
-import es.lifevit.sdk.bracelet.LifevitSDKAppNotification;
-import es.lifevit.sdk.bracelet.LifevitSDKMonitoringAlarm;
-import es.lifevit.sdk.bracelet.LifevitSDKSedentaryAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalActivityPeriod;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarms;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalScreenNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
@@ -111,7 +108,7 @@ public class BraceletVitalSendQueue extends Thread {
                                 dgBleDeviceBracelet.sendRealtimeCounting((Boolean) bqi.object[0], (Boolean) bqi.object[1]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.GET_TIME:
-                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_SET_TIME);
+                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_TIME);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_TIME:
                                 dgBleDeviceBracelet.sendSetTime((Long) bqi.object[0]);
@@ -132,10 +129,10 @@ public class BraceletVitalSendQueue extends Thread {
                                 dgBleDeviceBracelet.sendSetUserInfo((LifevitSDKUserData) bqi.object[0]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_DEVICE_PARAMS:
-                                dgBleDeviceBracelet.sendSetParameters((LifevitSDKBraceletParams) bqi.object[0]);
+                                dgBleDeviceBracelet.sendSetParameters((LifevitSDKVitalParams) bqi.object[0]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_DEVICE_NEW_PARAMS:
-                                dgBleDeviceBracelet.sendSetNewParameters((LifevitSDKBraceletParams) bqi.object[0]);
+                                dgBleDeviceBracelet.sendSetNewParameters((LifevitSDKVitalParams) bqi.object[0]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.GET_DEVICE_PARAMS:
                                 dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_DEVICE_PARAMETERS);
@@ -182,16 +179,22 @@ public class BraceletVitalSendQueue extends Thread {
                                 dgBleDeviceBracelet.sendStartSport((Integer)bqi.object[0],(Integer)bqi.object[1],(Integer)bqi.object[2],(Integer)bqi.object[3]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.GET_OXY_PERIOD:
-                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_AUTOMATIC_HEART_RATE_DETECTION);
+                                dgBleDeviceBracelet.sendGetHealthPeriod(LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_OXY_PERIOD:
-                                dgBleDeviceBracelet.sendSetBloodPressurePeriod((LifevitSDKVitalPeriod) bqi.object[0]);
+                                dgBleDeviceBracelet.sendSetHealthPeriod((LifevitSDKVitalPeriod) bqi.object[0]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.GET_HR_PERIOD:
-                                dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_AUTOMATIC_HEART_RATE_DETECTION);
+                                dgBleDeviceBracelet.sendGetHealthPeriod(LifevitSDKConstants.BraceletVitalDataType.HR.value);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_HR_PERIOD:
-                                dgBleDeviceBracelet.sendSetHeartRatePeriod((LifevitSDKVitalPeriod) bqi.object[0]);
+                                dgBleDeviceBracelet.sendSetHealthPeriod((LifevitSDKVitalPeriod) bqi.object[0]);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.GET_TEMPERATURE_PERIOD:
+                                dgBleDeviceBracelet.sendGetHealthPeriod(LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value);
+                                break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SET_TEMPERATURE_PERIOD:
+                                dgBleDeviceBracelet.sendSetHealthPeriod((LifevitSDKVitalPeriod) bqi.object[0]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.GET_SPORT_DATA:
                                 dgBleDeviceBracelet.sendGetSportsData();
@@ -219,30 +222,31 @@ public class BraceletVitalSendQueue extends Thread {
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.ECG_START:
                                 dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_ECG_START_DATA_UPLOADING);
-
+                                
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.ECG_STATUS:
                                 dgBleDeviceBracelet.sendBasicCommand(LifevitSDKBleDeviceBraceletVital.Constants.REQUEST_GET_ECG_MEASUREMENT_STATUS);
-
+                                taskFinished();
+                                //No esperamos respuesta de status... nos puede llegar muchos status...
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.ECG_WAVEFORM:
                                 dgBleDeviceBracelet.sendGetECGWaveform();
 
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.HRV_START:
-                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKBleDeviceBraceletVital.Data.VITALS, true);
+                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKConstants.BraceletVitalDataType.VITALS, (Boolean) bqi.object[0]);
 
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.HR_START:
-                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKBleDeviceBraceletVital.Data.HR, true);
+                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKConstants.BraceletVitalDataType.HR, (Boolean) bqi.object[0]);
 
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.OXY_START:
-                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKBleDeviceBraceletVital.Data.OXYMETER, true);
+                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKConstants.BraceletVitalDataType.OXYMETER, (Boolean) bqi.object[0]);
 
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_ALARMS:
-                                dgBleDeviceBracelet.sendSetAlarms((LifevitSDKVitalAlarms) bqi.object[0]);
+                                dgBleDeviceBracelet.sendSetAlarms((List<LifevitSDKVitalAlarm>) bqi.object[0]);
 
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_REMINDERS:

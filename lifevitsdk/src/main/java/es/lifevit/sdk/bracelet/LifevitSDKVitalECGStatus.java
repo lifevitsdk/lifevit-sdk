@@ -1,9 +1,9 @@
 package es.lifevit.sdk.bracelet;
 
-public class LifevitSDKBraceletECGStatus {
+public class LifevitSDKVitalECGStatus {
 
     private int status;
-    private LifevitSDKECGConstantsData data;
+    private LifevitSDKVitalECGConstantsData data;
 
     public int getStatus() {
         return status;
@@ -13,11 +13,11 @@ public class LifevitSDKBraceletECGStatus {
         this.status = status;
     }
 
-    public LifevitSDKECGConstantsData getData() {
+    public LifevitSDKVitalECGConstantsData getData() {
         return data;
     }
 
-    public void setData(LifevitSDKECGConstantsData data) {
+    public void setData(LifevitSDKVitalECGConstantsData data) {
         this.data = data;
     }
 

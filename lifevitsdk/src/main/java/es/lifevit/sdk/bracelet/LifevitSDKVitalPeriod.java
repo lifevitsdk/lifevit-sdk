@@ -1,9 +1,11 @@
 package es.lifevit.sdk.bracelet;
 
+import es.lifevit.sdk.LifevitSDKBleDeviceBraceletVital;
+import es.lifevit.sdk.LifevitSDKConstants;
+
 public class LifevitSDKVitalPeriod{
-    private int type;
-    private int operation;
-    private int workingMode;
+    private LifevitSDKConstants.BraceletVitalDataType type;
+    private LifevitSDKConstants.BraceletVitalPeriodWorkingMode workingMode;
     private int intervalTime;
 
     private boolean monday = false;
@@ -13,7 +15,6 @@ public class LifevitSDKVitalPeriod{
     private boolean friday = false;
     private boolean saturday = false;
     private boolean sunday = false;
-
 
     private int startHour = 0;
     private int startMinute = 0;
@@ -42,28 +43,29 @@ public class LifevitSDKVitalPeriod{
         sunday = enabled;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setEnabled(boolean enabled) {
+        this.workingMode = LifevitSDKConstants.BraceletVitalPeriodWorkingMode.OFF;
     }
 
-    public int getType() {
+    public boolean isEnabled() {
+        return this.workingMode.value != LifevitSDKConstants.BraceletVitalPeriodWorkingMode.OFF.value;
+    }
+
+    public LifevitSDKConstants.BraceletVitalDataType getType() {
         return type;
     }
 
-    public int getOperation() {
-        return operation;
+    public void setType(LifevitSDKConstants.BraceletVitalDataType type) {
+        this.type = type;
     }
 
-    public void setOperation(int operation) {
-        this.operation = operation;
-    }
-
-    public int getWorkingMode() {
-        return workingMode;
-    }
-
-    public void setWorkingMode(int workingMode) {
+    public void setWorkingMode(LifevitSDKConstants.BraceletVitalPeriodWorkingMode workingMode) {
         this.workingMode = workingMode;
+
+    }
+
+    public LifevitSDKConstants.BraceletVitalPeriodWorkingMode getWorkingMode() {
+        return workingMode;
     }
 
     public int getIntervalTime() {
@@ -165,7 +167,6 @@ public class LifevitSDKVitalPeriod{
     @Override
     public String toString() {
         return "LifevitSDKVitalPeriod{" +
-                "operation=" + operation +
                 ", workingMode=" + workingMode +
                 ", intervalTime=" + intervalTime +
                 ", monday=" + monday +

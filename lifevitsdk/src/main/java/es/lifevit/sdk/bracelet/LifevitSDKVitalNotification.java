@@ -2,8 +2,6 @@ package es.lifevit.sdk.bracelet;
 
 public class LifevitSDKVitalNotification {
 
-
-
     private boolean call = false;
     private boolean mobileInformation = false;
     private boolean wechat = false;
@@ -15,8 +13,7 @@ public class LifevitSDKVitalNotification {
     private boolean vkclient = false;
     private boolean whatsapp = false;
     private boolean qq = false;
-    private boolean in = false;
-
+    private boolean linkedin = false;
 
     public LifevitSDKVitalNotification() {
     }
@@ -109,12 +106,12 @@ public class LifevitSDKVitalNotification {
         this.qq = qq;
     }
 
-    public boolean isIn() {
-        return in;
+    public boolean isLinkedin() {
+        return linkedin;
     }
 
-    public void setIn(boolean in) {
-        this.in = in;
+    public void setLinkedin(boolean linkedin) {
+        this.linkedin = linkedin;
     }
 
     @Override
@@ -131,7 +128,7 @@ public class LifevitSDKVitalNotification {
                 ", vkclient=" + vkclient +
                 ", whatsapp=" + whatsapp +
                 ", qq=" + qq +
-                ", in=" + in +
+                ", linkedin=" + linkedin +
                 '}';
     }
 }

@@ -2,7 +2,7 @@ package es.lifevit.sdk.bracelet;
 
 import es.lifevit.sdk.utils.ByteUtils;
 
-public class LifevitSDKBraceletVitalsData {
+public class LifevitSDKVitalHRVData {
     long date;
     int hrv;
     int vascularAging, heartRate, fatigue, systolic, diastolic;
@@ -61,5 +61,18 @@ public class LifevitSDKBraceletVitalsData {
 
     public void setDiastolic(int diastolic) {
         this.diastolic = diastolic;
+    }
+
+    @Override
+    public String toString() {
+        return "LifevitSDKVitalHRVData{" +
+                "date=" + date +
+                ", hrv=" + hrv +
+                ", vascularAging=" + vascularAging +
+                ", heartRate=" + heartRate +
+                ", fatigue=" + fatigue +
+                ", systolic=" + systolic +
+                ", diastolic=" + diastolic +
+                '}';
     }
 }

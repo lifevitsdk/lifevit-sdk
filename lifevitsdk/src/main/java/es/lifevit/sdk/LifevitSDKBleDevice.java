@@ -303,4 +303,11 @@ public abstract class LifevitSDKBleDevice {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
+
+    public String getIdentifier(){
+        if(mBluetoothDevice!=null){
+            mBluetoothDevice.getAddress();
+        }
+        return "-";
+    }
 }

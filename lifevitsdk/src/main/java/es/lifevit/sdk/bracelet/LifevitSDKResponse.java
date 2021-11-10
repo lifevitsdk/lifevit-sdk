@@ -1,54 +1,37 @@
 package es.lifevit.sdk.bracelet;
 
+import es.lifevit.sdk.LifevitSDKConstants;
+
 public class LifevitSDKResponse {
-    private Integer error;
-    private Integer action;
-    private String message;
+    private LifevitSDKConstants.BraceletVitalCommand command;
+    private LifevitSDKConstants.BraceletVitalDataType type;
     private Object data;
 
-    public static LifevitSDKResponse error(int action, int error, String message){
-        LifevitSDKResponse r = new LifevitSDKResponse();
-        r.setError(error);
-        r.setMessage(message);
-        r.setAction(action);
-
-        return r;
+    public LifevitSDKResponse(LifevitSDKConstants.BraceletVitalCommand command, Object data){
+        setData(data);
+        setCommand(command);
     }
 
-
-    public static LifevitSDKResponse success(int action, Object data){
-        LifevitSDKResponse r = new LifevitSDKResponse();
-        r.setData(data);
-        r.setAction(action);
-        return r;
+    public LifevitSDKResponse(LifevitSDKConstants.BraceletVitalCommand command,  LifevitSDKConstants.BraceletVitalDataType type, Object data){
+        setData(data);
+       setCommand(command);
+        setType(type);
     }
 
-    public boolean isError(){
-        return error!=null;
+    public void setType(LifevitSDKConstants.BraceletVitalDataType type) {
+        this.type = type;
     }
 
-    public Integer getError() {
-        return error;
+    public LifevitSDKConstants.BraceletVitalDataType getType() {
+        return type;
     }
 
-    public void setAction(Integer action) {
-        this.action = action;
+    public LifevitSDKConstants.BraceletVitalCommand getCommand() {
+        return command;
     }
 
-    public Integer getAction() {
-        return action;
-    }
-
-    public void setError(Integer error) {
-        this.error = error;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setCommand(LifevitSDKConstants.BraceletVitalCommand command) {
+        this.command = command;
     }
 
     public Object getData() {
@@ -57,5 +40,14 @@ public class LifevitSDKResponse {
 
     public void setData(Object data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "LifevitSDKResponse{" +
+                "action=" + command +
+                ", type=" + (type!=null?type.value:"")+
+                ", data=" +  (data!=null?data.toString():"") +
+                '}';
     }
 }
