@@ -1223,57 +1223,59 @@ if(release){
         String hexString = HexUtils.getStringToPrint(bytes);
         String[] hxBytes = hexString.split(":");
 
-        while (index < bytes.length) {
-            boolean end = (int) ByteUtils.toUnsignedInt(bytes[1 + index]) == 255;
+        boolean end = (int) ByteUtils.toUnsignedInt(bytes[bytes.length - 1]) == 255;
 
-            if (end) {
-                sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.sleepDataArray), true);
-                return;
-            }
-
-
-            byte[] bIndex = {0x00, 0x00, bytes[2 + index], bytes[1 + index]};
-            int identifier = ByteUtils.bytesToIntReversed(bIndex);
-
-            int header1_date_year = Integer.parseInt(hxBytes[3 + index]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[4 + index]) - 1;
-            int header1_date_day = Integer.parseInt(hxBytes[5 + index]);
-            int header1_date_hour = Integer.parseInt(hxBytes[6 + index]);
-            int header1_date_minute = Integer.parseInt(hxBytes[7 + index]);
-            int header1_date_second = Integer.parseInt(hxBytes[8 + index]);
-
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, header1_date_year);
-            cal.set(Calendar.MONTH, header1_date_month - 1);
-            cal.set(Calendar.DAY_OF_MONTH, header1_date_day);
-            cal.set(Calendar.HOUR_OF_DAY, header1_date_hour);
-            cal.set(Calendar.MINUTE, header1_date_minute);
-            cal.set(Calendar.SECOND, header1_date_second);
-            cal.set(Calendar.MILLISECOND, 0);
-
-            Long date = cal.getTimeInMillis();
-
-            int sleepTime = ByteUtils.toUnsignedInt(bytes[9 + index]) * 60;
-            ArrayList<Integer> minSleepArray = new ArrayList<>();
-            int deepSleep = 0;
-            for (int i = 0; i <= 23; i++) {
-                int minSleep = ByteUtils.toUnsignedInt(bytes[10 + i + index]);
-                minSleepArray.add(minSleep);
-
-                deepSleep = deepSleep + minSleep;
-            }
-
-            LifevitSDKSleepData data = new LifevitSDKSleepData();
-
-            data.setDate(date);
-            data.setSleepDuration(sleepTime);
-            data.setSleepDeepness(deepSleep);
-
-            this.sleepDataArray.add(data);
-            index += 34;
+        if (end) {
+            sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.sleepDataArray), true);
+            return;
         }
 
-        //sendGetDetailedSleepData(Constants.DATA_OPERATION_NEXT);
+        byte[] bIndex = {0x00, 0x00, bytes[2 + index], bytes[1 + index]};
+        int identifier = ByteUtils.bytesToIntReversed(bIndex);
+
+        int header1_date_year = Integer.parseInt(hxBytes[3 + index]) + 2000;
+        int header1_date_month = Integer.parseInt(hxBytes[4 + index]);
+        int header1_date_day = Integer.parseInt(hxBytes[5 + index]);
+        int header1_date_hour = Integer.parseInt(hxBytes[6 + index]);
+        int header1_date_minute = Integer.parseInt(hxBytes[7 + index]);
+        int header1_date_second = Integer.parseInt(hxBytes[8 + index]);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, header1_date_year);
+        cal.set(Calendar.MONTH, header1_date_month - 1);
+        cal.set(Calendar.DAY_OF_MONTH, header1_date_day);
+        cal.set(Calendar.HOUR_OF_DAY, header1_date_hour);
+        cal.set(Calendar.MINUTE, header1_date_minute);
+        cal.set(Calendar.SECOND, header1_date_second);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        Long date = cal.getTimeInMillis();
+
+        int length = ByteUtils.toUnsignedInt(bytes[9]) - 1;
+
+        int deepSleep = 0;
+        int lightSleep = 0;
+        for (int i = 0; i < length; i++) {
+            int sleepQuality = ByteUtils.toUnsignedInt(bytes[11 + index + i]);
+            if (sleepQuality == 1) {
+                lightSleep += 1;
+            } else if (sleepQuality == 2 || sleepQuality == 3) {
+                deepSleep += 1;
+            }
+        }
+
+        LifevitSDKSleepData data = new LifevitSDKSleepData();
+        data.setDate(date);
+        data.setSleepDuration(deepSleep);
+        data.setSleepDeepness(LifevitSDKConstants.DEEP_SLEEP);
+        this.sleepDataArray.add(data);
+
+        LifevitSDKSleepData data2 = new LifevitSDKSleepData();
+        // Desplazamos la fecha porque si coincide con la del Deep Sleep no se guarda en BBDD
+        data2.setDate(date + deepSleep * 60 * 1000);
+        data2.setSleepDuration(lightSleep);
+        data2.setSleepDeepness(LifevitSDKConstants.LIGHT_SLEEP);
+        this.sleepDataArray.add(data2);
     }
 
     private void processGetOxymeterData(byte[] bytes) {

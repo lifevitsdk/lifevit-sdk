@@ -23,7 +23,6 @@ import es.lifevit.sdk.LifevitSDKUserData;
 import es.lifevit.sdk.bracelet.LifevitSDKResponse;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalActivityPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarm;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarms;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalScreenNotification;
