@@ -16,10 +16,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 import es.lifevit.sdk.bracelet.LifevitSDKDistanceTimeData;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalECGStatus;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalECGWaveform;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalHRVData;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalECGConstantsData;
 import es.lifevit.sdk.bracelet.LifevitSDKHeartbeatData;
 import es.lifevit.sdk.bracelet.LifevitSDKResponse;
 import es.lifevit.sdk.bracelet.LifevitSDKSleepData;
@@ -28,10 +24,14 @@ import es.lifevit.sdk.bracelet.LifevitSDKSummaryStepData;
 import es.lifevit.sdk.bracelet.LifevitSDKTemperatureData;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalActivityPeriod;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarm;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalECGConstantsData;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalECGStatus;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalECGWaveform;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalHRVData;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
-import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalScreenNotification;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalWeather;
 import es.lifevit.sdk.utils.ByteUtils;
 import es.lifevit.sdk.utils.HexUtils;
 import es.lifevit.sdk.utils.LogUtils;
@@ -262,38 +262,39 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
     // region --- Delegate methods ---
 
-    private void sendSuccessfulCommand(LifevitSDKConstants.BraceletVitalCommand command, boolean release){
+    private void sendSuccessfulCommand(LifevitSDKConstants.BraceletVitalCommand command, boolean release) {
         sendSuccessfulCommand(command, null, null, release);
     }
 
-    private void sendSuccessfulCommandWithData(LifevitSDKConstants.BraceletVitalCommand command, Object data, boolean release){
+    private void sendSuccessfulCommandWithData(LifevitSDKConstants.BraceletVitalCommand command, Object data, boolean release) {
         sendSuccessfulCommand(command, null, data, release);
     }
 
-    private void sendSuccessfulCommandWithType(LifevitSDKConstants.BraceletVitalCommand command, LifevitSDKConstants.BraceletVitalDataType type, boolean release){
+    private void sendSuccessfulCommandWithType(LifevitSDKConstants.BraceletVitalCommand command, LifevitSDKConstants.BraceletVitalDataType type, boolean release) {
         sendSuccessfulCommand(command, type, null, release);
     }
 
 
-    private void sendSuccessfulCommand(LifevitSDKConstants.BraceletVitalCommand command, LifevitSDKConstants.BraceletVitalDataType type, Object data, boolean release){
-LifevitSDKResponse response = new LifevitSDKResponse(command, type, data);
+    private void sendSuccessfulCommand(LifevitSDKConstants.BraceletVitalCommand command, LifevitSDKConstants.BraceletVitalDataType type, Object data, boolean release) {
+        LifevitSDKResponse response = new LifevitSDKResponse(command, type, data);
 
-if(this.mLifevitSDKManager.getBraceletVitalListener()!=null){
-    this.mLifevitSDKManager.getBraceletVitalListener().braceletVitalInformation(mBluetoothDevice.getAddress(), response);
-}
+        if (this.mLifevitSDKManager.getBraceletVitalListener() != null) {
+            this.mLifevitSDKManager.getBraceletVitalListener().braceletVitalInformation(mBluetoothDevice.getAddress(), response);
+        }
 
-if(release){
-    sendingThread.taskFinished();
-}
+        if (release) {
+            sendingThread.taskFinished();
+        }
     }
 
-    private void sendSOS(){
-        if(this.mLifevitSDKManager.getBraceletVitalListener()!=null){
+    private void sendSOS() {
+        if (this.mLifevitSDKManager.getBraceletVitalListener() != null) {
             this.mLifevitSDKManager.getBraceletVitalListener().braceletVitalSOS(mBluetoothDevice.getAddress());
         }
     }
-    private void sendError(LifevitSDKConstants.BraceletVitalError error, LifevitSDKConstants.BraceletVitalCommand command){
-        if(this.mLifevitSDKManager.getBraceletVitalListener()!=null){
+
+    private void sendError(LifevitSDKConstants.BraceletVitalError error, LifevitSDKConstants.BraceletVitalCommand command) {
+        if (this.mLifevitSDKManager.getBraceletVitalListener() != null) {
             this.mLifevitSDKManager.getBraceletVitalListener().braceletVitalError(mBluetoothDevice.getAddress(), error, command);
         }
     }
@@ -487,7 +488,7 @@ if(release){
     }
 
     public void setSportsMode(Integer mode, LifevitSDKConstants.BraceletVitalSportType sport, LifevitSDKConstants.BraceletVitalMeditationLevel level, Integer period) {
-        sendingThread.addToQueue(Action.SET_SPORT_MODE, mode, sport!=null?sport.value:null, level!=null?level.value:null, period);
+        sendingThread.addToQueue(Action.SET_SPORT_MODE, mode, sport != null ? sport.value : null, level != null ? level.value : null, period);
     }
 
     public void setBloodPressurePeriod(LifevitSDKVitalPeriod data) {
@@ -505,6 +506,7 @@ if(release){
     public void getHeartRatePeriod() {
         sendingThread.addToQueue(Action.GET_HR_PERIOD);
     }
+
     public void setTemperaturePeriod(LifevitSDKVitalPeriod data) {
         sendingThread.addToQueue(Action.SET_TEMPERATURE_PERIOD, data);
     }
@@ -704,8 +706,7 @@ if(release){
                 processECGWaveformData(rx);
             } /*else if (command == Constants.REQUEST_SET_AUTOMATIC_BLOOD_OXYGEN_DETECTION) {
                 processAutomaticOxygenPeriod(rx);
-            } */
-            else if (command == Constants.REQUEST_SET_AUTOMATIC_DETECTION) {
+            } */ else if (command == Constants.REQUEST_SET_AUTOMATIC_DETECTION) {
                 sendSuccessfulCommand(getActionForCommand(command), true);
             } else if (command == Constants.REQUEST_GET_AUTOMATIC_DETECTION) {
                 processAutomaticPeriod(rx);
@@ -713,20 +714,15 @@ if(release){
                 processHealthMeasurementControlResponse(rx);
             } else if (command == Constants.REQUEST_FIRMWARE_COMMAND) {
                 processBraceletCommand(rx);
-            }
-            else if(command == Constants.REQUEST_BRACELET_HEART_BEAT_PACKET){
+            } else if (command == Constants.REQUEST_BRACELET_HEART_BEAT_PACKET) {
                 processRealtimeData(rx);
-            }
-            else if(command == Constants.REQUEST_APP_HEART_BEAT_PACKET) {
+            } else if (command == Constants.REQUEST_APP_HEART_BEAT_PACKET) {
                 processAppHeartbeatCommand(rx);
-            }
-            else if (command == Constants.REQUEST_SOS_FUNCTION) {
+            } else if (command == Constants.REQUEST_SOS_FUNCTION) {
                 sendSOS();
-            }
-            else if (command == Constants.ERROR_GET_MAC_ADDRESS){
+            } else if (command == Constants.ERROR_GET_MAC_ADDRESS) {
                 sendError(LifevitSDKConstants.BraceletVitalError.ERROR_SENDING_COMMAND, getActionForCommand(command));
-            }
-            else {
+            } else {
                 LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> COMMAND COMPLETED: " + command);
                 sendSuccessfulCommand(getActionForCommand(command), true);
             }
@@ -736,7 +732,7 @@ if(release){
 
     public LifevitSDKConstants.BraceletVitalCommand getActionForCommand(byte command) {
 
-        switch (command){
+        switch (command) {
 
             case Constants.REQUEST_GET_ACTIVITY_PERIOD:
                 return LifevitSDKConstants.BraceletVitalCommand.GET_ACTIVITY_PERIOD;
@@ -879,7 +875,7 @@ if(release){
             LogUtils.log(Log.DEBUG, CLASS_TAG, "Step counter: " + identifier);
 
             int header1_date_year = Integer.parseInt(hxBytes[index + 2]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[index + 3]) - 1;
+            int header1_date_month = Integer.parseInt(hxBytes[index + 3]);
             int header1_date_day = Integer.parseInt(hxBytes[index + 4]);
 
             Calendar cal = Calendar.getInstance();
@@ -944,7 +940,7 @@ if(release){
             int identifier = bytes[1];
 
             int header1_date_year = Integer.parseInt(hxBytes[3]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[4]) - 1;
+            int header1_date_month = Integer.parseInt(hxBytes[4]);
             int header1_date_day = Integer.parseInt(hxBytes[5]);
             int header1_date_hour = Integer.parseInt(hxBytes[6]);
             int header1_date_minute = Integer.parseInt(hxBytes[7]);
@@ -1051,10 +1047,9 @@ if(release){
         int diastolic = ByteUtils.toUnsignedInt(bytes[7]);
 
         int type = healthConstant;
-        if(type == 0){
+        if (type == 0) {
             type = lastHealthConstant;
-        }
-        else{
+        } else {
             lastHealthConstant = type;
         }
 
@@ -1098,11 +1093,11 @@ if(release){
         }
     }
 
-    private void processBraceletHeartbeatCommand(byte[] bytes){
+    private void processBraceletHeartbeatCommand(byte[] bytes) {
         processRealtimeData(bytes);
     }
 
-    private void processAppHeartbeatCommand(byte[] bytes){
+    private void processAppHeartbeatCommand(byte[] bytes) {
 
         byte[] bDistance = {bytes[1], bytes[2], bytes[3], bytes[4]};
         int distance = ByteUtils.bytesToInt(bDistance);
@@ -1181,7 +1176,7 @@ if(release){
             int identifier = ByteUtils.bytesToIntReversed(bIndex);
 
             int header1_date_year = Integer.parseInt(hxBytes[index + 3]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[index + 4]) - 1;
+            int header1_date_month = Integer.parseInt(hxBytes[index + 4]);
             int header1_date_day = Integer.parseInt(hxBytes[index + 5]);
             int header1_date_hour = Integer.parseInt(hxBytes[index + 6]);
             int header1_date_minute = Integer.parseInt(hxBytes[index + 7]);
@@ -1287,7 +1282,7 @@ if(release){
 
         //+1 Por el CRC
         while (index + 1 < bytes.length) {
-            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index +1]) == 255;
+            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index + 1]) == 255;
 
             if (end) {
                 sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.oximeterDataArray), true);
@@ -1295,15 +1290,15 @@ if(release){
             }
 
 
-            byte[] bIndex = {0x00, 0x00, bytes[index +2], bytes[index +1]};
+            byte[] bIndex = {0x00, 0x00, bytes[index + 2], bytes[index + 1]};
             int identifier = ByteUtils.bytesToIntReversed(bIndex);
 
-            int header1_date_year = Integer.parseInt(hxBytes[index +3]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[index +4]) - 1;
-            int header1_date_day = Integer.parseInt(hxBytes[index +5]);
-            int header1_date_hour = Integer.parseInt(hxBytes[index +6]);
-            int header1_date_minute = Integer.parseInt(hxBytes[index +7]);
-            int header1_date_second = Integer.parseInt(hxBytes[index +8]);
+            int header1_date_year = Integer.parseInt(hxBytes[index + 3]) + 2000;
+            int header1_date_month = Integer.parseInt(hxBytes[index + 4]);
+            int header1_date_day = Integer.parseInt(hxBytes[index + 5]);
+            int header1_date_hour = Integer.parseInt(hxBytes[index + 6]);
+            int header1_date_minute = Integer.parseInt(hxBytes[index + 7]);
+            int header1_date_second = Integer.parseInt(hxBytes[index + 8]);
 
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.YEAR, header1_date_year);
@@ -1315,7 +1310,7 @@ if(release){
             cal.set(Calendar.MILLISECOND, 0);
 
             Long date = cal.getTimeInMillis();
-            int spo2 = ByteUtils.toUnsignedInt(bytes[index +9]);
+            int spo2 = ByteUtils.toUnsignedInt(bytes[index + 9]);
 
 
             LifevitSDKOximeterData data = new LifevitSDKOximeterData();
@@ -1338,7 +1333,7 @@ if(release){
 
         //+1 Por el CRC
         while (index + 1 < bytes.length) {
-            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index +1]) == 255;
+            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index + 1]) == 255;
 
             if (end) {
                 sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.oximeterDataArray), true);
@@ -1346,15 +1341,15 @@ if(release){
             }
 
 
-            byte[] bIndex = {0x00, 0x00, bytes[index +2], bytes[index +1]};
+            byte[] bIndex = {0x00, 0x00, bytes[index + 2], bytes[index + 1]};
             int identifier = ByteUtils.bytesToIntReversed(bIndex);
 
-            int header1_date_year = Integer.parseInt(hxBytes[index +3]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[index +4]) - 1;
-            int header1_date_day = Integer.parseInt(hxBytes[index +5]);
-            int header1_date_hour = Integer.parseInt(hxBytes[index +6]);
-            int header1_date_minute = Integer.parseInt(hxBytes[index +7]);
-            int header1_date_second = Integer.parseInt(hxBytes[index +8]);
+            int header1_date_year = Integer.parseInt(hxBytes[index + 3]) + 2000;
+            int header1_date_month = Integer.parseInt(hxBytes[index + 4]);
+            int header1_date_day = Integer.parseInt(hxBytes[index + 5]);
+            int header1_date_hour = Integer.parseInt(hxBytes[index + 6]);
+            int header1_date_minute = Integer.parseInt(hxBytes[index + 7]);
+            int header1_date_second = Integer.parseInt(hxBytes[index + 8]);
 
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.YEAR, header1_date_year);
@@ -1365,7 +1360,7 @@ if(release){
             cal.set(Calendar.SECOND, header1_date_second);
             cal.set(Calendar.MILLISECOND, 0);
 
-            int spo2 = ByteUtils.toUnsignedInt(bytes[index +9]);
+            int spo2 = ByteUtils.toUnsignedInt(bytes[index + 9]);
 
 
             LifevitSDKOximeterData data = new LifevitSDKOximeterData();
@@ -1388,7 +1383,7 @@ if(release){
 
         //+1 Por el CRC
         while (index + 1 < bytes.length) {
-            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index+1]) == 255;
+            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index + 1]) == 255;
 
             if (end) {
                 sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.temperatureDataArray), true);
@@ -1411,7 +1406,7 @@ if(release){
 
         //+1 Por el CRC
         while (index + 1 < bytes.length) {
-            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index +1]) == 255;
+            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index + 1]) == 255;
             if (end) {
 
                 sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.temperatureDataArray), true);
@@ -1432,7 +1427,7 @@ if(release){
         String[] hxBytes = hexString.split(":");
 
         int header1_date_year = Integer.parseInt(hxBytes[index + 3]) + 2000;
-        int header1_date_month = Integer.parseInt(hxBytes[index + 4]) - 1;
+        int header1_date_month = Integer.parseInt(hxBytes[index + 4]);
         int header1_date_day = Integer.parseInt(hxBytes[index + 5]);
         int header1_date_hour = Integer.parseInt(hxBytes[index + 6]);
         int header1_date_minute = Integer.parseInt(hxBytes[index + 7]);
@@ -1487,8 +1482,8 @@ if(release){
 
         LogUtils.debug("processECGWaveformData: " + hexString);
 
-       if (bytes.length == 3) {
-           sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), this.ecgWaveformData, true);
+        if (bytes.length == 3) {
+            sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), this.ecgWaveformData, true);
             return;
         }
 
@@ -1496,10 +1491,10 @@ if(release){
         byte[] bIndex = {0x00, 0x00, bytes[2], bytes[1]};
         int identifier = ByteUtils.bytesToIntReversed(bIndex);
 
-        if(this.ecgWaveformData==null) {
+        if (this.ecgWaveformData == null) {
             this.ecgWaveformData = new LifevitSDKVitalECGWaveform();
             int header1_date_year = Integer.parseInt(hxBytes[3]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[4]) - 1;
+            int header1_date_month = Integer.parseInt(hxBytes[4]);
             int header1_date_day = Integer.parseInt(hxBytes[5]);
             int header1_date_hour = Integer.parseInt(hxBytes[6]);
             int header1_date_minute = Integer.parseInt(hxBytes[7]);
@@ -1527,16 +1522,15 @@ if(release){
             this.ecgWaveformData.setHeartrate(heartRate);
             this.ecgWaveformData.setTotalPoints(points);
             this.ecgWaveformData.setHrv(hrv);
-            for (int i = 27; i < bytes.length - 1; i+=2) {
-                byte[] bPoints = {bytes[i], bytes[i+1], 0x00, 0x00};
+            for (int i = 27; i < bytes.length - 1; i += 2) {
+                byte[] bPoints = {bytes[i], bytes[i + 1], 0x00, 0x00};
                 int point = ByteUtils.bytesToInt(bPoints);
                 this.ecgWaveformData.getEcgData().add(point);
             }
-        }
-        else{
-            for (int i = 3; i < bytes.length - 1; i+=2) {
+        } else {
+            for (int i = 3; i < bytes.length - 1; i += 2) {
 
-                byte[] bPoints = {bytes[i], bytes[i+1], 0x00, 0x00};
+                byte[] bPoints = {bytes[i], bytes[i + 1], 0x00, 0x00};
                 int point = ByteUtils.bytesToInt(bPoints);
                 this.ecgWaveformData.getEcgData().add(point);
             }
@@ -1548,8 +1542,8 @@ if(release){
 
     private void processECGMeasurementData(byte[] bytes) {
         ArrayList<Integer> ecgSets = new ArrayList();
-        for (int i = 1; i < bytes.length - 1; i+=2) {
-            byte[] bPoints = {bytes[i], bytes[i+1], 0x00, 0x00};
+        for (int i = 1; i < bytes.length - 1; i += 2) {
+            byte[] bPoints = {bytes[i], bytes[i + 1], 0x00, 0x00};
             int point = ByteUtils.bytesToInt(bPoints);
             ecgSets.add(point);
         }
@@ -1581,7 +1575,7 @@ if(release){
                 int breathRate = ByteUtils.toUnsignedInt(bytes[9]);
 
                 int header1_date_year = Integer.parseInt(hxBytes[10]) + 2000;
-                int header1_date_month = Integer.parseInt(hxBytes[11]) - 1;
+                int header1_date_month = Integer.parseInt(hxBytes[11]);
                 int header1_date_day = Integer.parseInt(hxBytes[12]);
                 int header1_date_hour = Integer.parseInt(hxBytes[13]);
                 int header1_date_minute = Integer.parseInt(hxBytes[14]);
@@ -1625,7 +1619,7 @@ if(release){
 
         //+1 Por el CRC
         while (index + 1 < bytes.length) {
-            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index+1]) == 255;
+            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index + 1]) == 255;
 
             if (end) {
                 sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.heartRateDataArray), true);
@@ -1633,15 +1627,15 @@ if(release){
             }
 
 
-            byte[] bIndex = {0x00, 0x00, bytes[index+2], bytes[index+1]};
+            byte[] bIndex = {0x00, 0x00, bytes[index + 2], bytes[index + 1]};
             int identifier = ByteUtils.bytesToIntReversed(bIndex);
 
-            int header1_date_year = Integer.parseInt(hxBytes[index+3]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[index+4]) - 1;
-            int header1_date_day = Integer.parseInt(hxBytes[index+5]);
-            int header1_date_hour = Integer.parseInt(hxBytes[index+6]);
-            int header1_date_minute = Integer.parseInt(hxBytes[index+7]);
-            int header1_date_second = Integer.parseInt(hxBytes[index+8]);
+            int header1_date_year = Integer.parseInt(hxBytes[index + 3]) + 2000;
+            int header1_date_month = Integer.parseInt(hxBytes[index + 4]);
+            int header1_date_day = Integer.parseInt(hxBytes[index + 5]);
+            int header1_date_hour = Integer.parseInt(hxBytes[index + 6]);
+            int header1_date_minute = Integer.parseInt(hxBytes[index + 7]);
+            int header1_date_second = Integer.parseInt(hxBytes[index + 8]);
 
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.YEAR, header1_date_year);
@@ -1653,7 +1647,7 @@ if(release){
             cal.set(Calendar.MILLISECOND, 0);
 
             Long date = cal.getTimeInMillis();
-            int heartRate = ByteUtils.toUnsignedInt(bytes[index+9]);
+            int heartRate = ByteUtils.toUnsignedInt(bytes[index + 9]);
 
 
             LifevitSDKHeartbeatData data = new LifevitSDKHeartbeatData();
@@ -1664,7 +1658,7 @@ if(release){
             index += 10;
         }
 
-      //  sendGetHeartRateData(Constants.DATA_OPERATION_NEXT);
+        //  sendGetHeartRateData(Constants.DATA_OPERATION_NEXT);
     }
 
     private void processGetHeartRatePeriodicData(byte[] bytes) {
@@ -1676,7 +1670,7 @@ if(release){
 
         //+1 Por el CRC
         while (index + 1 < bytes.length) {
-            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index+1]) == 255;
+            boolean end = (int) ByteUtils.toUnsignedInt(bytes[index + 1]) == 255;
 
             if (end) {
                 sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.heartRateDataArray), true);
@@ -1687,12 +1681,12 @@ if(release){
             byte[] bIndex = {0x00, 0x00, bytes[2], bytes[1]};
             int identifier = ByteUtils.bytesToIntReversed(bIndex);
 
-            int header1_date_year = Integer.parseInt(hxBytes[index+3]) + 2000;
-            int header1_date_month = Integer.parseInt(hxBytes[index+4]) - 1;
-            int header1_date_day = Integer.parseInt(hxBytes[index+5]);
-            int header1_date_hour = Integer.parseInt(hxBytes[index+6]);
-            int header1_date_minute = Integer.parseInt(hxBytes[index+7]);
-            int header1_date_second = Integer.parseInt(hxBytes[index+8]);
+            int header1_date_year = Integer.parseInt(hxBytes[index + 3]) + 2000;
+            int header1_date_month = Integer.parseInt(hxBytes[index + 4]);
+            int header1_date_day = Integer.parseInt(hxBytes[index + 5]);
+            int header1_date_hour = Integer.parseInt(hxBytes[index + 6]);
+            int header1_date_minute = Integer.parseInt(hxBytes[index + 7]);
+            int header1_date_second = Integer.parseInt(hxBytes[index + 8]);
 
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.YEAR, header1_date_year);
@@ -1704,7 +1698,7 @@ if(release){
             cal.set(Calendar.MILLISECOND, 0);
 
             for (int i = 9; i <= 23 - 1; i++) {
-                int heartRate = ByteUtils.toUnsignedInt(bytes[index+i]);
+                int heartRate = ByteUtils.toUnsignedInt(bytes[index + i]);
                 LifevitSDKHeartbeatData data = new LifevitSDKHeartbeatData();
                 data.setDate(cal.getTimeInMillis());
                 data.setHeartrate(heartRate);
@@ -1716,7 +1710,7 @@ if(release){
             index += 24;
         }
 
-       // sendGetPeriodicHeartRateData(Constants.DATA_OPERATION_NEXT);
+        // sendGetPeriodicHeartRateData(Constants.DATA_OPERATION_NEXT);
     }
 
     private void processGetVitalsData(byte[] bytes) {
@@ -1727,27 +1721,27 @@ if(release){
 
         //+1 Por el CRC
         while (index + 1 < bytes.length) {
-            boolean end = ByteUtils.toUnsignedInt(bytes[index+1]) == 255;
+            boolean end = ByteUtils.toUnsignedInt(bytes[index + 1]) == 255;
 
             if (end) {
                 sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), new ArrayList(this.vitalsArray), true);
                 return;
             }
 
-            byte[] idArray = {bytes[index+1], bytes[index+2]};
+            byte[] idArray = {bytes[index + 1], bytes[index + 2]};
 
             int identifier = ByteUtils.bytesToInt(idArray);
-            int year = Integer.parseInt(hxBytes[index+3]) + 2000;
-            int month = Integer.parseInt(hxBytes[index+4]) - 1;
-            int day = Integer.parseInt(hxBytes[index+5]);
+            int year = Integer.parseInt(hxBytes[index + 3]) + 2000;
+            int month = Integer.parseInt(hxBytes[index + 4]);
+            int day = Integer.parseInt(hxBytes[index + 5]);
 
-            int hour = Integer.parseInt(hxBytes[index+6]);
-            int minute = Integer.parseInt(hxBytes[index+7]);
-            int second = Integer.parseInt(hxBytes[index+8]);
+            int hour = Integer.parseInt(hxBytes[index + 6]);
+            int minute = Integer.parseInt(hxBytes[index + 7]);
+            int second = Integer.parseInt(hxBytes[index + 8]);
 
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.MONTH, month - 1);
             cal.set(Calendar.DAY_OF_MONTH, day);
             cal.set(Calendar.HOUR_OF_DAY, hour);
             cal.set(Calendar.MINUTE, minute);
@@ -1756,12 +1750,12 @@ if(release){
 
             Long date = cal.getTimeInMillis();
 
-            int hrv = ByteUtils.toUnsignedInt(bytes[index+9]);
-            int vascularAging = ByteUtils.toUnsignedInt(bytes[index+10]);
-            int heartRate = ByteUtils.toUnsignedInt(bytes[index+11]);
-            int fatigue = ByteUtils.toUnsignedInt(bytes[index+12]);
-            int systolic = ByteUtils.toUnsignedInt(bytes[index+13]);
-            int diastolic = ByteUtils.toUnsignedInt(bytes[index+14]);
+            int hrv = ByteUtils.toUnsignedInt(bytes[index + 9]);
+            int vascularAging = ByteUtils.toUnsignedInt(bytes[index + 10]);
+            int heartRate = ByteUtils.toUnsignedInt(bytes[index + 11]);
+            int fatigue = ByteUtils.toUnsignedInt(bytes[index + 12]);
+            int systolic = ByteUtils.toUnsignedInt(bytes[index + 13]);
+            int diastolic = ByteUtils.toUnsignedInt(bytes[index + 14]);
 
 
             LifevitSDKVitalHRVData mData = new LifevitSDKVitalHRVData();
@@ -1779,7 +1773,7 @@ if(release){
             index += 15;
         }
 
-       // sendGetVitals(Constants.DATA_OPERATION_NEXT);
+        // sendGetVitals(Constants.DATA_OPERATION_NEXT);
 
     }
 
@@ -1788,7 +1782,7 @@ if(release){
         String hexString = HexUtils.getStringToPrint(rx);
         String[] hxBytes = hexString.split(":");
         int header1_date_year = Integer.parseInt(hxBytes[1]) + 2000;
-        int header1_date_month = Integer.parseInt(hxBytes[2]) - 1;
+        int header1_date_month = Integer.parseInt(hxBytes[2]);
         int header1_date_day = Integer.parseInt(hxBytes[3]);
 
         int header1_date_hour = Integer.parseInt(hxBytes[4]);
@@ -1963,18 +1957,16 @@ if(release){
 
         LifevitSDKVitalPeriod period = new LifevitSDKVitalPeriod();
         int type = bytes[9];
-        if(type == 3){
+        if (type == 3) {
             period.setType(LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE);
-        }
-        else if(type==2){
+        } else if (type == 2) {
             period.setType(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
-        }
-        else{
+        } else {
             period.setType(LifevitSDKConstants.BraceletVitalDataType.HR);
         }
 
         //Period
-        switch (workingMode){
+        switch (workingMode) {
             case Constants.WORKING_MODE_OFF:
                 period.setWorkingMode(LifevitSDKConstants.BraceletVitalPeriodWorkingMode.OFF);
                 break;
@@ -1985,7 +1977,7 @@ if(release){
                 period.setWorkingMode(LifevitSDKConstants.BraceletVitalPeriodWorkingMode.TIME_PERIOD);
                 break;
         }
-        if(period.isEnabled()) {
+        if (period.isEnabled()) {
             int startHour = Integer.parseInt(hexBytes[2]);
             int startMinutes = Integer.parseInt(hexBytes[3]);
             int endHour = Integer.parseInt(hexBytes[4]);
@@ -2342,7 +2334,7 @@ if(release){
         if (level != null) {
             bytes[3] = (byte) level.intValue();
         }
-        if(time!=null) {
+        if (time != null) {
             bytes[4] = (byte) time.intValue();
         }
         byte checksum = calculateCRC(bytes);
@@ -2388,8 +2380,8 @@ if(release){
 
         int index = 0;
         int i = 0;
-        for (LifevitSDKVitalAlarm alarm: data
-             ) {
+        for (LifevitSDKVitalAlarm alarm : data
+        ) {
             byte[] mAlarm = getAlarmBytes(index++, TOTAL_ALARMS, alarm);
             for (int j = 0; j < mAlarm.length; j++) {
                 bytes[i++] = mAlarm[j];
@@ -2521,19 +2513,19 @@ if(release){
         sendMessage(bytes);
     }*/
 
-    protected void sendGetHealthPeriod(Integer type){
+    protected void sendGetHealthPeriod(Integer type) {
 
         byte[] bytes = getEmptyArray(16);
 
         bytes[0] = Constants.REQUEST_GET_AUTOMATIC_DETECTION;
-        if(type == LifevitSDKConstants.BraceletVitalDataType.HR.value){
+        if (type == LifevitSDKConstants.BraceletVitalDataType.HR.value) {
             bytes[1] = 0x01;
         }
-        if(type == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
+        if (type == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
             bytes[1] = 0x02;
 
         }
-        if(type == LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value){
+        if (type == LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value) {
             bytes[1] = 0x03;
         }
 
@@ -2552,7 +2544,7 @@ if(release){
         bytes[0] = Constants.REQUEST_SET_AUTOMATIC_DETECTION;
 
         bytes[1] = (byte) data.getWorkingMode().value;
-        if(data.isEnabled()) {
+        if (data.isEnabled()) {
             String times = String.format(Locale.ENGLISH, "0x%2d-0x%2d-0x%2d-0x%2d", data.getStartHour(), data.getStartMinute(), data.getEndHour(), data.getEndMinute()).replace(" ", "0");
 
             byte[] hBytes = HexUtils.hexToBytes(times, "-");
@@ -2569,14 +2561,14 @@ if(release){
             }
         }
 
-        if(data.getType().value == LifevitSDKConstants.BraceletVitalDataType.HR.value){
-    bytes[9] = 0x01;
+        if (data.getType().value == LifevitSDKConstants.BraceletVitalDataType.HR.value) {
+            bytes[9] = 0x01;
         }
-        if(data.getType().value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
+        if (data.getType().value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
             bytes[9] = 0x02;
 
         }
-        if(data.getType().value == LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value){
+        if (data.getType().value == LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE.value) {
             bytes[9] = 0x03;
 
         }
@@ -2626,16 +2618,13 @@ if(release){
 
         bytes[0] = Constants.REQUEST_BRACELET_HEALTH_MEASUREMENT_CONTROL;
 
-        if(type.value == LifevitSDKConstants.BraceletVitalDataType.HR.value){
+        if (type.value == LifevitSDKConstants.BraceletVitalDataType.HR.value) {
             bytes[1] = Constants.HEALTH_MEASUREMENT_HEARTRATE;
-        }
-        else if(type.value == LifevitSDKConstants.BraceletVitalDataType.VITALS.value){
+        } else if (type.value == LifevitSDKConstants.BraceletVitalDataType.VITALS.value) {
             bytes[1] = Constants.HEALTH_MEASUREMENT_HRV;
-        }
-        else if(type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value){
+        } else if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
             bytes[1] = Constants.HEALTH_MEASUREMENT_BLOODOXYGEN;
-        }
-        else{
+        } else {
             sendingThread.taskFinished();
         }
 
