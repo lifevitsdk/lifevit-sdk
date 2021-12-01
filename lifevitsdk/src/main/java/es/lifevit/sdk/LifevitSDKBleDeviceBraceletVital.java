@@ -27,6 +27,7 @@ import es.lifevit.sdk.bracelet.LifevitSDKVitalAlarm;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalECGConstantsData;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalECGStatus;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalECGWaveform;
+import es.lifevit.sdk.bracelet.LifevitSDKVitalExerciseRecord;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalHRVData;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalNotification;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalPeriod;
@@ -169,6 +170,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         public static final byte REQUEST_SET_ALARMS = (byte) 0x23;
         public static final byte REQUEST_SCREEN_NOTIF = (byte) 0x4D;
         public static final byte REQUEST_SET_WEATHER = (byte) 0x15;
+        public static final byte REQUEST_GET_ECG_MEASUREMENT_HEART_RATE = (byte) 0x83;
+
 
         public static final byte ERROR_SET_TIME = (byte) 0x81;
         public static final byte ERROR_GET_TIME = (byte) 0xC1;
@@ -203,7 +206,6 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     private ArrayList<LifevitSDKStepData> stepDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKSleepData> sleepDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKOximeterData> oximeterDataArray = new ArrayList<>();
-    private ArrayList<LifevitSDKSleepData> bloodPressureDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKTemperatureData> temperatureDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKSummaryStepData> sportsDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKVitalHRVData> vitalsArray = new ArrayList<>();
@@ -258,7 +260,10 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
                 SET_REALTIME = 25, GET_STEPS = 26, STEP_SYNC = 27, SLEEP_SYNC = 28,
                 SET_ACTIVITY_PERIOD = 29, GET_ACTIVITY_PERIOD = 30, SET_SPORT_MODE = 31,
                 HRV_START = 32, HR_START = 33, OXY_START = 34, GET_SPORT_DATA = 35, SET_HR_PERIOD = 36,
-                SET_ALARMS = 38, SET_REMINDERS = 39, SET_WEATHER = 40, GET_TEMPERATURE_PERIOD = 41, SET_TEMPERATURE_PERIOD = 42;
+                SET_ALARMS = 38, SET_REMINDERS = 39, SET_WEATHER = 40, GET_TEMPERATURE_PERIOD = 41,
+                SET_TEMPERATURE_PERIOD = 42,
+                ECG_STOP = 44,
+                SPORT_HEATBEAT_PACKET = 46;
     }
     // region --- Delegate methods ---
 
@@ -278,11 +283,16 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     private void sendSuccessfulCommand(LifevitSDKConstants.BraceletVitalCommand command, LifevitSDKConstants.BraceletVitalDataType type, Object data, boolean release) {
         LifevitSDKResponse response = new LifevitSDKResponse(command, type, data);
 
-        if (this.mLifevitSDKManager.getBraceletVitalListener() != null) {
-            this.mLifevitSDKManager.getBraceletVitalListener().braceletVitalInformation(mBluetoothDevice.getAddress(), response);
+        String deviceAddress = "";
+        if (mBluetoothDevice != null) {
+            deviceAddress = mBluetoothDevice.getAddress();
         }
 
-        if (release) {
+        if (this.mLifevitSDKManager.getBraceletVitalListener() != null) {
+            this.mLifevitSDKManager.getBraceletVitalListener().braceletVitalInformation(deviceAddress, response);
+        }
+
+        if (release && sendingThread != null) {
             sendingThread.taskFinished();
         }
     }
@@ -305,7 +315,6 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
 
 
     protected LifevitSDKBleDeviceBraceletVital(BluetoothDevice dev, LifevitSDKManager manager) {
-
         this.mBluetoothDevice = dev;
         this.mLifevitSDKManager = manager;
     }
@@ -488,6 +497,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
 
     public void setSportsMode(Integer mode, LifevitSDKConstants.BraceletVitalSportType sport, LifevitSDKConstants.BraceletVitalMeditationLevel level, Integer period) {
+        sendingThread.clearQueue();
         sendingThread.addToQueue(Action.SET_SPORT_MODE, mode, sport != null ? sport.value : null, level != null ? level.value : null, period);
     }
 
@@ -532,6 +542,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
 
     public void getHeartRateData() {
+        sendingThread.clearQueue();
         sendingThread.addToQueue(Action.GET_HR);
     }
 
@@ -544,6 +555,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
 
     public void startECG() {
+        sendingThread.clearQueue();
         sendingThread.addToQueue(Action.ECG_START);
     }
 
@@ -556,6 +568,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
 
     public void startOxymeter() {
+        sendingThread.clearQueue();
         sendingThread.addToQueue(Action.OXY_START, true);
     }
 
@@ -594,6 +607,12 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     public void setWeather(LifevitSDKVitalWeather data) {
         sendingThread.addToQueue(Action.SET_WEATHER, data);
     }
+
+    public void setSportsAppHeartbeatPacket(Float distance, Integer paceMinutes, Integer paceSeconds, Integer gpsSignal) {
+        sendingThread.clearQueue();
+        sendingThread.addToQueue(Action.SPORT_HEATBEAT_PACKET, distance, paceMinutes, paceSeconds, gpsSignal);
+    }
+
 
     // endregion --- "Public methods" ---
 
@@ -717,11 +736,16 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             } else if (command == Constants.REQUEST_BRACELET_HEART_BEAT_PACKET) {
                 processRealtimeData(rx);
             } else if (command == Constants.REQUEST_APP_HEART_BEAT_PACKET) {
-                processAppHeartbeatCommand(rx);
+                processHeartBeatPacket(rx);
             } else if (command == Constants.REQUEST_SOS_FUNCTION) {
                 sendSOS();
             } else if (command == Constants.ERROR_GET_MAC_ADDRESS) {
                 sendError(LifevitSDKConstants.BraceletVitalError.ERROR_SENDING_COMMAND, getActionForCommand(command));
+            } else if (command == Constants.REQUEST_GET_ECG_MEASUREMENT_HEART_RATE) {
+                processGetECGHeartRateData(rx);
+            } else if (command == Constants.REQUEST_SPORT_MODE_CONTROL_ENABLE) {
+                processAppSportModeControlEnable(rx);
+
             } else {
                 LogUtils.log(Log.DEBUG, CLASS_TAG, ">>> COMMAND COMPLETED: " + command);
                 sendSuccessfulCommand(getActionForCommand(command), true);
@@ -788,7 +812,6 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             case Constants.REQUEST_SET_ALARMS:
                 return LifevitSDKConstants.BraceletVitalCommand.SET_ALARMS;
             case Constants.REQUEST_SET_AUTOMATIC_BLOOD_OXYGEN_DETECTION:
-                return LifevitSDKConstants.BraceletVitalCommand.SET_AUTOMATIC_PERIOD;
             case Constants.REQUEST_SET_AUTOMATIC_DETECTION:
                 return LifevitSDKConstants.BraceletVitalCommand.SET_AUTOMATIC_PERIOD;
             case Constants.REQUEST_SET_REALTIME_STEP_COUNTING:
@@ -804,6 +827,10 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
                 return LifevitSDKConstants.BraceletVitalCommand.SET_USER_INFO;
             case Constants.REQUEST_SET_WEATHER:
                 return LifevitSDKConstants.BraceletVitalCommand.SET_WEATHER;
+            case Constants.REQUEST_GET_ECG_MEASUREMENT_HEART_RATE:
+                return LifevitSDKConstants.BraceletVitalCommand.ECG_MEASUREMENT_HEART_RATE;
+            case Constants.REQUEST_BRACELET_HEART_BEAT_PACKET:
+                return LifevitSDKConstants.BraceletVitalCommand.ECG_HEARTBEAT_PACKET;
             case Constants.REQUEST_BRACELET_HEALTH_MEASUREMENT_CONTROL:
                 switch (lastHealthConstant) {
                     case Constants.HEALTH_MEASUREMENT_HRV:
@@ -894,9 +921,9 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             byte[] bExercise = {bytes[index + 9], bytes[index + 10], bytes[index + 11], bytes[index + 12]};
             int exercise = ByteUtils.bytesToInt(bExercise);
             byte[] bDistance = {bytes[index + 13], bytes[index + 14], bytes[index + 15], bytes[index + 16]};
-            int distance = ByteUtils.bytesToInt(bDistance);
+            float distance = ByteUtils.bytesToInt(bDistance) / 100.0f;
             byte[] bCalories = {bytes[index + 17], bytes[index + 18], bytes[index + 19], bytes[index + 20]};
-            int calories = ByteUtils.bytesToInt(bCalories);
+            float calories = ByteUtils.bytesToInt(bCalories) / 100.0f;
             byte[] bTarget = {bytes[index + 21], bytes[index + 22], 0x00, 0x00};
             int target = ByteUtils.bytesToInt(bTarget);
 
@@ -971,9 +998,9 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             int time = minutes * 60 + seconds;
 
             byte[] bCalories = {bytes[17], bytes[18], bytes[19], bytes[20]};
-            int calories = ByteUtils.bytesToInt(bCalories);
+            float calories = ByteUtils.bytesToInt(bCalories) / 100.0f;
             byte[] bDistance = {bytes[21], bytes[22], bytes[23], bytes[24]};
-            int distance = ByteUtils.bytesToInt(bDistance);
+            float distance = ByteUtils.bytesToInt(bDistance) / 100.0f;
 
 
             LifevitSDKSummaryStepData stepData = new LifevitSDKSummaryStepData(date, steps, calories, distance, movement, heartrate);
@@ -1113,18 +1140,23 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         data.setTime(time);
         data.setGpsSignal(gpsSignalStrength);
 
-        sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), data, false);
+        sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), data, true);
 
     }
+
+    private void processAppSportModeControlEnable(byte[] bytes) {
+        sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), (boolean) (bytes[1] == 1), true);
+    }
+
 
     private void processRealtimeData(byte[] bytes) {
 
         byte[] bSteps = {bytes[1], bytes[2], bytes[3], bytes[4]};
         int steps = ByteUtils.bytesToInt(bSteps);
         byte[] bCalories = {bytes[5], bytes[6], bytes[7], bytes[8]};
-        int calories = ByteUtils.bytesToInt(bCalories);
+        float calories = ByteUtils.bytesToInt(bCalories) / 100.0f;
         byte[] bDistance = {bytes[9], bytes[10], bytes[11], bytes[12]};
-        int distance = ByteUtils.bytesToInt(bDistance);
+        float distance = ByteUtils.bytesToInt(bDistance) / 100.0f;
         byte[] bMovement = {bytes[13], bytes[14], 0x00, 0x00};
         int movementMinutes = ByteUtils.bytesToInt(bMovement);
         byte[] bMovement2 = {bytes[15], bytes[16], 0x00, 0x00};
@@ -1145,6 +1177,40 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), stepData, false);
 
     }
+
+
+    private void processHeartBeatPacket(byte[] bytes) {
+
+        int hr = ByteUtils.toUnsignedInt(bytes[1]);
+
+        if (hr == 0xFF) {
+            // Finished
+            return;
+        }
+
+        byte[] bSteps = {bytes[2], bytes[3], bytes[4], bytes[5]};
+        int steps = ByteUtils.bytesToInt(bSteps);
+
+        byte[] bCalories = {bytes[9], bytes[8], bytes[7], bytes[6]};
+//        float calories = ByteUtils.bytesToInt(bCalories) / 100.0f;
+
+        double calories2 = ByteUtils.convertIEEE754BytesToFloat(bCalories);
+
+        Log.d(CLASS_TAG, "float conversion: " + HexUtils.getStringToPrint(bCalories) + " is " + calories2);
+
+        byte[] bExerciseTime = {bytes[10], bytes[11], bytes[12], bytes[13]};
+        int exerciseTime = ByteUtils.bytesToInt(bExerciseTime);
+
+        LifevitSDKVitalExerciseRecord stepData = new LifevitSDKVitalExerciseRecord();
+        stepData.setDate(System.currentTimeMillis());
+        stepData.setHeartRate(hr);
+        stepData.setSteps(steps);
+        stepData.setCalories(calories2);
+        stepData.setExerciseTime(exerciseTime);
+
+        sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), stepData, true);
+    }
+
 
     private void processGetDetailedSteps(byte[] bytes) {
 
@@ -1196,9 +1262,9 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             byte[] bSteps = {bytes[index + 9], bytes[index + 10], 0x00, 0x00};
             int steps = ByteUtils.bytesToInt(bSteps);
             byte[] bCalories = {bytes[index + 11], bytes[index + 12], 0x00, 0x00};
-            int calories = ByteUtils.bytesToInt(bCalories);
+            float calories = ByteUtils.bytesToInt(bCalories) / 100.0f;
             byte[] bDistance = {bytes[index + 13], bytes[index + 14], 0x00, 0x00};
-            int distance = ByteUtils.bytesToInt(bDistance);
+            float distance = ByteUtils.bytesToInt(bDistance) / 100.0f;
 
 
             LifevitSDKStepData stepData = new LifevitSDKStepData(date, steps, calories, distance);
@@ -1474,8 +1540,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         sendSuccessfulCommand(getActionForCommand(bytes[0]), true);
     }
 
-    private void processECGWaveformData(byte[] bytes) {
-
+    public void processECGWaveformData(byte[] bytes) {
 
         String hexString = HexUtils.getStringToPrint(bytes);
         String[] hxBytes = hexString.split(":");
@@ -1486,7 +1551,6 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), this.ecgWaveformData, true);
             return;
         }
-
 
         byte[] bIndex = {0x00, 0x00, bytes[2], bytes[1]};
         int identifier = ByteUtils.bytesToIntReversed(bIndex);
@@ -1522,36 +1586,61 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             this.ecgWaveformData.setHeartrate(heartRate);
             this.ecgWaveformData.setTotalPoints(points);
             this.ecgWaveformData.setHrv(hrv);
+            this.ecgWaveformData.setBreath(mood);
+
             for (int i = 27; i < bytes.length - 1; i += 2) {
-                byte[] bPoints = {bytes[i], bytes[i + 1], 0x00, 0x00};
-                int point = ByteUtils.bytesToInt(bPoints);
+                int point = getECGBytesValue(bytes[i + 1], bytes[i]);
                 this.ecgWaveformData.getEcgData().add(point);
             }
         } else {
             for (int i = 3; i < bytes.length - 1; i += 2) {
-
-                byte[] bPoints = {bytes[i], bytes[i + 1], 0x00, 0x00};
-                int point = ByteUtils.bytesToInt(bPoints);
+                int point = getECGBytesValue(bytes[i + 1], bytes[i]);
                 this.ecgWaveformData.getEcgData().add(point);
             }
         }
-
-
-        //sendGetECGWaveform(Constants.DATA_OPERATION_NEXT);
     }
+
+
+    private int getECGBytesValue(byte byte0, byte byte1) {
+        byte[] bPoints = {byte1, byte0, 0x00, 0x00};
+        int point = ByteUtils.bytesToInt(bPoints);
+
+        int value3 = resolveUtilGetValue(byte0, 1) + resolveUtilGetValue(byte1, 0);
+        int value4 = value3;
+        if (value4 >= 32768) {
+            value4 -= 65536;
+        }
+
+//        Log.d(CLASS_TAG, "(b)" + HexUtils.getStringToPrint(bPoints) + " (a) " + point + " (b) " + value3 + " (c) " + value4);
+        return (int) (filterEcgData((double) value4));
+    }
+
 
     private void processECGMeasurementData(byte[] bytes) {
         ArrayList<Integer> ecgSets = new ArrayList();
         for (int i = 1; i < bytes.length - 1; i += 2) {
-            byte[] bPoints = {bytes[i], bytes[i + 1], 0x00, 0x00};
-            int point = ByteUtils.bytesToInt(bPoints);
-            ecgSets.add(point);
+            ecgSets.add(getECGBytesValue(bytes[i], bytes[i + 1]));
         }
 
         sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), ecgSets, false);
-
-
     }
+
+
+    private void processGetECGHeartRateData(byte[] bytes) {
+        List<Integer> hrValues = new ArrayList<>();
+        hrValues.add(ByteUtils.toUnsignedInt(bytes[1])); // HR
+        hrValues.add(ByteUtils.toUnsignedInt(bytes[2])); // HRV
+        hrValues.add(ByteUtils.toUnsignedInt(bytes[3])); // Mood?
+        sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), hrValues, false);
+    }
+
+
+    public static int resolveUtilGetValue(byte b, int i) {
+        double d = (double) (b & 255);
+        double pow = Math.pow(256.0d, (double) i);
+        return (int) (d * pow);
+    }
+
 
     private void processECGStatusData(byte[] bytes) {
 
@@ -1597,7 +1686,9 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
                 data.setHrv(hrv);
                 data.setDate(date);
 
-                sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), data, false);
+                ecgStatus.setData(data);
+
+                sendSuccessfulCommandWithData(getActionForCommand(bytes[0]), ecgStatus, false);
                 break;
             }
 
@@ -1660,6 +1751,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
 
         //  sendGetHeartRateData(Constants.DATA_OPERATION_NEXT);
     }
+
 
     private void processGetHeartRatePeriodicData(byte[] bytes) {
 
@@ -1728,9 +1820,9 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
                 return;
             }
 
-            byte[] idArray = {bytes[index + 1], bytes[index + 2]};
+            byte[] bIndex = {0x00, 0x00, bytes[2], bytes[1]};
+            int identifier = ByteUtils.bytesToIntReversed(bIndex);
 
-            int identifier = ByteUtils.bytesToInt(idArray);
             int year = Integer.parseInt(hxBytes[index + 3]) + 2000;
             int month = Integer.parseInt(hxBytes[index + 4]);
             int day = Integer.parseInt(hxBytes[index + 5]);
@@ -2346,6 +2438,39 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
 
 
+    public void sendSportAppHeartbeatPacket(Float distance, Integer paceMinutes, Integer paceSeconds, Integer gpsSignal) {
+        byte[] bytes = getEmptyArray(16);
+
+        Log.d(CLASS_TAG, "[DGBleDevice] preparado para enviar a dispositivo");
+
+        bytes[0] = Constants.REQUEST_APP_HEART_BEAT_PACKET;
+
+        if (distance != null) {
+            byte[] distanceBytes = ByteUtils.convertIEEE754FloatToBytes(distance);
+
+            bytes[1] = distanceBytes[3];
+            bytes[2] = distanceBytes[2];
+            bytes[3] = distanceBytes[1];
+            bytes[4] = distanceBytes[0];
+        }
+        if (paceMinutes != null) {
+            bytes[5] = (byte) paceMinutes.intValue();
+        }
+        if (paceSeconds != null) {
+            bytes[6] = (byte) paceSeconds.intValue();
+        }
+        if (gpsSignal != null) {
+            bytes[7] = (byte) gpsSignal.intValue();
+        }
+        byte checksum = calculateCRC(bytes);
+        bytes[15] = checksum;
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[sendStartSport] " + HexUtils.getStringToPrint(bytes));
+
+        sendMessage(bytes);
+    }
+
+
     protected void sendSetNotification(LifevitSDKVitalScreenNotification data) {
         byte[] bytes = getEmptyArray(80);
         bytes[0] = Constants.REQUEST_SCREEN_NOTIF;
@@ -2805,5 +2930,33 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         this.sportsDataArray.clear();
         this.heartRateDataArray.clear();
     }
+
+
+    static double[] A_HR = {1.0d, -3.658469528008591d, 5.026987876570873d, -3.078346646055655d, 0.709828779797188d};
+    static double[] B_HR = {0.012493658738073d, 0.0d, -0.024987317476146d, 0.0d, 0.012493658738073d};
+    static double[] inPut = {0.0d, 0.0d, 0.0d, 0.0d, 0.0d};
+    static double[] outPut = {0.0d, 0.0d, 0.0d, 0.0d, 0.0d};
+
+    public static double filterEcgData(double d) {
+        double[] dArr = inPut;
+        dArr[4] = ((d * 18.3d) / 128.0d) + 0.06d;
+        double[] dArr2 = outPut;
+        double[] dArr3 = B_HR;
+        int i = 0;
+        double[] dArr4 = A_HR;
+        dArr2[4] = ((((((((dArr3[0] * dArr[4]) + (dArr3[1] * dArr[3])) + (dArr3[2] * dArr[2])) +
+                (dArr3[3] * dArr[1])) + (dArr3[4] * dArr[0])) - (dArr4[1] * dArr2[3])) -
+                (dArr4[2] * dArr2[2])) - (dArr4[3] * dArr2[1])) - (dArr4[4] * dArr2[0]);
+        while (i < 4) {
+            double[] dArr5 = inPut;
+            int i2 = i + 1;
+            dArr5[i] = dArr5[i2];
+            double[] dArr6 = outPut;
+            dArr6[i] = dArr6[i2];
+            i = i2;
+        }
+        return -outPut[4];
+    }
+
 
 }

@@ -44,6 +44,9 @@ public class BraceletVitalSendQueue extends Thread {
         }
     }
 
+    public void clearQueue() {
+        sendQueue.clear();
+    }
 
     protected void addToQueue(int action) {
         addToQueue(action, 0);

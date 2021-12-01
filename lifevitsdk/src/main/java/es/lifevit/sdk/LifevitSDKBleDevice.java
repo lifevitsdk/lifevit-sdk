@@ -35,7 +35,7 @@ public abstract class LifevitSDKBleDevice {
      * Attributes
      */
 
-    protected BluetoothDevice mBluetoothDevice;
+    protected BluetoothDevice  mBluetoothDevice;
     protected LifevitSDKManager mLifevitSDKManager;
     protected int mDeviceStatus = LifevitSDKConstants.STATUS_DISCONNECTED;
     protected BluetoothGatt mBluetoothGatt;

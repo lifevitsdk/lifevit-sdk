@@ -10,6 +10,7 @@ public class HexUtils {
     public static byte[] hexToBytes(String hexString) {
         return  hexToBytes(hexString, ", ");
     }
+
         public static byte[] hexToBytes(String hexString, String separator) {
         String[] split = hexString.split(separator);
         byte[] arr = new byte[split.length];
