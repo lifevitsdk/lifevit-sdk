@@ -212,6 +212,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     private LifevitSDKVitalECGWaveform ecgWaveformData = null;
 
     private LifevitSDKVitalParams parameters = new LifevitSDKVitalParams();
+    private boolean pendingToUpdateParams = true;
 
     private boolean isSyncronizingSteps = false;
 
@@ -459,6 +460,10 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
 
     public void updateParamaters(LifevitSDKVitalParams data) {
+        if (pendingToUpdateParams) {
+            // Encolamos primero el getParams
+            getParameters();
+        }
         sendingThread.addToQueue(Action.SET_DEVICE_PARAMS, data);
         sendingThread.addToQueue(Action.SET_DEVICE_NEW_PARAMS, data);
     }
@@ -555,6 +560,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     }
 
     public void startECG() {
+        resetFilterData();
         sendingThread.clearQueue();
         sendingThread.addToQueue(Action.ECG_START);
     }
@@ -1588,6 +1594,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             this.ecgWaveformData.setHrv(hrv);
             this.ecgWaveformData.setBreath(mood);
 
+            resetFilterData();
+
             for (int i = 27; i < bytes.length - 1; i += 2) {
                 int point = getECGBytesValue(bytes[i + 1], bytes[i]);
                 this.ecgWaveformData.getEcgData().add(point);
@@ -1990,6 +1998,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
 
         this.parameters.hand = rx[1];
         sendSuccessfulCommandWithData(getActionForCommand(rx[0]), parameters, true);
+
+        pendingToUpdateParams = false;
     }
 
     private void processGetTargetSteps(byte[] rx) {
@@ -2936,6 +2946,13 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     static double[] B_HR = {0.012493658738073d, 0.0d, -0.024987317476146d, 0.0d, 0.012493658738073d};
     static double[] inPut = {0.0d, 0.0d, 0.0d, 0.0d, 0.0d};
     static double[] outPut = {0.0d, 0.0d, 0.0d, 0.0d, 0.0d};
+
+    public static void resetFilterData() {
+        A_HR = new double[]{1.0d, -3.658469528008591d, 5.026987876570873d, -3.078346646055655d, 0.709828779797188d};
+        B_HR = new double[]{0.012493658738073d, 0.0d, -0.024987317476146d, 0.0d, 0.012493658738073d};
+        inPut = new double[]{0.0d, 0.0d, 0.0d, 0.0d, 0.0d};
+        outPut = new double[]{0.0d, 0.0d, 0.0d, 0.0d, 0.0d};
+    }
 
     public static double filterEcgData(double d) {
         double[] dArr = inPut;

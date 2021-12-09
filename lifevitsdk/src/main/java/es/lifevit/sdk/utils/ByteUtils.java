@@ -74,33 +74,18 @@ public class ByteUtils {
 
 
     public static double convertIEEE754BytesToFloat(byte[] bytes) {
-        int bits = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
-        double sign = ((bytes[0] & 0b10000000) == 0) ? 1.0 : -1.0;
-        int e = ((bits >>> 23) & 0xff);
-        int m = (e == 0) ? (bits & 0x7fffff) << 1 : (bits & 0x7fffff) | 0x800000;
-        return sign * m * Math.pow(2, e - 150);
+        return Float.intBitsToFloat(getInt(bytes));
     }
 
+
+    public static int getInt(byte[] bArr) {
+        return ((bArr[0] << 24) & 0xFF000000) | ((bArr[1] << 16) & 0xFF0000) | ((bArr[2] << 8) & 0xFF00) | (bArr[3] & 0xFF);
+    }
+
+
     public static byte[] convertIEEE754FloatToBytes(float f) {
-        assert !Float.isNaN(f);
-        // see also JavaDoc of Float.intBitsToFloat(int)
-
-        int bits = Float.floatToIntBits(f);
-        int s = (bits >> 31) == 0 ? 1 : -1;
-        int e = (bits >> 23) & 0xFF;
-        int m = (e == 0) ? (bits & 0x7FFFFF) << 1 : (bits & 0x7FFFFF) | 0x800000;
-
-        int exp = (e - 150) / 4 + 6;
-        int mant;
-        int mantissaShift = (e - 150) % 4;  // compensate for base 16
-        if (mantissaShift >= 0) mant = m >> mantissaShift;
-        else mant = m >> (Math.abs(mantissaShift));
-        if (mant > 0xFFFFFFF) {
-            mant >>= 4;
-            exp++;
-        }  // loose of precision */
-        byte a = (byte) ((1 - s) << 6 | (exp + 64));
-        return new byte[]{a, (byte) (mant >> 16), (byte) (mant >> 8), (byte) mant};
+        byte[] result = intToBytesLittleIndian(Float.floatToIntBits(f));
+        return result;
     }
 
 
