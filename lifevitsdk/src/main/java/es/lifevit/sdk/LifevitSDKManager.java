@@ -1473,19 +1473,19 @@ public class LifevitSDKManager {
         return false;
     }
 
-    public boolean setSportsAppHeartbeatPacket(Float distance, Integer paceMinutes, Integer paceSeconds, Integer gpsSignal) {
+    public boolean setSportsAppHeartbeatPacket(Float distance, Integer paceSeconds, LifevitSDKConstants.BraceletVitalGPSStrengh gpsSignal) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            bracelet.setSportsAppHeartbeatPacket(distance, paceMinutes, paceSeconds, gpsSignal);
+            bracelet.setSportsAppHeartbeatPacket(distance,  paceSeconds, gpsSignal);
             return true;
         }
         return false;
     }
 
-    public boolean stopVitalSportMode(LifevitSDKConstants.BraceletVitalSportType sport) {
+    public boolean stopVitalSportMode() {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            bracelet.setSportsMode(0x04, sport, null, null);
+            bracelet.setSportsMode(0x04, null, null, null);
             return true;
         }
         return false;
@@ -1558,7 +1558,7 @@ public class LifevitSDKManager {
     public boolean setVitalPeriodicConfiguration(LifevitSDKVitalPeriod period) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            if (period.getType().value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
+            if (period.getType().value == LifevitSDKConstants.BraceletVitalDataType.OXIMETER.value) {
 
                 bracelet.setBloodPressurePeriod(period);
             } else if (period.getType().value == LifevitSDKConstants.BraceletVitalDataType.HR.value) {
@@ -1575,7 +1575,7 @@ public class LifevitSDKManager {
     public boolean getVitalPeriodicConfiguration(LifevitSDKConstants.BraceletVitalDataType type) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
+            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXIMETER.value) {
 
                 bracelet.getBloodPressurePeriod();
             } else if (type.value == LifevitSDKConstants.BraceletVitalDataType.HR.value) {
@@ -1630,7 +1630,7 @@ public class LifevitSDKManager {
     public void getVitalData(LifevitSDKConstants.BraceletVitalDataType type, boolean periodic) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
+            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXIMETER.value) {
 
                 if (periodic) {
                     bracelet.getOximeterPeriodicData();
@@ -1670,7 +1670,7 @@ public class LifevitSDKManager {
     public boolean startVitalHealthMeasurement(final LifevitSDKConstants.BraceletVitalDataType type) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
+            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXIMETER.value) {
 
                 bracelet.startOxymeter();
                 return true;
@@ -1692,7 +1692,7 @@ public class LifevitSDKManager {
     public boolean stopVitalHealthMeasurement(final LifevitSDKConstants.BraceletVitalDataType type) {
         LifevitSDKBleDeviceBraceletVital bracelet = (LifevitSDKBleDeviceBraceletVital) getDeviceByType(LifevitSDKConstants.DEVICE_BRACELET_VITAL);
         if (bracelet != null) {
-            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value) {
+            if (type.value == LifevitSDKConstants.BraceletVitalDataType.OXIMETER.value) {
 
                 bracelet.stopOxymeter();
                 return true;

@@ -548,7 +548,7 @@ public class BraceletAT500HrActivity extends AppCompatActivity {
                             // Print logs
                             DateFormat timeFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                             for (LifevitSDKHeartbeatData packet : data) {
-                                Log.d(TAG, "[Heart Rate] Date: " + timeFormatter.format(packet.getDate()) + ", HeartRate:" + packet.getHeartrate());
+                                Log.d(TAG, "[Heart Rate] Date: " + timeFormatter.format(packet.getDate()) + ", HeartRate:" + packet.getHeartRate());
                             }
                         }
                     });

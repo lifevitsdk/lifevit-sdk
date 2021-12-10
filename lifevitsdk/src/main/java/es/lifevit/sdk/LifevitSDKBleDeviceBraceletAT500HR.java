@@ -1086,7 +1086,7 @@ public class LifevitSDKBleDeviceBraceletAT500HR extends LifevitSDKBleDevice {
 
             // create new record
             LifevitSDKHeartbeatData record = new LifevitSDKHeartbeatData();
-            record.setHeartrate(data.value);
+            record.setHeartRate(data.value);
             record.setDate(measurementCal.getTimeInMillis());
             resultList.add(record);
         }

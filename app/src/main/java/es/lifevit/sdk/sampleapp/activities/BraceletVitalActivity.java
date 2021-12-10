@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import es.lifevit.sdk.LifevitSDKBleDeviceBraceletVital;
 import es.lifevit.sdk.LifevitSDKVitalParams;
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKManager;
@@ -214,11 +213,11 @@ public class BraceletVitalActivity extends AppCompatActivity {
                                 break;
                             }
                             case 13: {
-                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.OXYMETER, false);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.OXIMETER, false);
                                 break;
                             }
                             case 14: {
-                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.OXYMETER, true);
+                                manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.OXIMETER, true);
                                 break;
                             }
                             case 15: {
@@ -226,7 +225,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
 
                                 //Set periodic health data
                                 LifevitSDKVitalPeriod period = new LifevitSDKVitalPeriod();
-                                period.setType(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
+                                period.setType(LifevitSDKConstants.BraceletVitalDataType.OXIMETER);
                                 period.setWorkingMode(LifevitSDKConstants.BraceletVitalPeriodWorkingMode.TIME_PERIOD);
                                 period.setStartHour(10);
                                 period.setEndHour(14);
@@ -236,7 +235,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
                             }
                             case 16: {
                                 //Get oximeter period
-                                manager.getVitalPeriodicConfiguration(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
+                                manager.getVitalPeriodicConfiguration(LifevitSDKConstants.BraceletVitalDataType.OXIMETER);
                                 break;
                             }
                             case 17: {
@@ -329,7 +328,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
                             case 34:
                                 //Set sport mode
                                 //manager.getVitalData(LifevitSDKBleDeviceBraceletVital.Data.SPORTS);
-                                manager.stopVitalSportMode(LifevitSDKConstants.BraceletVitalSportType.BREATH);
+                                manager.stopVitalSportMode();
                                 break;
                             case 35:
                                 manager.startVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.VITALS);
@@ -344,10 +343,10 @@ public class BraceletVitalActivity extends AppCompatActivity {
                                 manager.stopVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.HR);
                                 break;
                             case 39:
-                                manager.startVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
+                                manager.startVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.OXIMETER);
                                 break;
                             case 40:
-                                manager.stopVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.OXYMETER);
+                                manager.stopVitalHealthMeasurement(LifevitSDKConstants.BraceletVitalDataType.OXIMETER);
                                 break;
                             case 41:
                                 manager.getVitalData(LifevitSDKConstants.BraceletVitalDataType.SPORTS);
@@ -496,25 +495,18 @@ public class BraceletVitalActivity extends AppCompatActivity {
 
         LifevitSDKBraceletVitalListener bListener = new LifevitSDKBraceletVitalListener() {
 
-
-
-
             @Override
             public void braceletVitalInformation(String device, final LifevitSDKResponse response) {
                 synchronized (textview_info) {
-
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
                             if (response != null) {
-
                                     String text = textview_info.getText().toString();
                                     text = "";
                                     text += "\n";
                                     text += response.toString();
                                     textview_info.setText(text);
-
                             }
                         }
                     });

@@ -16,7 +16,7 @@ public class LifevitSDKSummaryStepData extends LifevitSDKStepData {
 
         super(date, steps, calories, distance);
 
-        this.setActiveTime((long) activeTime);
+        this.setActiveFastTime((long) activeTime);
         this.heartRate = heartRate;
 
     }
@@ -50,8 +50,8 @@ public class LifevitSDKSummaryStepData extends LifevitSDKStepData {
         Date d = new Date(date);
         return "LifevitSDKSummaryStepData{" +
                 "date=" + d +
-                ", time=" + time +
-                ", activeTime=" + activeTime +
+                ", time=" + activeTime +
+                ", activeTime=" + activeFastTime +
                 ", steps=" + steps +
                 ", calories=" + calories +
                 ", distance=" + distance +

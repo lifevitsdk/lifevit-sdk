@@ -732,7 +732,7 @@ public class LifevitSDKBleDeviceBraceletAT250 extends LifevitSDKBleDevice {
                             Date dt = df.parse(date + " " + time);
                             for (int i = 0; i < 12; i++) {
                                 LifevitSDKHeartbeatData d = new LifevitSDKHeartbeatData();
-                                d.setHeartrate(getLowValue(rx[i + 7]));
+                                d.setHeartRate(getLowValue(rx[i + 7]));
                                 d.setDate(dt.getTime() + (i * 10 * 1000l));
                                 heartData.add(d);
                             }

@@ -324,7 +324,7 @@ public class BraceletAT250Activity extends AppCompatActivity {
                             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                             while (i < data.size() && i < 100) {
                                 text += "\n";
-                                text += "Index " + i + " heartdata : " + data.get(i).getHeartrate() + " date: "
+                                text += "Index " + i + " heartdata : " + data.get(i).getHeartRate() + " date: "
                                         + df.format(new Date(data.get(i).getDate()));
                                 i++;
                             }

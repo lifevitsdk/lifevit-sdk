@@ -3,18 +3,19 @@ package es.lifevit.sdk.bracelet;
 import es.lifevit.sdk.LifevitSDKConstants;
 
 public class LifevitSDKResponse {
+
     private LifevitSDKConstants.BraceletVitalCommand command;
     private LifevitSDKConstants.BraceletVitalDataType type;
     private Object data;
 
-    public LifevitSDKResponse(LifevitSDKConstants.BraceletVitalCommand command, Object data){
+    public LifevitSDKResponse(LifevitSDKConstants.BraceletVitalCommand command, Object data) {
         setData(data);
         setCommand(command);
     }
 
-    public LifevitSDKResponse(LifevitSDKConstants.BraceletVitalCommand command,  LifevitSDKConstants.BraceletVitalDataType type, Object data){
+    public LifevitSDKResponse(LifevitSDKConstants.BraceletVitalCommand command, LifevitSDKConstants.BraceletVitalDataType type, Object data) {
         setData(data);
-       setCommand(command);
+        setCommand(command);
         setType(type);
     }
 
@@ -46,8 +47,8 @@ public class LifevitSDKResponse {
     public String toString() {
         return "LifevitSDKResponse{" +
                 "action=" + command +
-                ", type=" + (type!=null?type.value:"")+
-                ", data=" +  (data!=null?data.toString():"") +
+                ", type=" + (type != null ? type.value : "") +
+                ", data=" + (data != null ? data.toString() : "") +
                 '}';
     }
 }

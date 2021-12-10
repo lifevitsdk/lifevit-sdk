@@ -19,7 +19,7 @@ public class LifevitSDKConstants {
     }
 
     public enum BraceletVitalDataType {
-        HR(0), TEMPERATURE(1), OXYMETER(2), VITALS(3), STEPS(4), SLEEP(5), SPORTS(6);
+        HR(0), TEMPERATURE(1), OXIMETER(2), VITALS(3), STEPS(4), SLEEP(5), SPORTS(6);
         public final int value;
 
         private BraceletVitalDataType(int value) {
@@ -104,6 +104,17 @@ public class LifevitSDKConstants {
     public enum BraceletVitalError {
         ERROR_SENDING_COMMAND, ERROR_MAX_ALARMS, ERROR_MAX_PERIOD, ERROR_HR_SETTING, ERROR_SCREEN_SETTING, ERROR_DIAL_INTERFACE, ERROR_INVALID_TIMES, ERROR_PERIOD_INTERVAL, ERROR_MAX_STEPS
     }
+
+
+    public enum BraceletVitalGPSStrengh {
+         LOW(1), MEDIUM(2), HIGH(3);
+        public final int value;
+
+        private BraceletVitalGPSStrengh(int value) {
+            this.value = value;
+        }
+    }
+
 
     public static final class WeightScale {
         public static final int TYPE1 = 1, TYPE2 = 2;

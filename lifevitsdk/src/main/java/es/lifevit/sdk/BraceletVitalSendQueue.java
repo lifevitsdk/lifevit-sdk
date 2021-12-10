@@ -182,7 +182,7 @@ public class BraceletVitalSendQueue extends Thread {
                                 dgBleDeviceBracelet.sendStartSport((Integer)bqi.object[0],(Integer)bqi.object[1],(Integer)bqi.object[2],(Integer)bqi.object[3]);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.GET_OXY_PERIOD:
-                                dgBleDeviceBracelet.sendGetHealthPeriod(LifevitSDKConstants.BraceletVitalDataType.OXYMETER.value);
+                                dgBleDeviceBracelet.sendGetHealthPeriod(LifevitSDKConstants.BraceletVitalDataType.OXIMETER.value);
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_OXY_PERIOD:
                                 dgBleDeviceBracelet.sendSetHealthPeriod((LifevitSDKVitalPeriod) bqi.object[0]);
@@ -245,7 +245,7 @@ public class BraceletVitalSendQueue extends Thread {
 
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.OXY_START:
-                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKConstants.BraceletVitalDataType.OXYMETER, (Boolean) bqi.object[0]);
+                                dgBleDeviceBracelet.sendSetHealthControl(LifevitSDKConstants.BraceletVitalDataType.OXIMETER, (Boolean) bqi.object[0]);
 
                                 break;
                             case LifevitSDKBleDeviceBraceletVital.Action.SET_ALARMS:
@@ -260,6 +260,11 @@ public class BraceletVitalSendQueue extends Thread {
                                 dgBleDeviceBracelet.sendSetWeather((LifevitSDKVitalWeather) bqi.object[0]);
 
                                 break;
+                            case LifevitSDKBleDeviceBraceletVital.Action.SPORT_HEATBEAT_PACKET:
+                                dgBleDeviceBracelet.sendSportAppHeartbeatPacket((Float) bqi.object[0],
+                                        (Integer) bqi.object[1], (Integer) bqi.object[2]);
+                                break;
+
                             default:
 
                                 LogUtils.log(Log.DEBUG, TAG, "ACTION NOT IN QUEUE: " + bqi.action);

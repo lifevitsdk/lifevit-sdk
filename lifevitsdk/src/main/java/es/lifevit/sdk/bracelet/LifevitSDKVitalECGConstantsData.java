@@ -5,7 +5,7 @@ public class LifevitSDKVitalECGConstantsData {
     private long date = System.currentTimeMillis();
     private int identifier;
     private Integer hrv;
-    private Integer heartrate;
+    private Integer heartRate;
     private Integer breathRate;
 
     public long getDate() {
@@ -32,12 +32,12 @@ public class LifevitSDKVitalECGConstantsData {
         this.hrv = hrv;
     }
 
-    public Integer getHeartrate() {
-        return heartrate;
+    public Integer getHeartRate() {
+        return heartRate;
     }
 
-    public void setHeartrate(Integer heartrate) {
-        this.heartrate = heartrate;
+    public void setHeartRate(Integer heartRate) {
+        this.heartRate = heartRate;
     }
 
     public Integer getBreathRate() {
@@ -54,7 +54,7 @@ public class LifevitSDKVitalECGConstantsData {
                 "date=" + date +
                 ", identifier=" + identifier +
                 ", hrv=" + hrv +
-                ", heartrate=" + heartrate +
+                ", heartrate=" + heartRate +
                 ", breathRate=" + breathRate +
                 '}';
     }

@@ -4,7 +4,7 @@ package es.lifevit.sdk.bracelet;
 import java.util.Date;
 
 public class LifevitSDKStepData {
-    protected Long date, time, activeTime;
+    protected Long date, activeTime, activeFastTime;
     protected int steps;
     protected float calories, distance;
 
@@ -19,20 +19,20 @@ public class LifevitSDKStepData {
         this.distance = distance;
     }
 
-    public Long getTime() {
-        return time;
-    }
-
-    public void setTime(Long time) {
-        this.time = time;
+    public Long getActiveTime() {
+        return activeTime;
     }
 
     public void setActiveTime(Long activeTime) {
         this.activeTime = activeTime;
     }
 
-    public Long getActiveTime() {
-        return activeTime;
+    public void setActiveFastTime(Long activeFastTime) {
+        this.activeFastTime = activeFastTime;
+    }
+
+    public Long getActiveFastTime() {
+        return activeFastTime;
     }
 
     public Long getDate() {
@@ -72,8 +72,8 @@ public class LifevitSDKStepData {
         Date d = new Date(date);
         return "LifevitSDKStepData{" +
                 "date=" + d +
-                ", time=" + time +
-                ", activeTime=" + activeTime +
+                ", time=" + activeTime +
+                ", activeTime=" + activeFastTime +
                 ", steps=" + steps +
                 ", calories=" + calories +
                 ", distance=" + distance +

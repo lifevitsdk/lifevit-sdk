@@ -2,7 +2,7 @@ package es.lifevit.sdk.bracelet;
 
 public class LifevitSDKVitalWeather {
 
-    public static class Status {
+    public static class WeatherStatus {
         public static final int SUNNY = 0;
         public static final int CLEAR_NIGHT = 1;
         public static final int FAIR = 2;
@@ -44,11 +44,11 @@ public class LifevitSDKVitalWeather {
         public static final int HOT = 38;
     }
 
-    private int status = Status.CLOUDY;
+    private int status = WeatherStatus.CLOUDY;
     private int temperature = 20;
     private int maxTemperature = 24;
-    private int minTemperature=15;
-    private int airQuality=90;
+    private int minTemperature = 15;
+    private int airQuality = 90;
     private String location = "BARCELONA";
 
     public int getStatus() {

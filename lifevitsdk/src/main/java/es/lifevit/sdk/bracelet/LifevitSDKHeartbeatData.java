@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class LifevitSDKHeartbeatData {
     private long date = System.currentTimeMillis();
-    private int heartrate;
+    private int heartRate;
 
     public long getDate() {
         return date;
@@ -15,12 +15,12 @@ public class LifevitSDKHeartbeatData {
         this.date = date;
     }
 
-    public int getHeartrate() {
-        return heartrate;
+    public int getHeartRate() {
+        return heartRate;
     }
 
-    public void setHeartrate(int heartrate) {
-        this.heartrate = heartrate;
+    public void setHeartRate(int heartRate) {
+        this.heartRate = heartRate;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class LifevitSDKHeartbeatData {
         Date d = new Date(date);
         return "LifevitSDKHeartbeatData{" +
                 "date=" + d +
-                ", heartrate=" + heartrate +
+                ", heartrate=" + heartRate +
                 '}';
     }
 }
