@@ -1057,8 +1057,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         int heartRate = ByteUtils.toUnsignedInt(bytes[2]);
         int bloodOxygen = ByteUtils.toUnsignedInt(bytes[3]);
         int hrv = ByteUtils.toUnsignedInt(bytes[4]);
-        int fatigue = ByteUtils.toUnsignedInt(bytes[4]);
-        int systolic = ByteUtils.toUnsignedInt(bytes[5]);
+        int fatigue = ByteUtils.toUnsignedInt(bytes[5]);
+        int systolic = ByteUtils.toUnsignedInt(bytes[6]);
         int diastolic = ByteUtils.toUnsignedInt(bytes[7]);
 
         int type = healthConstant;
