@@ -2670,8 +2670,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
             bytes[6] = ByteUtils.getWeekByte(data.isMonday(), data.isTuesday(), data.isWednesday(), data.isThursday(), data.isFriday(), data.isSaturday(), data.isSunday());
 
             if (data.getWorkingMode().value == Constants.WORKING_MODE_TIME_INTERVAL) {
-                bytes[7] = (byte) (data.getIntervalTime() >> 8 & 0x00ff);
-                bytes[8] = (byte) (data.getIntervalTime() & 0x00ff);
+                bytes[8] = (byte) (data.getIntervalTime() >> 8 & 0x00ff);
+                bytes[7] = (byte) (data.getIntervalTime() & 0x00ff);
             }
         }
 
