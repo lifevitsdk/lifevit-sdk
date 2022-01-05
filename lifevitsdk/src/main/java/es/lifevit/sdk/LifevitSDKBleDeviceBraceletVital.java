@@ -200,7 +200,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
     private final static String CLASS_TAG = LifevitSDKBleDeviceBraceletVital.class.getSimpleName();
 
     private static final String DEVICE_NAME = "J2025E";
-    private static final String DEVICE_SECOND_NAME = "J2025E";
+    private static final String DEVICE_SECOND_NAME = "vital";
 
     private ArrayList<LifevitSDKHeartbeatData> heartRateDataArray = new ArrayList<>();
     private ArrayList<LifevitSDKStepData> stepDataArray = new ArrayList<>();
@@ -359,7 +359,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
 
 
     protected static boolean matchDevice(String name) {
-        return name != null && name.toLowerCase().contains(DEVICE_NAME.toLowerCase());
+        return name != null && (name.toLowerCase().contains(DEVICE_NAME.toLowerCase())
+                || name.toLowerCase().contains(DEVICE_SECOND_NAME.toLowerCase()));
     }
 
     protected static boolean matchDevice(BluetoothDevice device) {
