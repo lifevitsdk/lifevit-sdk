@@ -11,7 +11,7 @@ public class LifevitSDKVitalParams {
     }
 
     public class Language {
-        public static final int CHINESE = 0, ENGLISH = 1;
+        public static final int CHINESE = 0, ENGLISH = 1, SPANISH = 2;
     }
 
     boolean distanceUnitKm = false;

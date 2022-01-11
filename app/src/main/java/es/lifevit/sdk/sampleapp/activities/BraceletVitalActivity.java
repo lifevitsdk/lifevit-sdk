@@ -196,7 +196,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
                                 break;
                             case 7: {
                                 LifevitSDKVitalParams data = new LifevitSDKVitalParams();
-
+                                data.setLanguage(LifevitSDKVitalParams.Language.SPANISH);
                                 manager.setVitalParameters(data);
                             }
                             break;

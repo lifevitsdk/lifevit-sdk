@@ -73,8 +73,10 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         public static final byte DATA_GET_FAHRENHEIT = (byte) 0x01;
         public static final byte DATA_GET_CELSIUS = (byte) 0x00;
 
+        public static final byte DATA_SET_SPANISH = (byte) 0x82;
         public static final byte DATA_SET_CHINESE = (byte) 0x81;
         public static final byte DATA_SET_ENGLISH = (byte) 0x80;
+        public static final byte DATA_GET_SPANISH = (byte) 0x02;
         public static final byte DATA_GET_CHINESE = (byte) 0x01;
         public static final byte DATA_GET_ENGLISH = (byte) 0x00;
 
@@ -1966,6 +1968,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         int languageInt = (int) bytes[14];
         if (languageInt == Constants.DATA_GET_CHINESE) {
             language = LifevitSDKVitalParams.Language.CHINESE;
+        } else if (languageInt == Constants.DATA_GET_SPANISH) {
+            language = LifevitSDKVitalParams.Language.SPANISH;
         } else {
             language = LifevitSDKVitalParams.Language.ENGLISH;
         }
@@ -2315,6 +2319,8 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
 
             if (deviceParameters.language == LifevitSDKVitalParams.Language.CHINESE) {
                 bytes[14] = (byte) Constants.DATA_SET_CHINESE;
+            } else if (deviceParameters.language == LifevitSDKVitalParams.Language.SPANISH) {
+                bytes[14] = (byte) Constants.DATA_SET_SPANISH;
             } else {
                 bytes[14] = (byte) Constants.DATA_SET_ENGLISH;
             }
