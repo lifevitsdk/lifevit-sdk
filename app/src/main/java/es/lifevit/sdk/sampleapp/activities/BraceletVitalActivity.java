@@ -151,9 +151,13 @@ public class BraceletVitalActivity extends AppCompatActivity {
                         "43. Set Call notification",
                         "44. Stop Call notification",
                         "45. Set Linkedin notification",
-                        "46. Set weather",
-                        "47. Set Period Temperature",
-                        "48. Get Period Temperature",
+                        "46. Set Twitter notification",
+                        "47. Set Whatsapp notification",
+                        "48. Set Linkedin notification",
+                        "49. Set Instagram notification",
+                        "50. Set weather",
+                        "51. Set Period Temperature",
+                        "51. Get Period Temperature",
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(BraceletVitalActivity.this);
@@ -397,11 +401,51 @@ public class BraceletVitalActivity extends AppCompatActivity {
                             }
                             break;
                             case 46:
+                                //SET NOTIF
+                            {
+                                LifevitSDKVitalScreenNotification notif = new LifevitSDKVitalScreenNotification();
+                                notif.setType(LifevitSDKConstants.BraceletVitalNotification.TWITTER);
+                                notif.setContact("LIFEVIT");
+                                notif.setText("Check our new SDK for the VITAL Bracelet. Great medical features!");
+                                manager.setVitalNotification(notif);
+                            }
+                            break;
+                            case 47:
+                                //SET NOTIF
+                            {
+                                LifevitSDKVitalScreenNotification notif = new LifevitSDKVitalScreenNotification();
+                                notif.setType(LifevitSDKConstants.BraceletVitalNotification.WHATSAPP);
+                                notif.setContact("LIFEVIT");
+                                notif.setText("Check our new SDK for the VITAL Bracelet. Great medical features!");
+                                manager.setVitalNotification(notif);
+                            }
+                            break;
+                            case 48:
+                                //SET NOTIF
+                            {
+                                LifevitSDKVitalScreenNotification notif = new LifevitSDKVitalScreenNotification();
+                                notif.setType(LifevitSDKConstants.BraceletVitalNotification.FACEBOOK);
+                                notif.setContact("LIFEVIT");
+                                notif.setText("Check our new SDK for the VITAL Bracelet. Great medical features!");
+                                manager.setVitalNotification(notif);
+                            }
+                            break;
+                            case 49:
+                                //SET NOTIF
+                            {
+                                LifevitSDKVitalScreenNotification notif = new LifevitSDKVitalScreenNotification();
+                                notif.setType(LifevitSDKConstants.BraceletVitalNotification.INSTAGRAM);
+                                notif.setContact("LIFEVIT");
+                                notif.setText("Check our new SDK for the VITAL Bracelet. Great medical features!");
+                                manager.setVitalNotification(notif);
+                            }
+                            break;
+                            case 50:
                                 //SET WEATHER
                                 LifevitSDKVitalWeather weather = new LifevitSDKVitalWeather();
                                 manager.setVitalWeather(weather);
                                 break;
-                            case 47: {
+                            case 51: {
                                 //Set temperature period
 
                                 //Set periodic health data
@@ -414,7 +458,7 @@ public class BraceletVitalActivity extends AppCompatActivity {
                                 manager.setVitalPeriodicConfiguration(period);
                                 break;
                             }
-                            case 48: {
+                            case 52: {
                                 //Get oximeter period
                                 manager.getVitalPeriodicConfiguration(LifevitSDKConstants.BraceletVitalDataType.TEMPERATURE);
                                 break;
