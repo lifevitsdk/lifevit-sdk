@@ -73,7 +73,7 @@ public class ThermometerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isDisconnected) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, 10000);
+                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, 60000);
                 } else {
                     SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_THERMOMETER);
                 }

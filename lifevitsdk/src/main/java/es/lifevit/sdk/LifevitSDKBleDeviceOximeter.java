@@ -47,6 +47,7 @@ public class LifevitSDKBleDeviceOximeter extends LifevitSDKBleDevice {
     protected int getType() {
         return LifevitSDKConstants.DEVICE_OXIMETER;
     }
+
     /**
      * Receivers
      */
@@ -204,10 +205,10 @@ public class LifevitSDKBleDeviceOximeter extends LifevitSDKBleDevice {
             }
 
             if (mLifevitSDKManager.getOximeterListener() != null) {
-                if ((result.getPi() == -1 || result.getPi() == 0)
-                        && (result.getSpO2() == -1 || result.getPi() == 0)
-                        && (result.getRpm() == -1 || result.getPi() == 0)
-                        && (result.getLpm() == -1 || result.getPi() == 0)) {
+                if ((result.getPi() == null || result.getPi() == -1 || result.getPi() == 0)
+                        && (result.getSpO2() == null || result.getSpO2() == -1 || result.getSpO2() == 0)
+                        && (result.getRpm() == null || result.getRpm() == -1 || result.getRpm() == 0)
+                        && (result.getLpm() == null || result.getLpm() == -1 || result.getLpm() == 0)) {
 
                     // Only pleth
                     mLifevitSDKManager.getOximeterListener().oximeterDeviceOnProgressMeasurement(resultPleth);

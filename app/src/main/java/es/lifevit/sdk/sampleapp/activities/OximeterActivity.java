@@ -1,8 +1,10 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.os.Bundle;
+
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -55,6 +57,7 @@ public class OximeterActivity extends AppCompatActivity {
 
     /**
      * Components initialization
+     *
      * @author Lifevit
      */
     public void initComponents() {
@@ -126,6 +129,12 @@ public class OximeterActivity extends AppCompatActivity {
                                 isDisconnected = true;
                                 textview_connection_result.setText("Disconnected");
                                 textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_red_dark));
+
+                                textview_measurement_result_spo2.setText("---");
+                                textview_measurement_result_pi.setText("---");
+                                textview_measurement_result_rpm.setText("---");
+                                textview_measurement_result_lpm.setText("---");
+
                                 break;
                             case LifevitSDKConstants.STATUS_SCANNING:
                                 button_connect.setText("Stop scan");
