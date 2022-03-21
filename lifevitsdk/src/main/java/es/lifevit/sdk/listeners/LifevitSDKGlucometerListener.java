@@ -8,7 +8,5 @@ public interface LifevitSDKGlucometerListener {
 
     void onGlucometerDeviceResult(long date, double value);
 
-    void onGlucometerCommandSuccess(int command, final int data);
-
     void onGlucometerDeviceError(int errorCode);
 }

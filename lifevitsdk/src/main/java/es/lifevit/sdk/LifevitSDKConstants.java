@@ -88,7 +88,7 @@ public class LifevitSDKConstants {
     /**
      * GLUCOMETER.
      */
-    public static final int DEVICE_GLUCOMETER = 11;
+    public static final int DEVICE_GLUCOMETER = 15;
 
 
     // endregion

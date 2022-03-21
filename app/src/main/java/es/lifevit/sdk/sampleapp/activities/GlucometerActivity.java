@@ -9,6 +9,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import java.text.SimpleDateFormat;
+
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKManager;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
@@ -207,37 +210,13 @@ public class GlucometerActivity extends AppCompatActivity {
 
         LifevitSDKGlucometerListener glucometerListener = new LifevitSDKGlucometerListener() {
             @Override
-            public void onGlucometerDeviceResult(long date, final double value) {
+            public void onGlucometerDeviceResult(final long date, final double value) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        textview_measurement_result.setText(String.format("%.2f", value));
-
-                    }
-                });
-            }
-
-            @Override
-            public void onGlucometerCommandSuccess(final int command, final int data) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (command){
-                            case LifevitSDKConstants.THERMOMETER_SUCCESS_UNIT:
-                                textview_measurement_result.setText("Command success: Changed unit" );
-                                break;
-
-                           /* case LifevitSDKConstants.THERMOMETER_SUCCESS_HISTORY:
-                                textview_measurement_result.setText("Command success: History" );
-                                break;*/
-                            case LifevitSDKConstants.THERMOMETER_SUCCESS_SHUTDOWN:
-                                textview_measurement_result.setText("Command success: Shutdown" );
-                                break;
-                            case LifevitSDKConstants.THERMOMETER_SUCCESS_VERSION:
-                                textview_measurement_result.setText("Command success: Version number:" + data );
-                                break;
-
-                        }
+                        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                        textview_measurement_result.setText(textview_measurement_result.getText() + "\n" +
+                                "[" + dateFormatter.format(date) + "] " + String.format("%.2f", value));
                     }
                 });
             }
@@ -247,27 +226,27 @@ public class GlucometerActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        switch (errorCode){
+                        switch (errorCode) {
                             case LifevitSDKConstants.THERMOMETER_ERROR_BODY_TEMPERATURE_HIGH:
-                                textview_measurement_result.setText("ERROR: Body temperature too high" );
+                                textview_measurement_result.setText("ERROR: Body temperature too high");
                                 break;
                             case LifevitSDKConstants.THERMOMETER_ERROR_BODY_TEMPERATURE_LOW:
-                                textview_measurement_result.setText("ERROR: Body temperature too low" );
+                                textview_measurement_result.setText("ERROR: Body temperature too low");
                                 break;
                             case LifevitSDKConstants.THERMOMETER_ERROR_AMBIENT_TEMPERATURE_HIGH:
-                                textview_measurement_result.setText("ERROR: Ambient/Object temperature too high" );
+                                textview_measurement_result.setText("ERROR: Ambient/Object temperature too high");
                                 break;
                             case LifevitSDKConstants.THERMOMETER_ERROR_AMBIENT_TEMPERATURE_LOW:
-                                textview_measurement_result.setText("ERROR: Ambient/Object temperature too low" );
+                                textview_measurement_result.setText("ERROR: Ambient/Object temperature too low");
                                 break;
                             case LifevitSDKConstants.THERMOMETER_ERROR_HARDWARE:
-                                textview_measurement_result.setText("ERROR: Hardware error" );
+                                textview_measurement_result.setText("ERROR: Hardware error");
                                 break;
                             case LifevitSDKConstants.THERMOMETER_ERROR_LOW_VOLTAGE:
-                                textview_measurement_result.setText("ERROR: Low voltage error" );
+                                textview_measurement_result.setText("ERROR: Low voltage error");
                                 break;
                             default:
-                                textview_measurement_result.setText("ERROR: Unknown error" );
+                                textview_measurement_result.setText("ERROR: Unknown error");
                                 break;
                         }
                     }
