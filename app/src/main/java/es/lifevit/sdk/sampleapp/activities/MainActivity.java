@@ -13,7 +13,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
     Button button_tensiometer, button_bracelet_at500hr, button_bracelet_at250, button_oximeter, button_tensiobracelet,
             button_thermometer, button_weightScale, button_multiple_connection, button_multiple_connection2,
-            button_baby_temp_bt125, button_scan_all_devices, button_pillreminder, button_bracelet_vital;
+            button_baby_temp_bt125, button_scan_all_devices, button_pillreminder, button_bracelet_vital, button_glucometer;
 
 
     @Override
@@ -42,6 +42,7 @@ public class MainActivity extends BaseAppCompatActivity {
         button_scan_all_devices = findViewById(R.id.button_scan_all_devices);
         button_pillreminder = findViewById(R.id.button_pillreminder);
         button_bracelet_vital = findViewById(R.id.button_bracelet_vital);
+        button_glucometer = findViewById(R.id.button_glucometer);
     }
 
 
@@ -135,6 +136,13 @@ public class MainActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), BraceletVitalActivity.class));
+            }
+        });
+
+        button_glucometer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), GlucometerActivity.class));
             }
         });
 

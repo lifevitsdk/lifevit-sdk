@@ -61,6 +61,9 @@
         <activity
             android:name=".activities.BraceletVitalActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.GlucometerActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".services.LifeVitTensiService"

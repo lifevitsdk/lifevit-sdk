@@ -27,7 +27,7 @@ project.ext.set("targetSdkVersion", 29)
 //project.ext.set("buildToolsVersion", "28.0.3")
 
 project.ext.set("versionCode", 29)
-project.ext.set("versionName", "2.2.2")
+project.ext.set("versionName", "2.2.3")
 
 ext {
     supportLibVersion = '26.1.0'

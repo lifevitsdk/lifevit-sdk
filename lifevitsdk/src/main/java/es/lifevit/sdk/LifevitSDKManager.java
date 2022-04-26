@@ -51,6 +51,7 @@ import es.lifevit.sdk.listeners.LifevitSDKBraceletAT250Listener;
 import es.lifevit.sdk.listeners.LifevitSDKBraceletListener;
 import es.lifevit.sdk.listeners.LifevitSDKBraceletVitalListener;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
+import es.lifevit.sdk.listeners.LifevitSDKGlucometerListener;
 import es.lifevit.sdk.listeners.LifevitSDKHeartListener;
 import es.lifevit.sdk.listeners.LifevitSDKOximeterListener;
 import es.lifevit.sdk.listeners.LifevitSDKPillReminderListener;
@@ -146,6 +147,7 @@ public class LifevitSDKManager {
     private LifevitSDKBabyTempBT125Listener babyTempBT125Listener;
     private LifevitSDKPillReminderListener pillReminderListener;
     private LifevitSDKBraceletVitalListener braceletVitalListener;
+    private LifevitSDKGlucometerListener glucometerListener;
 
 
     // Dispositivos conectados
@@ -316,6 +318,14 @@ public class LifevitSDKManager {
 
     public void setBraceletVitalListener(LifevitSDKBraceletVitalListener braceletVitalListener) {
         this.braceletVitalListener = braceletVitalListener;
+    }
+
+    public void setGlucometerListener(LifevitSDKGlucometerListener glucometerListener) {
+        this.glucometerListener = glucometerListener;
+    }
+
+    public LifevitSDKGlucometerListener getGlucometerListener() {
+        return glucometerListener;
     }
 
     protected HandlerThread getmHandlerThread() {
@@ -603,6 +613,8 @@ public class LifevitSDKManager {
                 return LifevitSDKBleDeviceBabyTempBT125.getUUIDs();
             case LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER:
                 return LifevitSDKBleDeviceBraceletAT250FirmwareUpdater.getUUIDs();
+            case LifevitSDKConstants.DEVICE_GLUCOMETER:
+                return LifevitSDKBleDeviceGlucometer.getUUIDs();
         }
         return null;
     }
@@ -745,6 +757,8 @@ public class LifevitSDKManager {
                 deviceType = LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER;
             } else if (LifevitSDKBleDevicePillReminder.matchDeviceName(dName) || LifevitSDKBleDevicePillReminder.matchDeviceName(result.getAdvertisedName())) {
                 deviceType = LifevitSDKConstants.DEVICE_PILL_REMINDER;
+            }else if (LifevitSDKBleDeviceGlucometer.isGlucometerDevice(dName)) {
+                deviceType = LifevitSDKConstants.DEVICE_GLUCOMETER;
             }
 
             if (deviceType != LifevitSDKConstants.DEVICE_OTHERS) {
@@ -983,6 +997,9 @@ public class LifevitSDKManager {
 
                 bleDevice = new LifevitSDKBleDevicePillReminder(device, this);
 
+            }else if (LifevitSDKBleDeviceGlucometer.matchDevice(device)) {
+
+                bleDevice = new LifevitSDKBleDeviceGlucometer(device, this);
             }
 
             if (bleDevice != null) {
@@ -1134,6 +1151,48 @@ public class LifevitSDKManager {
         LifevitSDKBleDevice device = getDeviceByType(LifevitSDKConstants.DEVICE_THERMOMETER);
         if (device != null && device instanceof LifevitSDKBleDeviceThermometerV2) {
             ((LifevitSDKBleDeviceThermometerV2) device).sendCommand(command);
+        }
+    }
+
+
+    // endregion
+
+    // region --- Glucometer Methods ---
+
+
+    public void sendGlucometerCommand(int command) {
+        LifevitSDKBleDevice device = getDeviceByType(LifevitSDKConstants.DEVICE_GLUCOMETER);
+        if (device != null && device instanceof LifevitSDKBleDeviceGlucometer) {
+            switch (command){
+                case LifevitSDKConstants.GlucometerCommand.INFO:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).getInfo();
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.START_PACKET:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.START_PACKET);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.PROCEDURE:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.PROCEDURE);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.RESULT:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.RESULT);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.END_PACKET:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.END_PACKET);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.CONFIRM:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.CONFIRM);
+                    break;
+                case LifevitSDKConstants.GlucometerCommand.END:
+
+                    ((LifevitSDKBleDeviceGlucometer) device).sendCommand(LifevitSDKBleDeviceGlucometer.Category.END);
+                    break;
+            }
         }
     }
 

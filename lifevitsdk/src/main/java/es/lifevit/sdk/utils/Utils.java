@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.List;
@@ -22,6 +23,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class Utils {
+
+    private static final char[] DIGITS_LOWER = {'0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    private static final char[] DIGITS_UPPER = {'0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     public static final int IO_BUFFER_SIZE = 8 * 1024;
     static final Charset US_ASCII = Charset.forName("US-ASCII");
     static final Charset UTF_8 = Charset.forName("UTF-8");
@@ -237,6 +244,57 @@ public class Utils {
 
             }
         }).start();
+    }
+
+
+    protected static char[] encodeHex(byte[] data, char[] toDigits) {
+        if (data == null)
+            return null;
+        int l = data.length;
+        char[] out = new char[l << 1];
+        for (int i = 0, j = 0; i < l; i++) {
+            out[j++] = toDigits[(0xF0 & data[i]) >>> 4];
+            out[j++] = toDigits[0x0F & data[i]];
+        }
+        return out;
+    }
+
+
+    public static String encodeHexStr(byte[] data) {
+        return encodeHexStr(data, true);
+    }
+
+    public static String encodeHexStr(byte[] data, boolean toLowerCase) {
+        return encodeHexStr(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
+    }
+
+
+    protected static String encodeHexStr(byte[] data, char[] toDigits) {
+        return new String(encodeHex(data, toDigits));
+    }
+
+
+    public static String formatTo1(double f) {
+        BigDecimal bg = new BigDecimal(f);
+        return bg.setScale(1, BigDecimal.ROUND_HALF_UP).toString();
+    }
+
+    /**
+     * The byte array is converted to a normal string (the character corresponding to ASCII)
+     *
+     * @param bytearray byte[]
+     * @return String
+     */
+    public static String bytetoString(byte[] bytearray) {
+        String result = "";
+        char temp;
+
+        int length = bytearray.length;
+        for (int i = 0; i < length; i++) {
+            temp = (char) bytearray[i];
+            result += temp;
+        }
+        return result;
     }
 
 
