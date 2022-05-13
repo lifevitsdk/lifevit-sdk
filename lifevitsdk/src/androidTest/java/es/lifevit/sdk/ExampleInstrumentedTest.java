@@ -1,5 +1,7 @@
 package es.lifevit.sdk;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -13,8 +15,6 @@ import es.lifevit.sdk.bracelet.LifevitSDKResponse;
 import es.lifevit.sdk.bracelet.LifevitSDKVitalECGWaveform;
 import es.lifevit.sdk.listeners.LifevitSDKBraceletVitalListener;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * Instrumentation test, which will execute on an Android device.
  *
@@ -24,6 +24,70 @@ import static org.junit.Assert.assertEquals;
 public class ExampleInstrumentedTest {
 
     private static final String TAG = ExampleInstrumentedTest.class.getSimpleName();
+
+
+    @Test
+    public void test_weight_scale_values() throws Exception {
+
+        LifevitSDKBleDeviceWeightScale bleDevice = new LifevitSDKBleDeviceWeightScale(null, null);
+
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        PreferenceUtil.setWeightScaleUserHeight(appContext, 161);
+        PreferenceUtil.setWeightScaleUserAge(appContext, 36);
+        PreferenceUtil.setWeightScaleUserGender(appContext, LifevitSDKConstants.GENDER_FEMALE);
+
+        double weight = 128.0;
+        double bia = 490.7;
+
+        // ----- For female
+        double fatPercentage = bleDevice.getPercentageFatWithWeight(appContext, weight, bia);
+        double waterPercentage = bleDevice.getPercentageWaterWithWeight(appContext, weight, bia);
+        double musclePercentage = bleDevice.getPercentageMuscleWithWeight(appContext, weight, bia);
+        double bmr = bleDevice.getBMRWithWeight(appContext, weight, bia);
+        double bone = bleDevice.getBoneWithWeight(appContext, weight, bia);
+        double visceral = bleDevice.getVisceralWithWeight(appContext, weight, bia);
+        double bmi = bleDevice.getBMIWithWeight(appContext, weight);
+        double proteinPercentage = bleDevice.getProteinPercentage(musclePercentage);
+        double idealBodyWeight = bleDevice.getIdealBodyWeight(appContext);
+        double obesity = bleDevice.getObesityPercentage(appContext, weight);
+
+        assertEquals(76.32723, fatPercentage, 0.01);
+        assertEquals(11.58012, musclePercentage, 0.01);
+        assertEquals(3.53, waterPercentage, 0.01);
+        assertEquals(2315.926218, bmr, 0.01);
+        assertEquals(3.5518187, bone, 0.01);
+        assertEquals(49.38, bmi, 0.01);
+        assertEquals(9.59, visceral, 0.01);
+        assertEquals(2.79006, proteinPercentage, 0.01);
+        assertEquals(56.50778, idealBodyWeight, 0.01);
+        assertEquals(126.5174813, obesity, 0.01);
+
+        // ----- For male
+        PreferenceUtil.setWeightScaleUserGender(appContext, LifevitSDKConstants.GENDER_MALE);
+
+         fatPercentage = bleDevice.getPercentageFatWithWeight(appContext, weight, bia);
+         waterPercentage = bleDevice.getPercentageWaterWithWeight(appContext, weight, bia);
+         musclePercentage = bleDevice.getPercentageMuscleWithWeight(appContext, weight, bia);
+         bmr = bleDevice.getBMRWithWeight(appContext, weight, bia);
+         bone = bleDevice.getBoneWithWeight(appContext, weight, bia);
+         visceral = bleDevice.getVisceralWithWeight(appContext, weight, bia);
+         bmi = bleDevice.getBMIWithWeight(appContext, weight);
+         proteinPercentage = bleDevice.getProteinPercentage(musclePercentage);
+         idealBodyWeight = bleDevice.getIdealBodyWeight(appContext);
+         obesity = bleDevice.getObesityPercentage(appContext, weight);
+
+        assertEquals(60.63, fatPercentage, 0.01);
+        assertEquals(19.60, musclePercentage, 0.01);
+        assertEquals(19.37, waterPercentage, 0.01);
+        assertEquals(2305.38, bmr, 0.01);
+        assertEquals(4.36, bone, 0.01);
+        assertEquals(49.38, bmi, 0.01);
+        assertEquals(22.67, visceral, 0.01);
+        assertEquals(6.79811, proteinPercentage, 0.01);
+        assertEquals(56.50778, idealBodyWeight, 0.01);
+        assertEquals(126.5174813, obesity, 0.01);
+    }
 
 
     @Test

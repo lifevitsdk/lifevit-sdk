@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -652,7 +653,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         //Guardamos el comando actual...
         currentRequestedCommand = data[0];
 
-        dividePacketsAndSendMessage(RxChar, data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+        sendMessageWithoutDividing(RxChar, data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
     }
 
 
@@ -2468,21 +2469,28 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
 
 
     protected void sendSetNotification(LifevitSDKVitalScreenNotification data) {
-        byte[] bytes = getEmptyArray(80);
+        byte[] bytes = getEmptyArray(124);
         bytes[0] = Constants.REQUEST_SCREEN_NOTIF;
         bytes[1] = (byte) data.getType().value;
+
         byte[] bText = data.getText().getBytes();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            bText = data.getText().getBytes(StandardCharsets.UTF_8);
+        }
         int length = Math.min(60, bText.length);
-        bytes[2] = (byte) length;
+        bytes[2] = (byte) 60;
         for (int i = 0; i < length; i++) {
             bytes[3 + i] = bText[i];
         }
 
-        bText = data.getContact().getBytes();
-        length = Math.min(15, bText.length);
-        bytes[62] = (byte) length;
-        for (int i = 0; i < length; i++) {
-            bytes[63 + i] = bText[i];
+        byte[] bText2 = data.getContact().getBytes();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            bText2 = data.getContact().getBytes(StandardCharsets.UTF_8);
+        }
+        int length2 = Math.min(60, bText2.length);
+        bytes[63] = (byte) 60;
+        for (int i = 0; i < length2; i++) {
+            bytes[64 + i] = bText2[i];
         }
 
         byte checksum = calculateCRC(bytes);

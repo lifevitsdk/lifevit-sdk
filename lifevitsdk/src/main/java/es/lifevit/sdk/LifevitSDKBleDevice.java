@@ -113,6 +113,14 @@ public abstract class LifevitSDKBleDevice {
     }
 
 
+    protected void sendMessageWithoutDividing(BluetoothGattCharacteristic RxChar, byte[] data, int writeType) {
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "SENDING Message: " + HexUtils.getStringToPrint(data));
+        RxChar.setValue(data);
+        RxChar.setWriteType(writeType);
+        write(RxChar);
+    }
+
+
     protected void dividePacketsAndSendMessage(BluetoothGattCharacteristic RxChar, byte[] data, int writeType) {
 
         for (int i = 0; i < data.length; i += 20) {

@@ -227,35 +227,36 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                 double bia = (double) Utils.bytesToInt(new byte[]{0, 0, bytes[10], bytes[9]}) / 10.0;
                 double weight = (double) Utils.bytesToInt(new byte[]{0, 0, bytes[12], bytes[11]}) / 10.0;
                 // ALL data
-                double fatPercentage = this.getPercentageFatWithWeight(weight, bia);
-                double waterPercentage = this.getPercentageWaterWithWeight(weight, bia);
-                double musclePercentage = this.getPercentageMuscleWithWeight(weight, bia);
-                double visceralPercent = this.getVisceralWithWeight(weight, bia);
-                double boneKg = this.getBoneWithWeight(weight, bia);
-                double bmrKcal = this.getBMRWithWeight(weight, bia);
+                double fatPercentage = this.getPercentageFatWithWeight(mContext, weight, bia);
+                double waterPercentage = this.getPercentageWaterWithWeight(mContext, weight, bia);
+                double musclePercentage = this.getPercentageMuscleWithWeight(mContext, weight, bia);
+                double visceralPercent = this.getVisceralWithWeight(mContext, weight, bia);
+                double boneKg = this.getBoneWithWeight(mContext, weight, bia);
+                double bmrKcal = this.getBMRWithWeight(mContext, weight, bia);
 
                 if (mLifevitSDKManager.getWeightScaleListener() != null) {
                     LifevitSDKWeightScaleData data = new LifevitSDKWeightScaleData();
                     data.setWeight(weight);
                     data.setUnit("kg");
-                    data.setImc(getBMIWithWeight(weight));
-                    data.setFatRawValue(fatPercentage*weight/100);
+                    data.setImc(getBMIWithWeight(mContext, weight));
+                    data.setFatRawValue(fatPercentage * weight / 100);
                     data.setFatPercentage(fatPercentage);
-                    data.setWaterRawValue(waterPercentage*weight/100);
+                    data.setWaterRawValue(waterPercentage * weight / 100);
                     data.setWaterPercentage(waterPercentage);
-                    data.setMuscleRawValue(musclePercentage*weight/100);
+                    data.setMuscleRawValue(musclePercentage * weight / 100);
                     data.setMusclePercentage(musclePercentage);
-                    data.setVisceralRawValue(visceralPercent*weight/100);
+                    data.setVisceralRawValue(visceralPercent * weight / 100);
                     data.setVisceralPercentage(visceralPercent);
                     data.setBoneRawValue(boneKg);
-                    data.setBonePercentage(boneKg/weight*100);
+                    data.setBonePercentage(boneKg / weight * 100);
                     data.setBmr(bmrKcal);
-                    data.setBodyAge(this.getBodyAge(data.getImc()));
-                    data.setIdealWeight(this.getIdealBodyWeight());
+                    data.setBodyAge(this.getBodyAge(mContext, data.getImc()));
+                    data.setIdealWeight(this.getIdealBodyWeight(mContext));
                     data.setProteinPercentage(this.getProteinPercentage(data.getMusclePercentage()));
-                    data.setObesityPercentage(this.getObesityPercentage(weight));
+                    data.setObesityPercentage(this.getObesityPercentage(mContext, weight));
                     data.setBia(bia);
-                    mLifevitSDKManager.getWeightScaleListener().onScaleMeasurementAllValues(data);                }
+                    mLifevitSDKManager.getWeightScaleListener().onScaleMeasurementAllValues(data);
+                }
             }
         } else if (UUID.fromString(ISSC_CHAR_RX_UUID).equals(characteristic.getUuid())) {
             if (bytes != null) {
@@ -329,21 +330,21 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                                     data.setBmr(bmrKcal);
                                     data.setBoneRawValue(boneKg);
                                     data.setBonePercentage(bonePercentage);
-                                    data.setFatRawValue(fatPercentage*weightDouble*100);
+                                    data.setFatRawValue(fatPercentage * weightDouble * 100);
                                     data.setFatPercentage(fatPercentage);
-                                    data.setImc(getBMIWithWeight(weightDouble));
-                                    data.setUnit(PreferenceUtil.getWeightScaleUnit(mContext)==LifevitSDKConstants.WEIGHT_UNIT_KG?"kg":"lb");
+                                    data.setImc(getBMIWithWeight(mContext, weightDouble));
+                                    data.setUnit(PreferenceUtil.getWeightScaleUnit(mContext) == LifevitSDKConstants.WEIGHT_UNIT_KG ? "kg" : "lb");
                                     data.setMuscleRawValue(muscleKg);
-                                    data.setMusclePercentage(muscleKg/weightDouble*100);
-                                    data.setVisceralRawValue(visceralPercent*weightDouble/100);
+                                    data.setMusclePercentage(muscleKg / weightDouble * 100);
+                                    data.setVisceralRawValue(visceralPercent * weightDouble / 100);
                                     data.setVisceralPercentage(visceralPercent);
-                                    data.setWaterRawValue(waterPercentage*weightDouble*100);
+                                    data.setWaterRawValue(waterPercentage * weightDouble * 100);
                                     data.setWaterPercentage(waterPercentage);
                                     data.setWeight(weightDouble);
-                                    data.setBodyAge(this.getBodyAge(data.getImc()));
-                                    data.setIdealWeight(this.getIdealBodyWeight());
+                                    data.setBodyAge(this.getBodyAge(mContext, data.getImc()));
+                                    data.setIdealWeight(this.getIdealBodyWeight(mContext));
                                     data.setProteinPercentage(this.getProteinPercentage(data.getMusclePercentage()));
-                                    data.setObesityPercentage(this.getObesityPercentage(weightDouble));
+                                    data.setObesityPercentage(this.getObesityPercentage(mContext, weightDouble));
                                     mLifevitSDKManager.getWeightScaleListener().onScaleMeasurementAllValues(data);
                                 }
                             }
@@ -450,8 +451,8 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                                     data.setBonePercentage(bonePercentage);
                                     data.setFatRawValue(lastFat);
                                     data.setFatPercentage(lastFat / weightToSend * 100);
-                                    data.setImc(getBMIWithWeight(weightToSend));
-                                    data.setUnit(PreferenceUtil.getWeightScaleUnit(mContext)==LifevitSDKConstants.WEIGHT_UNIT_KG?"kg":"lb");
+                                    data.setImc(getBMIWithWeight(mContext, weightToSend));
+                                    data.setUnit(PreferenceUtil.getWeightScaleUnit(mContext) == LifevitSDKConstants.WEIGHT_UNIT_KG ? "kg" : "lb");
                                     data.setMuscleRawValue(muscleKg);
                                     data.setMusclePercentage(musclePercentage);
                                     data.setVisceralRawValue(visceralKg);
@@ -459,10 +460,10 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
                                     data.setWaterRawValue(waterKg);
                                     data.setWaterPercentage(waterPercentage);
                                     data.setWeight(weightToSend);
-                                    data.setBodyAge(this.getBodyAge(data.getImc()));
-                                    data.setIdealWeight(this.getIdealBodyWeight());
+                                    data.setBodyAge(this.getBodyAge(mContext, data.getImc()));
+                                    data.setIdealWeight(this.getIdealBodyWeight(mContext));
                                     data.setProteinPercentage(this.getProteinPercentage(data.getMusclePercentage()));
-                                    data.setObesityPercentage(this.getObesityPercentage(weightToSend));
+                                    data.setObesityPercentage(this.getObesityPercentage(mContext, weightToSend));
                                     mLifevitSDKManager.getWeightScaleListener().onScaleMeasurementAllValues(data);
                                 }
 
@@ -574,15 +575,16 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         return b;
     }
 
-//region New Weight scale by bia
+    //region New Weight scale by bia
 
-    public double getPercentageFatWithWeight(double weight, double bia) {
+
+    public double getPercentageFatWithWeight(Context context, double weight, double bia) {
         if (bia == 0) {
             return 0;
         }
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
-        int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
-        int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
+        double userHeight = PreferenceUtil.getWeightScaleUserHeight(context).doubleValue();
+        int userAge = PreferenceUtil.getWeightScaleUserAge(context).intValue();
+        int userGender = PreferenceUtil.getWeightScaleUserGender(context).intValue();
 
         LogUtils.log(Log.WARN, TAG, String.format("userHeight: %.2f, userAge: %d, userGender: %d, bia: %.2f", userHeight, userAge, userGender, bia));
 
@@ -592,29 +594,25 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         return 43.1912 + (0.0443 * userAge) - (0.5008 * userHeight) + (0.7042 * weight) + (0.0449 * bia);
     }
 
-    public double getPercentageWaterWithWeight(double weight, double bia) {
+    public double getPercentageWaterWithWeight(Context context, double weight, double bia) {
         if (bia == 0) {
             return 0;
         }
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
-        int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
-        int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
-
+        int userGender = PreferenceUtil.getWeightScaleUserGender(context).intValue();
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
-            return 80 - this.getPercentageFatWithWeight(weight, bia);
+            return 80 - this.getPercentageFatWithWeight(context, weight, bia);
         }
-        return (80 - this.getPercentageFatWithWeight(weight, bia)) * 0.96;
-
+        return (80 - this.getPercentageFatWithWeight(context, weight, bia)) * 0.96;
     }
 
-    public double getPercentageMuscleWithWeight(double weight, double bia) {
+    public double getPercentageMuscleWithWeight(Context context, double weight, double bia) {
         if (bia == 0) {
             return 0;
         }
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
-        int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
-        int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
+        double userHeight = PreferenceUtil.getWeightScaleUserHeight(context).doubleValue();
+        int userAge = PreferenceUtil.getWeightScaleUserAge(context).intValue();
+        int userGender = PreferenceUtil.getWeightScaleUserGender(context).intValue();
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
             return 66.4907 - (0.1919 * userAge) + (0.2279 * userHeight) - (0.402 * weight) - (0.0514 * bia);
@@ -622,13 +620,13 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         return 58.4907 - (0.1919 * userAge) + (0.2278 * userHeight) - (0.402 * weight) - (0.0514 * bia);
     }
 
-    public double getBMRWithWeight(double weight, double bia) {
+    public double getBMRWithWeight(Context context, double weight, double bia) {
         if (bia == 0) {
             return 0;
         }
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
-        int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
-        int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
+        double userHeight = PreferenceUtil.getWeightScaleUserHeight(context).doubleValue();
+        int userAge = PreferenceUtil.getWeightScaleUserAge(context).intValue();
+        int userGender = PreferenceUtil.getWeightScaleUserGender(context).intValue();
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
             return 180.3347 - 2.4414 * userAge + 6.7997 * userHeight + 12.5974 * weight - 1.0073 * bia;
@@ -636,13 +634,13 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         return 382.3347 - 2.441487 * userAge + 4.5998 * userHeight + 14.5974 * weight - 1.197371 * bia;
     }
 
-    public double getBoneWithWeight(double weight, double bia) {
+    public double getBoneWithWeight(Context context, double weight, double bia) {
         if (bia == 0) {
             return 0;
         }
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
-        int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
-        int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
+        double userHeight = PreferenceUtil.getWeightScaleUserHeight(context).doubleValue();
+        int userAge = PreferenceUtil.getWeightScaleUserAge(context).intValue();
+        int userGender = PreferenceUtil.getWeightScaleUserGender(context).intValue();
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
             return 1.3991 - 0.00213 * userAge + 0.0105 * userHeight + 0.0205 * weight - 0.0026 * bia;
@@ -650,22 +648,22 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
         return 2.1191 - 0.00213 * userAge + 0.0059 * userHeight + 0.010501 * weight - 0.001599 * bia;
     }
 
-    public double getVisceralWithWeight(double weight, double bia) {
+    public double getVisceralWithWeight(Context context, double weight, double bia) {
 
         if (bia == 0) {
             return 0;
         }
-        int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
-        int userGender = PreferenceUtil.getWeightScaleUserGender(mContext).intValue();
+        int userAge = PreferenceUtil.getWeightScaleUserAge(context).intValue();
+        int userGender = PreferenceUtil.getWeightScaleUserGender(context).intValue();
 
         if (userGender == LifevitSDKConstants.GENDER_MALE) {
-            return ((578.09 * this.getBMIWithWeight(weight) * 10 + 16.90 * userAge + 934.18 * 1 - 328.7) / 10000 - 6.0);
+            return ((578.09 * this.getBMIWithWeight(context, weight) * 10 + 16.90 * userAge + 934.18 * 1 - 328.7) / 10000 - 6.0);
         }
-        return (578.09 * this.getBMIWithWeight(weight) * 10 + 16.90 * userAge + 934.18 * 2 - 328.7) / 10000 / 3;
+        return (578.09 * this.getBMIWithWeight(context, weight) * 10 + 16.90 * userAge + 934.18 * 2 - 328.7) / 10000 / 3;
     }
 
-    public double getBMIWithWeight(double weight) {
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
+    public double getBMIWithWeight(Context context, double weight) {
+        double userHeight = PreferenceUtil.getWeightScaleUserHeight(context).doubleValue();
         double h = userHeight / 100.0;
         double factor = 2.0;
         double imc = weight / Math.pow(h, factor);
@@ -674,32 +672,29 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
     }
 
     public double getProteinPercentage(double musclePercent) {
-        if(musclePercent>0) {
+        if (musclePercent > 0) {
             return musclePercent / 2 - 3;
         }
         return 0;
     }
 
-    public double getIdealBodyWeight() {
-        double userHeight = PreferenceUtil.getWeightScaleUserHeight(mContext).doubleValue();
-
+    public double getIdealBodyWeight(Context context) {
+        double userHeight = PreferenceUtil.getWeightScaleUserHeight(context).doubleValue();
         double h = userHeight / 100.0;
         double factor = 2.0;
         return 21.8 * Math.pow(h, factor);
     }
 
-    public double getObesityPercentage(double weight) {
-
-        double ideal = this.getIdealBodyWeight();
-
+    public double getObesityPercentage(Context context, double weight) {
+        double ideal = this.getIdealBodyWeight(context);
         return (weight - ideal) / ideal * 100;
     }
 
-    public double getBodyAge(double bmi) {
-
-        int userAge = PreferenceUtil.getWeightScaleUserAge(mContext).intValue();
-
+    public double getBodyAge(Context context, double bmi) {
+        int userAge = PreferenceUtil.getWeightScaleUserAge(context).intValue();
         return bmi * 10 * userAge / 240;
     }
-//endregion
+
+    // endregion
+
 }
