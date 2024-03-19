@@ -114,34 +114,31 @@ public class LifevitSDKBleDevicePillReminder extends LifevitSDKBleDevice {
         descriptors.remove(descriptor.getUuid());
 
         if (descriptors.size() == 0) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+            new Thread(() -> {
 //                    try {
 //                        Thread.sleep(1000);
 //                    }
 //                    catch (Exception e){
 //
 //                    }
-                    setDeviceDate();
+                setDeviceDate();
 
-                    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"),
-                            Locale.getDefault());
-                    Date currentLocalTime = calendar.getTime();
-                    DateFormat date = new SimpleDateFormat("Z");
-                    String localTime = date.format(currentLocalTime);
+                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"),
+                        Locale.getDefault());
+                Date currentLocalTime = calendar.getTime();
+                DateFormat date = new SimpleDateFormat("Z");
+                String localTime = date.format(currentLocalTime);
 
-                    String sign = localTime.substring(0, 1);
-                    int hour = Integer.parseInt(localTime.substring(1, 3));
+                String sign = localTime.substring(0, 1);
+                int hour = Integer.parseInt(localTime.substring(1, 3));
 
-                    if (!sign.equals("+")) {
-                        hour = hour * -1;
-                    }
-
-                    int minute = Integer.parseInt(localTime.substring(3, 5));
-
-                    setDeviceTimeZone(hour, minute);
+                if (!sign.equals("+")) {
+                    hour = hour * -1;
                 }
+
+                int minute = Integer.parseInt(localTime.substring(3, 5));
+
+                setDeviceTimeZone(hour, minute);
             }).start();
 
         }

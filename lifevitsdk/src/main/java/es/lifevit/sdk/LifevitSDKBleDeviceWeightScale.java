@@ -109,25 +109,22 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
 
     public void checkAndSendWeight() {
         if (!isNewWeightScale) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mBluetoothGatt != null) {
-                        BluetoothGattService RxService = mBluetoothGatt.getService(UUID.fromString(ISSC_SERVICE_UUID));
-                        Log.d(TAG, "mBluetoothGatt: " + mBluetoothGatt);
-                        if (RxService == null) {
-                            Log.e(TAG, "Rx service not found!");
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            checkAndSendWeight();
-                            return;
+            new Thread(() -> {
+                if (mBluetoothGatt != null) {
+                    BluetoothGattService RxService = mBluetoothGatt.getService(UUID.fromString(ISSC_SERVICE_UUID));
+                    Log.d(TAG, "mBluetoothGatt: " + mBluetoothGatt);
+                    if (RxService == null) {
+                        Log.e(TAG, "Rx service not found!");
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-
-                        getWeight();
+                        checkAndSendWeight();
+                        return;
                     }
+
+                    getWeight();
                 }
             }).start();
         }
@@ -485,17 +482,14 @@ public class LifevitSDKBleDeviceWeightScale extends LifevitSDKBleDevice {
     }
 
     private void checkReceivedWeight() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
 
-                }
-                if (lastWeight == null && mBluetoothGatt != null) {
-                    getWeight();
-                }
+            }
+            if (lastWeight == null && mBluetoothGatt != null) {
+                getWeight();
             }
         }).start();
     }

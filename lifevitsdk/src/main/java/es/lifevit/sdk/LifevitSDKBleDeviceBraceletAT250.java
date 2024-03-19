@@ -1368,12 +1368,9 @@ public class LifevitSDKBleDeviceBraceletAT250 extends LifevitSDKBleDevice {
         sendMessage(syncparamsArray);
 
         // Wait for command to be received and connect to DFU
-        new Handler(mLifevitSDKManager.getmHandlerThread().getLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mBluetoothGatt != null) {
-                    mLifevitSDKManager.connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER, 10000);
-                }
+        new Handler(mLifevitSDKManager.getmHandlerThread().getLooper()).postDelayed(() -> {
+            if (mBluetoothGatt != null) {
+                mLifevitSDKManager.connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER, 10000);
             }
         }, LifevitSDKConstants.DELAY_TO_WAIT_TO_SEND_FIRMWARE_UPDATE);
     }

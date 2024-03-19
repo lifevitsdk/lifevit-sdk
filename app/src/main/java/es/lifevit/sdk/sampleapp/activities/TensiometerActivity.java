@@ -1,13 +1,14 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -100,39 +101,28 @@ public class TensiometerActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnected) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER);
-                }
+        button_connect.setOnClickListener(view -> {
+            if (isDisconnected) {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000);
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER);
             }
         });
 
-        button_measurement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SDKTestApplication.getInstance().getLifevitSDKManager().startMeasurement();
-            }
-        });
+        button_measurement.setOnClickListener(view -> SDKTestApplication.getInstance().getLifevitSDKManager().startMeasurement());
 
-        button_connect_by_addr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnected) {
-                    textview_connect_by_addr_result.setText("Connecting device... Check connection status in upper TextView");
+        button_connect_by_addr.setOnClickListener(view -> {
+            if (isDisconnected) {
+                textview_connect_by_addr_result.setText("Connecting device... Check connection status in upper TextView");
 
-                    // Stop auto-connection timer
+                // Stop auto-connection timer
 //                    stoptimertask();
-                    // TODO: Should also stop Scan?
+                // TODO: Should also stop Scan?
 
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000,
-                            lastDeviceConnectedAddress);
-                } else {
-                    textview_connect_by_addr_result.setText("Device is already connected");
-                }
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000,
+                        lastDeviceConnectedAddress);
+            } else {
+                textview_connect_by_addr_result.setText("Device is already connected");
             }
         });
     }
@@ -145,70 +135,64 @@ public class TensiometerActivity extends AppCompatActivity {
 
             @Override
             public void deviceOnConnectionError(int deviceType, final int errorCode) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                            textview_connection_result.setText("ERROR: Debe activar permisos localización");
-                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                            textview_connection_result.setText("ERROR: El bluetooth no está activado");
-                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                            textview_connection_result.setText("ERROR: La Ubicación está apagada");
-                        } else {
-                            textview_connection_result.setText("ERROR: Desconocido");
-                        }
+                runOnUiThread(() -> {
+                    if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                        textview_connection_result.setText("ERROR: Debe activar permisos localización");
+                    } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                        textview_connection_result.setText("ERROR: El bluetooth no está activado");
+                    } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                        textview_connection_result.setText("ERROR: La Ubicación está apagada");
+                    } else {
+                        textview_connection_result.setText("ERROR: Desconocido");
                     }
                 });
             }
 
             @Override
             public void deviceOnConnectionChanged(int deviceType, final int status) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
-                        Log.d(TAG, "Status changed: " + status);
+                    Log.d(TAG, "Status changed: " + status);
 
-                        switch (status) {
-                            case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                button_connect.setText("Connect");
-                                isDisconnected = true;
-                                textview_connection_result.setText("Disconnected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_red_dark));
+                    switch (status) {
+                        case LifevitSDKConstants.STATUS_DISCONNECTED:
+                            button_connect.setText("Connect");
+                            isDisconnected = true;
+                            textview_connection_result.setText("Disconnected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_red_dark));
 
-                                // Start timer again
+                            // Start timer again
 //                                startTimer();
 
-                                break;
-                            case LifevitSDKConstants.STATUS_SCANNING:
-                                button_connect.setText("Stop scan");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Scanning");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_blue_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTING:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connecting");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_orange_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_SCANNING:
+                            button_connect.setText("Stop scan");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Scanning");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_blue_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTING:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connecting");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_orange_dark));
 
-                                // Stop timer
+                            // Stop timer
 //                                stoptimertask();
 
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTED:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_green_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTED:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(TensiometerActivity.this, android.R.color.holo_green_dark));
 
-                                // Save connected device address
-                                lastDeviceConnectedAddress = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_TENSIOMETER);
+                            // Save connected device address
+                            lastDeviceConnectedAddress = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_TENSIOMETER);
 
-                                connect_by_addr_container.setVisibility(View.VISIBLE);
+                            connect_by_addr_container.setVisibility(View.VISIBLE);
 
-                                break;
-                        }
+                            break;
                     }
                 });
             }
@@ -219,77 +203,66 @@ public class TensiometerActivity extends AppCompatActivity {
 
             @Override
             public void heartDeviceOnProgressMeasurement(final int pulse) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        textview_measurement_result_puls.setText(String.valueOf(pulse));
-                        textview_measurement_info.setText("Measuring...");
-                    }
+                runOnUiThread(() -> {
+                    textview_measurement_result_puls.setText(String.valueOf(pulse));
+                    textview_measurement_info.setText("Measuring...");
                 });
             }
 
 
             @Override
             public void heartDeviceOnBatteryResult(final int battery) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        textview_measurement_info.setText("Battery charge: " + String.valueOf(battery));
-                    }
-                });
+                runOnUiThread(() -> textview_measurement_info.setText("Battery charge: " + String.valueOf(battery)));
             }
 
             @Override
             public void heartDeviceOnResult(final LifevitSDKHeartData result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
 
-                        if (result.getErrorCode() != LifevitSDKConstants.CODE_OK) {
-                            // Error
-                            String errorText = "";
-                            switch (result.getErrorCode()) {
-                                case LifevitSDKConstants.CODE_UNKNOWN:
-                                    errorText = "CODE_UNKNOWN";
-                                    break;
-                                case LifevitSDKConstants.CODE_LOW_SIGNAL:
-                                    errorText = "CODE_LOW_SIGNAL";
-                                    break;
-                                case LifevitSDKConstants.CODE_NOISE:
-                                    errorText = "CODE_NOISE";
-                                    break;
-                                case LifevitSDKConstants.CODE_INFLATION_TIME:
-                                    errorText = "CODE_INFLATION_TIME";
-                                    break;
-                                case LifevitSDKConstants.CODE_ABNORMAL_RESULT:
-                                    errorText = "CODE_ABNORMAL_RESULT";
-                                    break;
-                                case LifevitSDKConstants.CODE_RETRY:
-                                    errorText = "CODE_RETRY";
-                                    break;
-                                case LifevitSDKConstants.CODE_LOW_BATTERY:
-                                    errorText = "CODE_LOW_BATTERY";
-                                    break;
-                                case LifevitSDKConstants.CODE_NO_RESULTS:
-                                    errorText = "CODE_NO_RESULTS";
-                                    break;
-                                case LifevitSDKConstants.CODE_TOO_MUCH_INTERFERENCE:
-                                    errorText = "CODE_TOO_MUCH_INTERFERENCE";
-                                    break;
-                            }
-
-                            textview_measurement_info.setText("Error: " + errorText);
-                            textview_measurement_result_sys.setText("---");
-                            textview_measurement_result_dia.setText("---");
-                            textview_measurement_result_puls.setText("---");
-
-                        } else {
-                            textview_measurement_info.setText("Measurement result");
-                            textview_measurement_result_sys.setText(String.valueOf(result.getSystolic()));
-                            textview_measurement_result_dia.setText(String.valueOf(result.getDiastolic()));
-                            textview_measurement_result_puls.setText(String.valueOf(result.getPulse()));
+                    if (result.getErrorCode() != LifevitSDKConstants.CODE_OK) {
+                        // Error
+                        String errorText = "";
+                        switch (result.getErrorCode()) {
+                            case LifevitSDKConstants.CODE_UNKNOWN:
+                                errorText = "CODE_UNKNOWN";
+                                break;
+                            case LifevitSDKConstants.CODE_LOW_SIGNAL:
+                                errorText = "CODE_LOW_SIGNAL";
+                                break;
+                            case LifevitSDKConstants.CODE_NOISE:
+                                errorText = "CODE_NOISE";
+                                break;
+                            case LifevitSDKConstants.CODE_INFLATION_TIME:
+                                errorText = "CODE_INFLATION_TIME";
+                                break;
+                            case LifevitSDKConstants.CODE_ABNORMAL_RESULT:
+                                errorText = "CODE_ABNORMAL_RESULT";
+                                break;
+                            case LifevitSDKConstants.CODE_RETRY:
+                                errorText = "CODE_RETRY";
+                                break;
+                            case LifevitSDKConstants.CODE_LOW_BATTERY:
+                                errorText = "CODE_LOW_BATTERY";
+                                break;
+                            case LifevitSDKConstants.CODE_NO_RESULTS:
+                                errorText = "CODE_NO_RESULTS";
+                                break;
+                            case LifevitSDKConstants.CODE_TOO_MUCH_INTERFERENCE:
+                                errorText = "CODE_TOO_MUCH_INTERFERENCE";
+                                break;
                         }
+
+                        textview_measurement_info.setText("Error: " + errorText);
+                        textview_measurement_result_sys.setText("---");
+                        textview_measurement_result_dia.setText("---");
+                        textview_measurement_result_puls.setText("---");
+
+                    } else {
+                        textview_measurement_info.setText("Measurement result");
+                        textview_measurement_result_sys.setText(String.valueOf(result.getSystolic()));
+                        textview_measurement_result_dia.setText(String.valueOf(result.getDiastolic()));
+                        textview_measurement_result_puls.setText(String.valueOf(result.getPulse()));
                     }
                 });
             }

@@ -1,1 +1,1 @@
-include ':app', ':lifevitsdk', ':pillreminder'
+include ':app', ':lifevitsdk'

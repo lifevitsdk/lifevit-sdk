@@ -1,15 +1,14 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKDeviceScanData;
@@ -50,13 +49,7 @@ public class ScanAllDevicesActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OTHERS, 10000);
-            }
-        });
+        button_connect.setOnClickListener(view -> SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OTHERS, 10000));
     }
 
 
@@ -68,18 +61,15 @@ public class ScanAllDevicesActivity extends AppCompatActivity {
             @Override
             public void deviceOnConnectionError(int deviceType, final int errorCode) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                            scan_all_connection_result.setText("ERROR: Debe activar permisos localización");
-                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                            scan_all_connection_result.setText("ERROR: El bluetooth no está activado");
-                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                            scan_all_connection_result.setText("ERROR: La Ubicación está apagada");
-                        } else {
-                            scan_all_connection_result.setText("ERROR: Desconocido");
-                        }
+                runOnUiThread(() -> {
+                    if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                        scan_all_connection_result.setText("ERROR: Debe activar permisos localización");
+                    } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                        scan_all_connection_result.setText("ERROR: El bluetooth no está activado");
+                    } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                        scan_all_connection_result.setText("ERROR: La Ubicación está apagada");
+                    } else {
+                        scan_all_connection_result.setText("ERROR: Desconocido");
                     }
                 });
 
@@ -88,52 +78,38 @@ public class ScanAllDevicesActivity extends AppCompatActivity {
             @Override
             public void deviceOnConnectionChanged(int deviceType, final int status) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (status) {
-                            case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                scan_all_connection_result.setText("Disconnected");
-                                break;
-                            case LifevitSDKConstants.STATUS_SCANNING:
-                                scan_all_connection_result.setText("Scanning");
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTING:
-                                scan_all_connection_result.setText("Connecting");
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTED:
-                                scan_all_connection_result.setText("Connected");
-                                break;
-                        }
+                runOnUiThread(() -> {
+                    switch (status) {
+                        case LifevitSDKConstants.STATUS_DISCONNECTED:
+                            scan_all_connection_result.setText("Disconnected");
+                            break;
+                        case LifevitSDKConstants.STATUS_SCANNING:
+                            scan_all_connection_result.setText("Scanning");
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTING:
+                            scan_all_connection_result.setText("Connecting");
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTED:
+                            scan_all_connection_result.setText("Connected");
+                            break;
                     }
                 });
             }
         };
 
-        LifevitSDKAllDevicesListener bListener = new LifevitSDKAllDevicesListener() {
+        LifevitSDKAllDevicesListener bListener = allResults -> runOnUiThread(() -> {
 
-            @Override
-            public void allDevicesDetected(final ConcurrentHashMap<Integer, List<LifevitSDKDeviceScanData>> allResults) {
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        StringBuilder stringBuilder = new StringBuilder();
-                        for (Map.Entry<Integer, List<LifevitSDKDeviceScanData>> deviceEntry : allResults.entrySet()) {
-                            stringBuilder.append("Device " + LogUtils.getDeviceNameByType(deviceEntry.getKey()) + ":\n");
-                            for (LifevitSDKDeviceScanData deviceScanData : deviceEntry.getValue()) {
-                                stringBuilder.append("    " + deviceScanData.getAddress() + ", distance: " +
-                                        String.format("%.1f", deviceScanData.getDistanceMetersCalculated()) + " m\n");
-                            }
-                        }
-
-                        textview_info.setText(stringBuilder.toString());
-                    }
-                });
-
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Map.Entry<Integer, List<LifevitSDKDeviceScanData>> deviceEntry : allResults.entrySet()) {
+                stringBuilder.append("Device " + LogUtils.getDeviceNameByType(deviceEntry.getKey()) + ":\n");
+                for (LifevitSDKDeviceScanData deviceScanData : deviceEntry.getValue()) {
+                    stringBuilder.append("    " + deviceScanData.getAddress() + ", distance: " +
+                            String.format("%.1f", deviceScanData.getDistanceMetersCalculated()) + " m\n");
+                }
             }
-        };
+
+            textview_info.setText(stringBuilder.toString());
+        });
 
         // Create connection helper
         SDKTestApplication.getInstance().getLifevitSDKManager().addDeviceListener(cl);

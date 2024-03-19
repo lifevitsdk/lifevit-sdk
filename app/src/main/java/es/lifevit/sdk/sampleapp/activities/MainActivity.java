@@ -3,7 +3,6 @@ package es.lifevit.sdk.sampleapp.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import es.lifevit.sdk.sampleapp.R;
@@ -48,116 +47,32 @@ public class MainActivity extends BaseAppCompatActivity {
 
     private void initListeners() {
 
-        button_pillreminder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), PillReminderActivity.class));
-            }
-        });
-
-        button_tensiometer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), TensiometerActivity.class));
-            }
-        });
-
-        button_bracelet_at500hr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), BraceletAT500HrActivity.class));
-            }
-        });
-
-        button_bracelet_at250.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), BraceletAT250Activity.class));
-            }
-        });
-
-        button_oximeter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), OximeterActivity.class));
-            }
-        });
-
-        button_tensiobracelet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), TensiobraceletActivity.class));
-            }
-        });
-
-        button_thermometer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), ThermometerActivity.class));
-            }
-        });
-
-        button_weightScale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), WeightScaleActivity.class));
-            }
-        });
-
-        button_multiple_connection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), MultipleConnectionActivity.class));
-            }
-        });
-
-        button_multiple_connection2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), MultipleConnectionActivity2.class));
-            }
-        });
-
-        button_baby_temp_bt125.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), BabyTempBT125Activity.class));
-            }
-        });
-
-        button_scan_all_devices.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), ScanAllDevicesActivity.class));
-            }
-        });
-
-        button_bracelet_vital.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), BraceletVitalActivity.class));
-            }
-        });
-
-        button_glucometer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), GlucometerActivity.class));
-            }
-        });
+        button_pillreminder.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), PillReminderActivity.class)));
+        button_tensiometer.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), TensiometerActivity.class)));
+        button_bracelet_at500hr.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), BraceletAT500HrActivity.class)));
+        button_bracelet_at250.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), BraceletAT250Activity.class)));
+        button_oximeter.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), OximeterActivity.class)));
+        button_tensiobracelet.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), TensiobraceletActivity.class)));
+        button_thermometer.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), ThermometerActivity.class)));
+        button_weightScale.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), WeightScaleActivity.class)));
+        button_multiple_connection.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), MultipleConnectionActivity.class)));
+        button_multiple_connection2.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), MultipleConnectionActivity2.class)));
+        button_baby_temp_bt125.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), BabyTempBT125Activity.class)));
+        button_scan_all_devices.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), ScanAllDevicesActivity.class)));
+        button_bracelet_vital.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), BraceletVitalActivity.class)));
+        button_glucometer.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), GlucometerActivity.class)));
 
     }
 
 
     private void initPermissions() {
-        requestPermission(findViewById(R.id.main_activity_main_view), Manifest.permission.ACCESS_FINE_LOCATION,
-                100, R.string.message_need_location_permission,
-                new BaseAppCompatActivity.RequestAcceptListener() {
-                    @Override
-                    public void onRequestAccepted(boolean accepted) {
-                        // Do nothing
-                    }
-                }
+        requestPermissions(
+                findViewById(R.id.main_activity_main_view),
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT},
+                100,
+                R.string.message_need_location_permission,
+                false,
+                accepted -> { }
         );
     }
 

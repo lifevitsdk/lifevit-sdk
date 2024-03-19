@@ -1,13 +1,14 @@
 package es.lifevit.sdk.sampleapp.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
@@ -141,47 +142,36 @@ public class WeightScaleActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnected) {
-                    // Set up device
-                    SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, AGE, HEIGHT, LifevitSDKConstants.WEIGHT_UNIT_KG);
-                    //SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_FEMALE, 35, 190, LifevitSDKConstants.WEIGHT_UNIT_KG);
+        button_connect.setOnClickListener(view -> {
+            if (isDisconnected) {
+                // Set up device
+                SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, AGE, HEIGHT, LifevitSDKConstants.WEIGHT_UNIT_KG);
+                //SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_FEMALE, 35, 190, LifevitSDKConstants.WEIGHT_UNIT_KG);
 
-                    // Connect
-                    if(uuid!=null && weight_scale_check_connected.isChecked()){
-                        SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000, uuid);
-                    }
-                    else {
-                        SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000);
-                    }
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE);
+                // Connect
+                if(uuid!=null && weight_scale_check_connected.isChecked()){
+                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000, uuid);
                 }
+                else {
+                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000);
+                }
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE);
             }
         });
 
-        weight_scale_button_history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SDKTestApplication.getInstance().getLifevitSDKManager().getWeightHistoryData();
-            }
-        });
+        weight_scale_button_history.setOnClickListener(view -> SDKTestApplication.getInstance().getLifevitSDKManager().getWeightHistoryData());
 
-        weight_scale_button_clear_results.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                textview_bmr.setText("---");
-                textview_fat.setText("---");
-                textview_muscle.setText("---");
-                textview_visceral.setText("---");
-                textview_water.setText("---");
-                textview_weight.setText("---");
-                textview_bone.setText("---");
-                textview_info.setText("---");
-                textview_bia.setText("---");
-            }
+        weight_scale_button_clear_results.setOnClickListener(view -> {
+            textview_bmr.setText("---");
+            textview_fat.setText("---");
+            textview_muscle.setText("---");
+            textview_visceral.setText("---");
+            textview_water.setText("---");
+            textview_weight.setText("---");
+            textview_bone.setText("---");
+            textview_info.setText("---");
+            textview_bia.setText("---");
         });
     }
 
@@ -196,18 +186,15 @@ public class WeightScaleActivity extends AppCompatActivity {
                 if (deviceType != LifevitSDKConstants.DEVICE_WEIGHT_SCALE) {
                     return;
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                            textview_connection_result.setText("ERROR: Debe activar permisos localización");
-                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                            textview_connection_result.setText("ERROR: El bluetooth no está activado");
-                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                            textview_connection_result.setText("ERROR: La Ubicación está apagada");
-                        } else {
-                            textview_connection_result.setText("ERROR: Desconocido");
-                        }
+                runOnUiThread(() -> {
+                    if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                        textview_connection_result.setText("ERROR: Debe activar permisos localización");
+                    } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                        textview_connection_result.setText("ERROR: El bluetooth no está activado");
+                    } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                        textview_connection_result.setText("ERROR: La Ubicación está apagada");
+                    } else {
+                        textview_connection_result.setText("ERROR: Desconocido");
                     }
                 });
             }
@@ -221,48 +208,45 @@ public class WeightScaleActivity extends AppCompatActivity {
                     return;
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (status) {
-                            case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                button_connect.setText("Connect");
-                                isDisconnected = true;
-                                textview_connection_result.setText("Disconnected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_red_dark));
+                runOnUiThread(() -> {
+                    switch (status) {
+                        case LifevitSDKConstants.STATUS_DISCONNECTED:
+                            button_connect.setText("Connect");
+                            isDisconnected = true;
+                            textview_connection_result.setText("Disconnected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_red_dark));
 
-                                // Set up device
-                               SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, AGE, HEIGHT, LifevitSDKConstants.WEIGHT_UNIT_KG);
-                                // Connect
-                                if(uuid!=null && weight_scale_check_connected.isChecked()){
-                                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000, uuid);
-                                }
-                                else {
-                                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000);
-                                }
-                                break;
-                            case LifevitSDKConstants.STATUS_SCANNING:
-                                button_connect.setText("Stop scan");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Scanning");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_blue_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTING:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connecting");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_orange_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTED:
+                            // Set up device
+                           SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, AGE, HEIGHT, LifevitSDKConstants.WEIGHT_UNIT_KG);
+                            // Connect
+                            if(uuid!=null && weight_scale_check_connected.isChecked()){
+                                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000, uuid);
+                            }
+                            else {
+                                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, 100000);
+                            }
+                            break;
+                        case LifevitSDKConstants.STATUS_SCANNING:
+                            button_connect.setText("Stop scan");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Scanning");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_blue_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTING:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connecting");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_orange_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTED:
 
-                                //uuid = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_WEIGHT_SCALE);
+                            //uuid = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_WEIGHT_SCALE);
 
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_green_dark));
-                                break;
-                        }
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(WeightScaleActivity.this, android.R.color.holo_green_dark));
+                            break;
                     }
                 });
             }
@@ -271,62 +255,52 @@ public class WeightScaleActivity extends AppCompatActivity {
         LifevitSDKWeightScaleListener weightScaleListener = new LifevitSDKWeightScaleListener() {
             @Override
             public void onScaleMeasurementOnlyWeight(final double weight, final int unit) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        textview_bmr.setText("");
-                        textview_bone.setText("");
-                        textview_fat.setText("");
-                        textview_muscle.setText("");
-                        textview_visceral.setText("");
-                        textview_water.setText("");
-                        textview_protein.setText("");
-                        textview_idealweight.setText("");
-                        textview_obesity.setText("");
-                        textview_bodyage.setText("");
-                        textview_bia.setText("---");
+                runOnUiThread(() -> {
+                    textview_bmr.setText("");
+                    textview_bone.setText("");
+                    textview_fat.setText("");
+                    textview_muscle.setText("");
+                    textview_visceral.setText("");
+                    textview_water.setText("");
+                    textview_protein.setText("");
+                    textview_idealweight.setText("");
+                    textview_obesity.setText("");
+                    textview_bodyage.setText("");
+                    textview_bia.setText("---");
 
-                        textview_weight.setText(String.format("%.1f %s (measuring)", weight, unit == LifevitSDKConstants.WEIGHT_UNIT_KG ? "Kg" : "Lb"));
-                    }
+                    textview_weight.setText(String.format("%.1f %s (measuring)", weight, unit == LifevitSDKConstants.WEIGHT_UNIT_KG ? "Kg" : "Lb"));
                 });
             }
 
             @Override
             public void onScaleTypeDetected(final int type) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() { textview_info.setText("Scale type: " + type);
-                    }
-                });
+                runOnUiThread(() -> textview_info.setText("Scale type: " + type));
             }
 
             @Override
             public void onScaleMeasurementAllValues(final LifevitSDKWeightScaleData data) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String unitStr = data.getUnit();
+                runOnUiThread(() -> {
+                    String unitStr = data.getUnit();
 
-                        textview_bmr.setText(String.format("%.2f", data.getBmr()) + " Kcal");
-                        textview_bone.setText(String.format("%.2f", data.getBoneRawValue()) + " " + unitStr);
-                        textview_fat.setText(String.format("%.2f %% - %.2f kg", data.getFatPercentage(), data.getFatRawValue()));
-                        textview_muscle.setText(String.format("%.2f %% - %.2f kg", data.getMusclePercentage(), data.getMuscleRawValue()));
-                        textview_visceral.setText(String.format("%.2f %% - %.2f kg", data.getVisceralPercentage(), data.getVisceralRawValue()));
-                        textview_water.setText(String.format("%.2f %% - %.2f kg", data.getWaterPercentage(), data.getWaterRawValue()));
-                        textview_protein.setText(String.format("%.2f %%", data.getProteinPercentage()) + " %");
-                        textview_idealweight.setText(String.format("%.2f kg", data.getIdealWeight()));
-                        textview_bodyage.setText(String.format("%.2f", data.getBodyAge()));
-                        textview_obesity.setText(String.format("%.2f %%", data.getObesityPercentage()) + " %");
+                    textview_bmr.setText(String.format("%.2f", data.getBmr()) + " Kcal");
+                    textview_bone.setText(String.format("%.2f", data.getBoneRawValue()) + " " + unitStr);
+                    textview_fat.setText(String.format("%.2f %% - %.2f kg", data.getFatPercentage(), data.getFatRawValue()));
+                    textview_muscle.setText(String.format("%.2f %% - %.2f kg", data.getMusclePercentage(), data.getMuscleRawValue()));
+                    textview_visceral.setText(String.format("%.2f %% - %.2f kg", data.getVisceralPercentage(), data.getVisceralRawValue()));
+                    textview_water.setText(String.format("%.2f %% - %.2f kg", data.getWaterPercentage(), data.getWaterRawValue()));
+                    textview_protein.setText(String.format("%.2f %%", data.getProteinPercentage()) + " %");
+                    textview_idealweight.setText(String.format("%.2f kg", data.getIdealWeight()));
+                    textview_bodyage.setText(String.format("%.2f", data.getBodyAge()));
+                    textview_obesity.setText(String.format("%.2f %%", data.getObesityPercentage()) + " %");
 
-                        textview_weight.setText(String.format("%.2f %s", data.getWeight(), unitStr));
-                        if(data.getBia()!=null){
+                    textview_weight.setText(String.format("%.2f %s", data.getWeight(), unitStr));
+                    if(data.getBia()!=null){
 
-                            textview_bia.setText(String.format("%.2f", data.getBia()));
-                        }
-                        else {
-                            textview_bia.setText("---");
-                        }
+                        textview_bia.setText(String.format("%.2f", data.getBia()));
+                    }
+                    else {
+                        textview_bia.setText("---");
                     }
                 });
             }

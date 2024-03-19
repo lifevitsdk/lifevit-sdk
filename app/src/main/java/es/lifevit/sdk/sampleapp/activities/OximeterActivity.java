@@ -1,13 +1,11 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKOximeterData;
@@ -75,14 +73,11 @@ public class OximeterActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnected) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OXIMETER, 120000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_OXIMETER);
-                }
+        button_connect.setOnClickListener(view -> {
+            if (isDisconnected) {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OXIMETER, 120000);
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_OXIMETER);
             }
         });
     }
@@ -98,18 +93,15 @@ public class OximeterActivity extends AppCompatActivity {
                 if (deviceType != LifevitSDKConstants.DEVICE_OXIMETER) {
                     return;
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                            textview_connection_result.setText("ERROR: Debe activar permisos localización");
-                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                            textview_connection_result.setText("ERROR: El bluetooth no está activado");
-                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                            textview_connection_result.setText("ERROR: La Ubicación está apagada");
-                        } else {
-                            textview_connection_result.setText("ERROR: Desconocido");
-                        }
+                runOnUiThread(() -> {
+                    if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                        textview_connection_result.setText("ERROR: Debe activar permisos localización");
+                    } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                        textview_connection_result.setText("ERROR: El bluetooth no está activado");
+                    } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                        textview_connection_result.setText("ERROR: La Ubicación está apagada");
+                    } else {
+                        textview_connection_result.setText("ERROR: Desconocido");
                     }
                 });
             }
@@ -120,41 +112,38 @@ public class OximeterActivity extends AppCompatActivity {
                     return;
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (status) {
-                            case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                button_connect.setText("Connect");
-                                isDisconnected = true;
-                                textview_connection_result.setText("Disconnected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_red_dark));
+                runOnUiThread(() -> {
+                    switch (status) {
+                        case LifevitSDKConstants.STATUS_DISCONNECTED:
+                            button_connect.setText("Connect");
+                            isDisconnected = true;
+                            textview_connection_result.setText("Disconnected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_red_dark));
 
-                                textview_measurement_result_spo2.setText("---");
-                                textview_measurement_result_pi.setText("---");
-                                textview_measurement_result_rpm.setText("---");
-                                textview_measurement_result_lpm.setText("---");
+                            textview_measurement_result_spo2.setText("---");
+                            textview_measurement_result_pi.setText("---");
+                            textview_measurement_result_rpm.setText("---");
+                            textview_measurement_result_lpm.setText("---");
 
-                                break;
-                            case LifevitSDKConstants.STATUS_SCANNING:
-                                button_connect.setText("Stop scan");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Scanning");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_blue_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTING:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connecting");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_orange_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTED:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_green_dark));
-                                break;
-                        }
+                            break;
+                        case LifevitSDKConstants.STATUS_SCANNING:
+                            button_connect.setText("Stop scan");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Scanning");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_blue_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTING:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connecting");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_orange_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTED:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(OximeterActivity.this, android.R.color.holo_green_dark));
+                            break;
                     }
                 });
             }
@@ -164,24 +153,16 @@ public class OximeterActivity extends AppCompatActivity {
             @Override
             public void oximeterDeviceOnProgressMeasurement(final int pleth) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        textview_measurement_result_pleth.setText(String.valueOf(pleth));
-                    }
-                });
+                runOnUiThread(() -> textview_measurement_result_pleth.setText(String.valueOf(pleth)));
             }
 
             @Override
             public void oximeterDeviceOnResult(final LifevitSDKOximeterData data) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        textview_measurement_result_spo2.setText(String.valueOf(data.getSpO2()));
-                        textview_measurement_result_pi.setText(String.valueOf(data.getPi()));
-                        textview_measurement_result_rpm.setText(String.valueOf(data.getRpm()));
-                        textview_measurement_result_lpm.setText(String.valueOf(data.getLpm()));
-                    }
+                runOnUiThread(() -> {
+                    textview_measurement_result_spo2.setText(String.valueOf(data.getSpO2()));
+                    textview_measurement_result_pi.setText(String.valueOf(data.getPi()));
+                    textview_measurement_result_rpm.setText(String.valueOf(data.getRpm()));
+                    textview_measurement_result_lpm.setText(String.valueOf(data.getLpm()));
                 });
             }
         };

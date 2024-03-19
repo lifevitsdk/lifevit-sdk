@@ -1,5 +1,6 @@
 package es.lifevit.sdk.sampleapp.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,16 +9,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,12 +47,18 @@ public class BraceletAT250Activity extends AppCompatActivity {
     private LifevitSDKDeviceListener cl;
 
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bracelet_at250);
 
-        registerReceiver(firmwareUpdateReceiver, new IntentFilter(LifevitSDKConstants.AT250_DFU_BROADCAST_ACTION));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(firmwareUpdateReceiver, new IntentFilter(LifevitSDKConstants.AT250_DFU_BROADCAST_ACTION), Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(firmwareUpdateReceiver, new IntentFilter(LifevitSDKConstants.AT250_DFU_BROADCAST_ACTION));
+        }
+
 
         initComponents();
         initListeners();
@@ -86,16 +94,14 @@ public class BraceletAT250Activity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnected) {
+        button_connect.setOnClickListener(view -> {
+            if (isDisconnected) {
 
-                    // Before connecting, set firmware update notification parameters
-                    SDKTestApplication.getInstance().getLifevitSDKManager().braceletAT250SetFirmwareUpdateParameters("Firmware Update", R.drawable.ic_stat_notify_dfu,
-                            "Firmware Update", "Firmware is Updating");
+                // Before connecting, set firmware update notification parameters
+                SDKTestApplication.getInstance().getLifevitSDKManager().braceletAT250SetFirmwareUpdateParameters("Firmware Update", R.drawable.ic_stat_notify_dfu,
+                        "Firmware Update", "Firmware is Updating");
 
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, 10000);
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, 10000);
 
 //                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, 10000);
 //                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, 10000, "AA:AA:AA:AA:AA:AA");
@@ -103,93 +109,89 @@ public class BraceletAT250Activity extends AppCompatActivity {
 //                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000);
 //                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, 10000);
 //                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, 10000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250);
-                }
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250);
             }
         });
 
-        button_command.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
+        button_command.setOnClickListener(view -> {
+            final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
 
 
-                CharSequence[] colors = new CharSequence[]{
-                        "1. Set device date and time (21/10/2015 4:29)",
-                        "2. Set device date and time (current time)",
-                        "3. Set user info (65kg, 175cm, male, 30 years)",
-                        "4. Set target steps (7000 steps)",
-                        "5. Get yesterday's complete data",
-                        "6. Start real time activity data",
-                        "7. Sync HR History Values",
-                        "8. Enable HR Monitoring",
-                        "9. Disable HR Monitoring",
-                        "10. Enable HR Real time",
-                        "11. Disable HR Real time",
-                        "12. Set Week days HR Monitoring",
-                        "13. Update Firmware",
-                        "14. Get Firmware version number"
-                };
+            CharSequence[] colors = new CharSequence[]{
+                    "1. Set device date and time (21/10/2015 4:29)",
+                    "2. Set device date and time (current time)",
+                    "3. Set user info (65kg, 175cm, male, 30 years)",
+                    "4. Set target steps (7000 steps)",
+                    "5. Get yesterday's complete data",
+                    "6. Start real time activity data",
+                    "7. Sync HR History Values",
+                    "8. Enable HR Monitoring",
+                    "9. Disable HR Monitoring",
+                    "10. Enable HR Real time",
+                    "11. Disable HR Real time",
+                    "12. Set Week days HR Monitoring",
+                    "13. Update Firmware",
+                    "14. Get Firmware version number"
+            };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(BraceletAT250Activity.this);
-                builder.setTitle("Select command");
-                builder.setItems(colors, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                Calendar cal = Calendar.getInstance();
-                                cal.set(2015, Calendar.OCTOBER, 21, 4, 29);
-                                manager.braceletAT250SetDeviceDate(cal.getTime());
-                                break;
-                            case 1:
-                                manager.braceletAT250SetDeviceDate(new Date());
-                                break;
-                            case 2:
-                                manager.braceletAT250SetPersonalInfo(65, 175, LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, 30);
-                                break;
-                            case 3:
-                                manager.braceletAT250SetTargetSteps(7000);
-                                break;
-                            case 4:
-                                manager.braceletAT250GetHistoryData(1);
-                                break;
-                            case 5:
-                                manager.braceletAT250GetTodayData();
-                                break;
-                            case 6:
-                                manager.braceletAT250GetHRData();
-                                break;
-                            case 7:
-                                manager.braceletAT250SetMonitoringHR(true);
-                                break;
-                            case 8:
-                                manager.braceletAT250SetMonitoringHR(false);
-                                break;
-                            case 9:
-                                manager.braceletAT250SetRealtimeHR(true);
-                                break;
-                            case 10:
-                                manager.braceletAT250SetRealtimeHR(false);
-                                break;
-                            case 11:
-                                LifevitSDKAT250TimeRange timeRange = new LifevitSDKAT250TimeRange();
-                                timeRange.setOnlyWeekDays();
-                                manager.braceletAT250SetMonitoringHRAuto(true, timeRange);
-                                break;
-                            case 12:
-                                manager.braceletAT250UpdateFirmware();
-                                break;
-                            case 13:
-                                manager.braceletAT250GetFirmwareVersionNumber();
-                                break;
-                        }
+            AlertDialog.Builder builder = new AlertDialog.Builder(BraceletAT250Activity.this);
+            builder.setTitle("Select command");
+            builder.setItems(colors, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(2015, Calendar.OCTOBER, 21, 4, 29);
+                            manager.braceletAT250SetDeviceDate(cal.getTime());
+                            break;
+                        case 1:
+                            manager.braceletAT250SetDeviceDate(new Date());
+                            break;
+                        case 2:
+                            manager.braceletAT250SetPersonalInfo(65, 175, LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, 30);
+                            break;
+                        case 3:
+                            manager.braceletAT250SetTargetSteps(7000);
+                            break;
+                        case 4:
+                            manager.braceletAT250GetHistoryData(1);
+                            break;
+                        case 5:
+                            manager.braceletAT250GetTodayData();
+                            break;
+                        case 6:
+                            manager.braceletAT250GetHRData();
+                            break;
+                        case 7:
+                            manager.braceletAT250SetMonitoringHR(true);
+                            break;
+                        case 8:
+                            manager.braceletAT250SetMonitoringHR(false);
+                            break;
+                        case 9:
+                            manager.braceletAT250SetRealtimeHR(true);
+                            break;
+                        case 10:
+                            manager.braceletAT250SetRealtimeHR(false);
+                            break;
+                        case 11:
+                            LifevitSDKAT250TimeRange timeRange = new LifevitSDKAT250TimeRange();
+                            timeRange.setOnlyWeekDays();
+                            manager.braceletAT250SetMonitoringHRAuto(true, timeRange);
+                            break;
+                        case 12:
+                            manager.braceletAT250UpdateFirmware();
+                            break;
+                        case 13:
+                            manager.braceletAT250GetFirmwareVersionNumber();
+                            break;
                     }
-                });
-                builder.show();
+                }
+            });
+            builder.show();
 
-            }
         });
     }
 
@@ -203,18 +205,15 @@ public class BraceletAT250Activity extends AppCompatActivity {
                 if (deviceType != LifevitSDKConstants.DEVICE_BRACELET_AT250) {
                     return;
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                            textview_connection_result.setText("ERROR: Debe activar permisos localización");
-                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                            textview_connection_result.setText("ERROR: El bluetooth no está activado");
-                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                            textview_connection_result.setText("ERROR: La Ubicación está apagada");
-                        } else {
-                            textview_connection_result.setText("ERROR: Desconocido");
-                        }
+                runOnUiThread(() -> {
+                    if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                        textview_connection_result.setText("ERROR: Debe activar permisos localización");
+                    } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                        textview_connection_result.setText("ERROR: El bluetooth no está activado");
+                    } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                        textview_connection_result.setText("ERROR: La Ubicación está apagada");
+                    } else {
+                        textview_connection_result.setText("ERROR: Desconocido");
                     }
                 });
             }
@@ -225,35 +224,32 @@ public class BraceletAT250Activity extends AppCompatActivity {
                     return;
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (status) {
-                            case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                button_connect.setText("Connect");
-                                isDisconnected = true;
-                                textview_connection_result.setText("Disconnected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_red_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_SCANNING:
-                                button_connect.setText("Stop scan");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Scanning");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_blue_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTING:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connecting");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_orange_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTED:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_green_dark));
-                                break;
-                        }
+                runOnUiThread(() -> {
+                    switch (status) {
+                        case LifevitSDKConstants.STATUS_DISCONNECTED:
+                            button_connect.setText("Connect");
+                            isDisconnected = true;
+                            textview_connection_result.setText("Disconnected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_red_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_SCANNING:
+                            button_connect.setText("Stop scan");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Scanning");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_blue_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTING:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connecting");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_orange_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTED:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BraceletAT250Activity.this, android.R.color.holo_green_dark));
+                            break;
                     }
                 });
             }
@@ -264,16 +260,13 @@ public class BraceletAT250Activity extends AppCompatActivity {
             @Override
             public void braceletSyncReceived(final List<LifevitSDKStepData> stepsData, final List<LifevitSDKSleepData> sleepData) {
                 synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += "Sync Step Packets received: " + stepsData.size();
-                            text += "\n";
-                            text += "Sync Sleep Packets received: " + sleepData.size();
-                            textview_info.setText(text);
-                        }
+                    runOnUiThread(() -> {
+                        String text = textview_info.getText().toString();
+                        text += "\n";
+                        text += "Sync Step Packets received: " + stepsData.size();
+                        text += "\n";
+                        text += "Sync Sleep Packets received: " + sleepData.size();
+                        textview_info.setText(text);
                     });
                 }
             }
@@ -281,16 +274,13 @@ public class BraceletAT250Activity extends AppCompatActivity {
             @Override
             public void braceletCurrentStepsReceived(final LifevitSDKStepData steps) {
                 synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += "Current steps: " + steps.getSteps()
-                                    + ", calories: " + String.format("%.2f", steps.getCalories())
-                                    + ", distance: " + String.format("%.2f", steps.getDistance());
-                            textview_info.setText(text);
-                        }
+                    runOnUiThread(() -> {
+                        String text = textview_info.getText().toString();
+                        text += "\n";
+                        text += "Current steps: " + steps.getSteps()
+                                + ", calories: " + String.format("%.2f", steps.getCalories())
+                                + ", distance: " + String.format("%.2f", steps.getDistance());
+                        textview_info.setText(text);
                     });
                 }
             }
@@ -298,14 +288,11 @@ public class BraceletAT250Activity extends AppCompatActivity {
             @Override
             public void braceletHeartRateReceived(final int value) {
                 synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += "HR received: " + value;
-                            textview_info.setText(text);
-                        }
+                    runOnUiThread(() -> {
+                        String text = textview_info.getText().toString();
+                        text += "\n";
+                        text += "HR received: " + value;
+                        textview_info.setText(text);
                     });
                 }
             }
@@ -313,23 +300,20 @@ public class BraceletAT250Activity extends AppCompatActivity {
             @Override
             public void braceletHeartRateSyncReceived(final List<LifevitSDKHeartbeatData> data) {
                 synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += "Received heartdata packets: " + data.size();
-                            int i = 0;
+                    runOnUiThread(() -> {
+                        String text = textview_info.getText().toString();
+                        text += "\n";
+                        text += "Received heartdata packets: " + data.size();
+                        int i = 0;
 
-                            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                            while (i < data.size() && i < 100) {
-                                text += "\n";
-                                text += "Index " + i + " heartdata : " + data.get(i).getHeartRate() + " date: "
-                                        + df.format(new Date(data.get(i).getDate()));
-                                i++;
-                            }
-                            textview_info.setText(text);
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                        while (i < data.size() && i < 100) {
+                            text += "\n";
+                            text += "Index " + i + " heartdata : " + data.get(i).getHeartRate() + " date: "
+                                    + df.format(new Date(data.get(i).getDate()));
+                            i++;
                         }
+                        textview_info.setText(text);
                     });
                 }
             }
@@ -337,14 +321,11 @@ public class BraceletAT250Activity extends AppCompatActivity {
             @Override
             public void firmwareVersion(final String firmwareVersion) {
                 synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += ("Firmware version: " + firmwareVersion);
-                            textview_info.setText(text);
-                        }
+                    runOnUiThread(() -> {
+                        String text = textview_info.getText().toString();
+                        text += "\n";
+                        text += ("Firmware version: " + firmwareVersion);
+                        textview_info.setText(text);
                     });
                 }
             }
@@ -352,18 +333,15 @@ public class BraceletAT250Activity extends AppCompatActivity {
             @Override
             public void isGoingToUpdateFirmware(final boolean isGoingToUpdate) {
                 synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            if (isGoingToUpdate) {
-                                text += ("Is going to update firmware. Restarting device...");
-                            } else {
-                                text += ("Is not going to update firmware (device has last version)");
-                            }
-                            textview_info.setText(text);
+                    runOnUiThread(() -> {
+                        String text = textview_info.getText().toString();
+                        text += "\n";
+                        if (isGoingToUpdate) {
+                            text += ("Is going to update firmware. Restarting device...");
+                        } else {
+                            text += ("Is not going to update firmware (device has last version)");
                         }
+                        textview_info.setText(text);
                     });
                 }
             }
@@ -371,14 +349,11 @@ public class BraceletAT250Activity extends AppCompatActivity {
             @Override
             public void operationFinished(final boolean finishedOk) {
                 synchronized (textview_info) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String text = textview_info.getText().toString();
-                            text += "\n";
-                            text += ("Operation finished " + (finishedOk ? "OK" : "ERROR"));
-                            textview_info.setText(text);
-                        }
+                    runOnUiThread(() -> {
+                        String text = textview_info.getText().toString();
+                        text += "\n";
+                        text += ("Operation finished " + (finishedOk ? "OK" : "ERROR"));
+                        textview_info.setText(text);
                     });
                 }
             }
@@ -467,46 +442,43 @@ public class BraceletAT250Activity extends AppCompatActivity {
 
             // 1. Update text view
             synchronized (textview_info) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
-                        String message = "";
-                        switch (state) {
-                            case LifevitSDKConstants.AT250_DFU_STATE_CONNECTING:
-                                message = "- Firmware update: Connecting";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_STARTING:
-                                message = "- Firmware update: Starting";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_ENABLING_DFU_MODE:
-                                message = "- Firmware update: DFU mode";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_VALIDATING:
-                                message = "- Firmware update: Validating";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_DISCONNECTING:
-                                message = "- Firmware update: Disconnecting";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_COMPLETED:
-                                message = "- Firmware update: Completed";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_ABORTED:
-                                message = "- Firmware update: Aborted";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_ERROR:
-                                message = "- Firmware update: ERROR";
-                                break;
-                            case LifevitSDKConstants.AT250_DFU_STATE_PROGRESS:
-                                message = "- Firmware update: Progress: " + progress;
-                                break;
-                        }
-
-                        String text = textview_info.getText().toString();
-                        text += "\n";
-                        text += message;
-                        textview_info.setText(text);
+                    String message = "";
+                    switch (state) {
+                        case LifevitSDKConstants.AT250_DFU_STATE_CONNECTING:
+                            message = "- Firmware update: Connecting";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_STARTING:
+                            message = "- Firmware update: Starting";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_ENABLING_DFU_MODE:
+                            message = "- Firmware update: DFU mode";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_VALIDATING:
+                            message = "- Firmware update: Validating";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_DISCONNECTING:
+                            message = "- Firmware update: Disconnecting";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_COMPLETED:
+                            message = "- Firmware update: Completed";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_ABORTED:
+                            message = "- Firmware update: Aborted";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_ERROR:
+                            message = "- Firmware update: ERROR";
+                            break;
+                        case LifevitSDKConstants.AT250_DFU_STATE_PROGRESS:
+                            message = "- Firmware update: Progress: " + progress;
+                            break;
                     }
+
+                    String text = textview_info.getText().toString();
+                    text += "\n";
+                    text += message;
+                    textview_info.setText(text);
                 });
             }
 

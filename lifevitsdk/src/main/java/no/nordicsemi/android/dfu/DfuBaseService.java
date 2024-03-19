@@ -47,9 +47,10 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -1083,6 +1084,7 @@ public abstract class DfuBaseService extends IntentService {
         return intentFilter;
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     public void onCreate() {
         super.onCreate();
@@ -1091,14 +1093,27 @@ public abstract class DfuBaseService extends IntentService {
 
         final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         final IntentFilter actionFilter = makeDfuActionIntentFilter();
+
         manager.registerReceiver(mDfuActionReceiver, actionFilter);
-        registerReceiver(mDfuActionReceiver, actionFilter); // Additionally we must register this receiver as a non-local to get broadcasts from the notification actions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mDfuActionReceiver, actionFilter, RECEIVER_EXPORTED); // Additionally we must register this receiver as a non-local to get broadcasts from the notification actions
+        } else {
+            registerReceiver(mDfuActionReceiver, actionFilter); // Additionally we must register this receiver as a non-local to get broadcasts from the notification actions
+        }
 
         final IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        registerReceiver(mConnectionStateBroadcastReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mConnectionStateBroadcastReceiver, filter, RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(mConnectionStateBroadcastReceiver, filter);
+        }
 
         final IntentFilter bondFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(mBondStateBroadcastReceiver, bondFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mBondStateBroadcastReceiver, bondFilter, RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(mBondStateBroadcastReceiver, bondFilter);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService();

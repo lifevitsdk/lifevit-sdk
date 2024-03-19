@@ -232,17 +232,14 @@ public class Utils {
 
 
     public static void postDelayed(final Runnable runnable, final long delay) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(delay);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                runnable.run();
-
+        new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            runnable.run();
+
         }).start();
     }
 

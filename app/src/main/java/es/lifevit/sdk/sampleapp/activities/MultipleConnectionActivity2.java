@@ -1,11 +1,11 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
@@ -145,21 +145,18 @@ public class MultipleConnectionActivity2 extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        button_connect.setOnClickListener(view -> {
 
-                int scanPeriod = 50000;
+            int scanPeriod = 50000;
 
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, scanPeriod);
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, scanPeriod);
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, scanPeriod);
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OXIMETER, scanPeriod);
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOBRACELET, scanPeriod);
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, scanPeriod);
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, scanPeriod);
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BABY_TEMP_BT125, scanPeriod);
-            }
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, scanPeriod);
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT250, scanPeriod);
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, scanPeriod);
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OXIMETER, scanPeriod);
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOBRACELET, scanPeriod);
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, scanPeriod);
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_WEIGHT_SCALE, scanPeriod);
+            SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BABY_TEMP_BT125, scanPeriod);
         });
     }
 
@@ -172,39 +169,36 @@ public class MultipleConnectionActivity2 extends AppCompatActivity {
             @Override
             public void deviceOnConnectionError(final int deviceType, final int errorCode) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
-                        TextView textView = null;
-                        if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT500HR) {
-                            textView = multiple_connection_at500hr_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_THERMOMETER) {
-                            textView = multiple_connection_thermometer_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_OXIMETER) {
-                            textView = multiple_connection_oximeter_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOMETER) {
-                            textView = multiple_connection_tensiometer_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT250) {
-                            textView = multiple_connection_at250_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOBRACELET) {
-                            textView = multiple_connection_tensiobracelet_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_WEIGHT_SCALE) {
-                            textView = multiple_connection_weight_scale_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_BABY_TEMP_BT125) {
-                            textView = multiple_connection_baby_temp_connection_result;
-                        }
+                    TextView textView = null;
+                    if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT500HR) {
+                        textView = multiple_connection_at500hr_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_THERMOMETER) {
+                        textView = multiple_connection_thermometer_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_OXIMETER) {
+                        textView = multiple_connection_oximeter_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOMETER) {
+                        textView = multiple_connection_tensiometer_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT250) {
+                        textView = multiple_connection_at250_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOBRACELET) {
+                        textView = multiple_connection_tensiobracelet_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_WEIGHT_SCALE) {
+                        textView = multiple_connection_weight_scale_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_BABY_TEMP_BT125) {
+                        textView = multiple_connection_baby_temp_connection_result;
+                    }
 
-                        if (textView != null) {
-                            if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                                textView.setText("ERROR: Debe activar permisos localización");
-                            } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                                textView.setText("ERROR: El bluetooth no está activado");
-                            } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                                textView.setText("ERROR: La Ubicación está apagada");
-                            } else {
-                                textView.setText("ERROR: Desconocido");
-                            }
+                    if (textView != null) {
+                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                            textView.setText("ERROR: Debe activar permisos localización");
+                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                            textView.setText("ERROR: El bluetooth no está activado");
+                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                            textView.setText("ERROR: La Ubicación está apagada");
+                        } else {
+                            textView.setText("ERROR: Desconocido");
                         }
                     }
                 });
@@ -213,103 +207,100 @@ public class MultipleConnectionActivity2 extends AppCompatActivity {
             @Override
             public void deviceOnConnectionChanged(final int deviceType, final int status) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
-                        TextView textView = null;
-                        String text = "";
-                        int color = -1;
-                        boolean connStatus = false;
+                    TextView textView = null;
+                    String text = "";
+                    int color = -1;
+                    boolean connStatus = false;
 
-                        switch (deviceType) {
-                            case LifevitSDKConstants.DEVICE_BRACELET_AT500HR:
-                                textView = multiple_connection_at500hr_connection_result;
-                                break;
-                            case LifevitSDKConstants.DEVICE_THERMOMETER:
-                                textView = multiple_connection_thermometer_connection_result;
-                                break;
-                            case LifevitSDKConstants.DEVICE_OXIMETER:
-                                textView = multiple_connection_oximeter_connection_result;
-                                break;
-                            case LifevitSDKConstants.DEVICE_TENSIOMETER:
-                                textView = multiple_connection_tensiometer_connection_result;
-                                break;
-                            case LifevitSDKConstants.DEVICE_BRACELET_AT250:
-                                textView = multiple_connection_at250_connection_result;
-                                break;
-                            case LifevitSDKConstants.DEVICE_TENSIOBRACELET:
-                                textView = multiple_connection_tensiobracelet_connection_result;
-                                break;
-                            case LifevitSDKConstants.DEVICE_WEIGHT_SCALE:
-                                textView = multiple_connection_weight_scale_connection_result;
-                                break;
-                            case LifevitSDKConstants.DEVICE_BABY_TEMP_BT125:
-                                textView = multiple_connection_baby_temp_connection_result;
-                                break;
-                        }
+                    switch (deviceType) {
+                        case LifevitSDKConstants.DEVICE_BRACELET_AT500HR:
+                            textView = multiple_connection_at500hr_connection_result;
+                            break;
+                        case LifevitSDKConstants.DEVICE_THERMOMETER:
+                            textView = multiple_connection_thermometer_connection_result;
+                            break;
+                        case LifevitSDKConstants.DEVICE_OXIMETER:
+                            textView = multiple_connection_oximeter_connection_result;
+                            break;
+                        case LifevitSDKConstants.DEVICE_TENSIOMETER:
+                            textView = multiple_connection_tensiometer_connection_result;
+                            break;
+                        case LifevitSDKConstants.DEVICE_BRACELET_AT250:
+                            textView = multiple_connection_at250_connection_result;
+                            break;
+                        case LifevitSDKConstants.DEVICE_TENSIOBRACELET:
+                            textView = multiple_connection_tensiobracelet_connection_result;
+                            break;
+                        case LifevitSDKConstants.DEVICE_WEIGHT_SCALE:
+                            textView = multiple_connection_weight_scale_connection_result;
+                            break;
+                        case LifevitSDKConstants.DEVICE_BABY_TEMP_BT125:
+                            textView = multiple_connection_baby_temp_connection_result;
+                            break;
+                    }
 
-                        switch (status) {
-                            case LifevitSDKConstants.STATUS_DISCONNECTED:
+                    switch (status) {
+                        case LifevitSDKConstants.STATUS_DISCONNECTED:
 //                                    button_connect.setText("Connect");
-                                connStatus = true;
-                                text = "Disconnected";
-                                textView.setTextColor(ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_red_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_SCANNING:
+                            connStatus = true;
+                            text = "Disconnected";
+                            textView.setTextColor(ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_red_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_SCANNING:
 //                                    button_connect.setText("Stop scan");
-                                connStatus = false;
-                                text = "Scanning";
-                                color = ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_blue_dark);
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTING:
+                            connStatus = false;
+                            text = "Scanning";
+                            color = ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_blue_dark);
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTING:
 //                                    button_connect.setText("Disconnect");
-                                connStatus = false;
-                                text = "Connecting";
-                                color = ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_orange_dark);
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTED:
+                            connStatus = false;
+                            text = "Connecting";
+                            color = ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_orange_dark);
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTED:
 //                                    button_connect.setText("Disconnect");
-                                connStatus = false;
-                                text = "Connected";
-                                color = ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_green_dark);
-                                break;
-                        }
+                            connStatus = false;
+                            text = "Connected";
+                            color = ContextCompat.getColor(MultipleConnectionActivity2.this, android.R.color.holo_green_dark);
+                            break;
+                    }
 
-                        if (textView != null && !text.isEmpty()) {
-                            textView.setText(text);
-                        }
+                    if (textView != null && !text.isEmpty()) {
+                        textView.setText(text);
+                    }
 
-                        if (textView != null && color != -1) {
-                            textView.setTextColor(color);
-                        }
+                    if (textView != null && color != -1) {
+                        textView.setTextColor(color);
+                    }
 
-                        switch (deviceType) {
-                            case LifevitSDKConstants.DEVICE_BRACELET_AT500HR:
-                                isDisconnectedBracelet = connStatus;
-                                break;
-                            case LifevitSDKConstants.DEVICE_THERMOMETER:
-                                isDisconnectedThermometer = connStatus;
-                                break;
-                            case LifevitSDKConstants.DEVICE_OXIMETER:
-                                isDisconnectedOximeter = connStatus;
-                                break;
-                            case LifevitSDKConstants.DEVICE_TENSIOMETER:
-                                isDisconnectedTensiometer = connStatus;
-                                break;
-                            case LifevitSDKConstants.DEVICE_BRACELET_AT250:
-                                isDisconnectedBraceletAt250 = connStatus;
-                                break;
-                            case LifevitSDKConstants.DEVICE_TENSIOBRACELET:
-                                isDisconnectedTensiobracelet = connStatus;
-                                break;
-                            case LifevitSDKConstants.DEVICE_WEIGHT_SCALE:
-                                isDisconnectedWeightScale = connStatus;
-                                break;
-                            case LifevitSDKConstants.DEVICE_BABY_TEMP_BT125:
-                                isDisconnectedBabyTemp = connStatus;
-                                break;
-                        }
+                    switch (deviceType) {
+                        case LifevitSDKConstants.DEVICE_BRACELET_AT500HR:
+                            isDisconnectedBracelet = connStatus;
+                            break;
+                        case LifevitSDKConstants.DEVICE_THERMOMETER:
+                            isDisconnectedThermometer = connStatus;
+                            break;
+                        case LifevitSDKConstants.DEVICE_OXIMETER:
+                            isDisconnectedOximeter = connStatus;
+                            break;
+                        case LifevitSDKConstants.DEVICE_TENSIOMETER:
+                            isDisconnectedTensiometer = connStatus;
+                            break;
+                        case LifevitSDKConstants.DEVICE_BRACELET_AT250:
+                            isDisconnectedBraceletAt250 = connStatus;
+                            break;
+                        case LifevitSDKConstants.DEVICE_TENSIOBRACELET:
+                            isDisconnectedTensiobracelet = connStatus;
+                            break;
+                        case LifevitSDKConstants.DEVICE_WEIGHT_SCALE:
+                            isDisconnectedWeightScale = connStatus;
+                            break;
+                        case LifevitSDKConstants.DEVICE_BABY_TEMP_BT125:
+                            isDisconnectedBabyTemp = connStatus;
+                            break;
                     }
                 });
             }

@@ -24,6 +24,8 @@ import android.os.ParcelUuid;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -35,7 +37,6 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import androidx.core.app.ActivityCompat;
 import es.lifevit.sdk.bracelet.LifevitSDKAT250TimeRange;
 import es.lifevit.sdk.bracelet.LifevitSDKAT500SedentaryReminderTimeRange;
 import es.lifevit.sdk.bracelet.LifevitSDKAt500HrAlarmTime;
@@ -180,11 +181,16 @@ public class LifevitSDKManager {
     private Timer deviceDetectionTimer;
 
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public LifevitSDKManager(Context context) {
 
         LogUtils.log(Log.DEBUG, CLASS_TAG, "Create manager with new creator.");
 
-        context.registerReceiver(notificationReceiver, new IntentFilter(NotificationReceiverService.BROADCAST_NOTIFICATION));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(notificationReceiver, new IntentFilter(NotificationReceiverService.BROADCAST_NOTIFICATION), Context.RECEIVER_EXPORTED);
+        } else {
+            context.registerReceiver(notificationReceiver, new IntentFilter(NotificationReceiverService.BROADCAST_NOTIFICATION));
+        }
 
         mHandlerThread = new HandlerThread("HandlerThread");
         mHandlerThread.start();
@@ -349,71 +355,68 @@ public class LifevitSDKManager {
 
     public void connectDevice(final int deviceType, final long scanPeriod, final String address) {
 
-        new Handler(mHandlerConnectThread.getLooper()).post(new Runnable() {
-            @Override
-            public void run() {
+        new Handler(mHandlerConnectThread.getLooper()).post(() -> {
 
-                synchronized (lock) {
+            synchronized (lock) {
 
-                    LogUtils.log(Log.INFO, CLASS_TAG, "[connectDevice] deviceType = " + LogUtils.getDeviceNameByType(deviceType)
-                            + ", scanPeriod = " + scanPeriod + ", address: " + address);
+                LogUtils.log(Log.INFO, CLASS_TAG, "[connectDevice] deviceType = " + LogUtils.getDeviceNameByType(deviceType)
+                        + ", scanPeriod = " + scanPeriod + ", address: " + address);
 
-                    boolean canStartScan = checkIfCanStartScan(deviceType);
-                    if (!canStartScan) {
-                        return;
-                    }
+                boolean canStartScan = checkIfCanStartScan(deviceType);
+                if (!canStartScan) {
+                    return;
+                }
 
-                    if (isDeviceConnected(deviceType)) {
-                        // Device is already connected
-                        LogUtils.log(Log.ERROR, CLASS_TAG, "[connectDevice] Device is already connected.");
-                        return;
-                    }
+                if (isDeviceConnected(deviceType)) {
+                    // Device is already connected
+                    LogUtils.log(Log.ERROR, CLASS_TAG, "[connectDevice] Device is already connected.");
+                    return;
+                }
 
-                    if (hshDetectedDevices.containsKey(deviceType)) {
-                        // Device is already connected
-                        LogUtils.log(Log.ERROR, CLASS_TAG, "[devicesToScan] Device is already added to scan. Current list: " + printDevicesToScan());
-
-                        deviceOnConnectionChanged(deviceType, LifevitSDKConstants.STATUS_SCANNING, false);
-                        return;
-                    } else {
-                        hshDetectedDevices.put(deviceType, new HashMap<String, LifevitScanResult>());
-                        LogUtils.log(Log.INFO, CLASS_TAG, "[devicesToScan] ADD device: " + LogUtils.getDeviceNameByType(deviceType) + ", current list: " + printDevicesToScan());
-                    }
-
-
-                    if (address != null) {
-                        hshDeviceAddressByType.put(deviceType, address);
-                        LogUtils.log(Log.DEBUG, CLASS_TAG, "mAddressToMatch: " + address);
-                    } else {
-                        hshDeviceAddressByType.remove(deviceType);
-                    }
-
-                    //Ponemos el timeout...
-                    hshConnectionTimeout.put(deviceType, new Date(System.currentTimeMillis() + scanPeriod));
-
-                    if (mScanning == false) {
-                        // Quiere decir que hemos añadido el primer dispositivo
-                        // Reiniciamos el escaneo
-                        stopLeScan();
-                        mScanning = true;
-                        startLeScan(null, false, true);
-
-                        if (!scan_batch_results) {
-                            // Añadimos el detectionTimer
-                            TimerTask detectionTask = new TimerTask() {
-                                @Override
-                                public void run() {
-                                    checkDetectedDevices();
-
-                                }
-                            };
-                            deviceDetectionTimer = new Timer();
-                            deviceDetectionTimer.schedule(detectionTask, DETECTION_TIME_MILLIS, DETECTION_TIME_MILLIS);
-                        }
-                    }
+                if (hshDetectedDevices.containsKey(deviceType)) {
+                    // Device is already connected
+                    LogUtils.log(Log.ERROR, CLASS_TAG, "[devicesToScan] Device is already added to scan. Current list: " + printDevicesToScan());
 
                     deviceOnConnectionChanged(deviceType, LifevitSDKConstants.STATUS_SCANNING, false);
+                    return;
+                } else {
+                    hshDetectedDevices.put(deviceType, new HashMap<String, LifevitScanResult>());
+                    LogUtils.log(Log.INFO, CLASS_TAG, "[devicesToScan] ADD device: " + LogUtils.getDeviceNameByType(deviceType) + ", current list: " + printDevicesToScan());
                 }
+
+
+                if (address != null) {
+                    hshDeviceAddressByType.put(deviceType, address);
+                    LogUtils.log(Log.DEBUG, CLASS_TAG, "mAddressToMatch: " + address);
+                } else {
+                    hshDeviceAddressByType.remove(deviceType);
+                }
+
+                //Ponemos el timeout...
+                hshConnectionTimeout.put(deviceType, new Date(System.currentTimeMillis() + scanPeriod));
+
+                if (mScanning == false) {
+                    // Quiere decir que hemos añadido el primer dispositivo
+                    // Reiniciamos el escaneo
+                    stopLeScan();
+                    mScanning = true;
+                    startLeScan(null, false, true);
+
+                    if (!scan_batch_results) {
+                        // Añadimos el detectionTimer
+                        TimerTask detectionTask = new TimerTask() {
+                            @Override
+                            public void run() {
+                                checkDetectedDevices();
+
+                            }
+                        };
+                        deviceDetectionTimer = new Timer();
+                        deviceDetectionTimer.schedule(detectionTask, DETECTION_TIME_MILLIS, DETECTION_TIME_MILLIS);
+                    }
+                }
+
+                deviceOnConnectionChanged(deviceType, LifevitSDKConstants.STATUS_SCANNING, false);
             }
         });
 
@@ -493,7 +496,9 @@ public class LifevitSDKManager {
 
     private boolean checkIfCanStartScan(int deviceType) {
 
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 
             // Return NO permissions
             if (deviceListeners.size() > 0) {
@@ -664,37 +669,34 @@ public class LifevitSDKManager {
             mNewScanCallback = new ScanCallback() {
                 @Override
                 public void onScanResult(final int callbackType, final ScanResult result) {
-                    new Handler(mHandlerScansThread.getLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (hshDetectedDevices.size() == 0) {
-                                stopLeScan();
-                                cleanConnectingData();
-                                return;
-                            }
-                            BluetoothDevice btDevice = result.getDevice();
+                    new Handler(mHandlerScansThread.getLooper()).post(() -> {
+                        if (hshDetectedDevices.size() == 0) {
+                            stopLeScan();
+                            cleanConnectingData();
+                            return;
+                        }
+                        BluetoothDevice btDevice = result.getDevice();
 
-                            if (btDevice == null) {
-                                LogUtils.log(Log.ERROR, CLASS_TAG, "btDevice is NULL!!");
-                                return;
-                            }
-                            LogUtils.log(Log.DEBUG, CLASS_TAG, "[New scan] onScanResult: " + LogUtils.getCallbackTypeName(callbackType) + ", RSSI: " + result.getRssi() + " , NAME: " + btDevice.getName());
+                        if (btDevice == null) {
+                            LogUtils.log(Log.ERROR, CLASS_TAG, "btDevice is NULL!!");
+                            return;
+                        }
+                        LogUtils.log(Log.DEBUG, CLASS_TAG, "[New scan] onScanResult: " + LogUtils.getCallbackTypeName(callbackType) + ", RSSI: " + result.getRssi() + " , NAME: " + btDevice.getName());
 
 
-                            String deviceName = result.getDevice().getName();
-                            String bAdData = "";
-                            final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(result.getScanRecord().getBytes());
-                            if (badata != null) {
-                                bAdData = badata.getName();
-                            }
-                            if (deviceName == null) {
-                                deviceName = badata.getName();
-                            }
+                        String deviceName = result.getDevice().getName();
+                        String bAdData = "";
+                        final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(result.getScanRecord().getBytes());
+                        if (badata != null) {
+                            bAdData = badata.getName();
+                        }
+                        if (deviceName == null) {
+                            deviceName = badata.getName();
+                        }
 
-                            if (deviceName != null) {
+                        if (deviceName != null) {
 
-                                addToDetectedDevice(new LifevitScanResult(deviceName, bAdData, result.getRssi(), result.getDevice()));
-                            }
+                            addToDetectedDevice(new LifevitScanResult(deviceName, bAdData, result.getRssi(), result.getDevice()));
                         }
                     });
 
@@ -1036,6 +1038,10 @@ public class LifevitSDKManager {
                 + ", status: " + LogUtils.getConnectionStatusName(deviceStatus)
                 + ", deviceToConnect: " + LogUtils.getDeviceNameByType(deviceType)
                 + ", calledAutomatically: " + calledAutomatically);
+
+        if(LogUtils.getConnectionStatusName(deviceStatus).equals("DISCONNECTED")) {
+            LogUtils.log(Log.DEBUG, CLASS_TAG, "DISCONNECT HOUR: " + System.currentTimeMillis());
+        }
 
         if (getDeviceListeners().size() > 0L && deviceType != LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER) {
             ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);

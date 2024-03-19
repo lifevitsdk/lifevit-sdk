@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="color_bullet_size">26dp</dimen>
-    <dimen name="medication_picture_size">80dp</dimen>
-    <dimen name="edittext_border">1dp</dimen>
-    <dimen name="edittext_radius">5dp</dimen>
-    <dimen name="rounded_button_radius">45dp</dimen>
-    <dimen name="title_pill_icon_size">25dp</dimen>
-</resources>

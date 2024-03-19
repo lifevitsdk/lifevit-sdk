@@ -2,24 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion project.compileSdkVersion
-//    buildToolsVersion project.buildToolsVersion
     defaultConfig {
         applicationId "es.lifevit.sdk.sampleapp"
         minSdkVersion 18
         targetSdkVersion project.targetSdkVersion
         versionCode project.versionCode
         versionName project.versionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-
-    signingConfigs {
-        release {
-            storeFile file("/Users/inmovens/owncloud/Desarrollo/keystores/DagaPharma.jks")
-            storePassword "DagaPharma"
-            keyAlias "DagaPharma"
-            keyPassword "DagaPharma"
-        }
     }
 
     buildTypes {
@@ -33,18 +21,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'es.lifevit.sdk.sampleapp'
 
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation ('com.google.android.material:material:1.6.0') {
+        exclude group: 'androidx.activity', module: 'activity'
+    }
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     implementation project(':lifevitsdk')
 }

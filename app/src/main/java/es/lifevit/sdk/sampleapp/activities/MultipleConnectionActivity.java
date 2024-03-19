@@ -1,12 +1,12 @@
 package es.lifevit.sdk.sampleapp.activities;
 
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
@@ -107,62 +107,42 @@ public class MultipleConnectionActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnectedBracelet) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, 10000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR);
-                }
+        button_connect.setOnClickListener(view -> {
+            if (isDisconnectedBracelet) {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, 10000);
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR);
             }
         });
 
-        button_check_address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String addr = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_BRACELET_AT500HR);
-                textview_connection_result_address.setText(addr);
+        button_check_address.setOnClickListener(view -> {
+            String addr = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_BRACELET_AT500HR);
+            textview_connection_result_address.setText(addr);
+        });
+
+        button_connect_by_addr.setOnClickListener(view -> SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, 10000, textview_connection_result_address.getText().toString()));
+
+        button_connect_thermometer.setOnClickListener(view -> {
+            if (isDisconnectedThermometer) {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, 10000);
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_THERMOMETER);
             }
         });
 
-        button_connect_by_addr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, 10000, textview_connection_result_address.getText().toString());
+        button_connect_oximeter.setOnClickListener(view -> {
+            if (isDisconnectedOximeter) {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OXIMETER, 10000);
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_OXIMETER);
             }
         });
 
-        button_connect_thermometer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnectedThermometer) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, 10000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_THERMOMETER);
-                }
-            }
-        });
-
-        button_connect_oximeter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnectedOximeter) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OXIMETER, 10000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_OXIMETER);
-                }
-            }
-        });
-
-        button_connect_tensiometer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnectedTensiometer) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER);
-                }
+        button_connect_tensiometer.setOnClickListener(view -> {
+            if (isDisconnectedTensiometer) {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000);
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER);
             }
         });
     }
@@ -178,31 +158,28 @@ public class MultipleConnectionActivity extends AppCompatActivity {
 //                if (deviceType != LifevitSDKConstants.DEVICE_BRACELET_AT500HR && deviceType != LifevitSDKConstants.DEVICE_THERMOMETER) {
 //                    return;
 //                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
-                        TextView textView = null;
-                        if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT500HR) {
-                            textView = textview_bracelet_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_THERMOMETER) {
-                            textView = textview_thermometer_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_OXIMETER) {
-                            textView = textview_oximeter_connection_result;
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOMETER) {
-                            textView = textview_tensiometer_connection_result;
-                        }
+                    TextView textView = null;
+                    if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT500HR) {
+                        textView = textview_bracelet_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_THERMOMETER) {
+                        textView = textview_thermometer_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_OXIMETER) {
+                        textView = textview_oximeter_connection_result;
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOMETER) {
+                        textView = textview_tensiometer_connection_result;
+                    }
 
-                        if (textView != null) {
-                            if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                                textView.setText("ERROR: Debe activar permisos localización");
-                            } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                                textView.setText("ERROR: El bluetooth no está activado");
-                            } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                                textView.setText("ERROR: La Ubicación está apagada");
-                            } else {
-                                textView.setText("ERROR: Desconocido");
-                            }
+                    if (textView != null) {
+                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                            textView.setText("ERROR: Debe activar permisos localización");
+                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                            textView.setText("ERROR: El bluetooth no está activado");
+                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                            textView.setText("ERROR: La Ubicación está apagada");
+                        } else {
+                            textView.setText("ERROR: Desconocido");
                         }
                     }
                 });
@@ -214,126 +191,123 @@ public class MultipleConnectionActivity extends AppCompatActivity {
 //                    return;
 //                }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                runOnUiThread(() -> {
 
-                        if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT500HR) {
+                    if (deviceType == LifevitSDKConstants.DEVICE_BRACELET_AT500HR) {
 
-                            switch (status) {
-                                case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                    button_connect.setText("Connect");
-                                    isDisconnectedBracelet = true;
-                                    textview_bracelet_connection_result.setText("Disconnected");
-                                    textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_SCANNING:
-                                    button_connect.setText("Stop scan");
-                                    isDisconnectedBracelet = false;
-                                    textview_bracelet_connection_result.setText("Scanning");
-                                    textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTING:
-                                    button_connect.setText("Disconnect");
-                                    isDisconnectedBracelet = false;
-                                    textview_bracelet_connection_result.setText("Connecting");
-                                    textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTED:
-                                    button_connect.setText("Disconnect");
-                                    isDisconnectedBracelet = false;
-                                    textview_bracelet_connection_result.setText("Connected");
-                                    textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
-                                    break;
-                            }
-
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_THERMOMETER) {
-
-                            switch (status) {
-                                case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                    button_connect_thermometer.setText("Connect");
-                                    isDisconnectedThermometer = true;
-                                    textview_thermometer_connection_result.setText("Disconnected");
-                                    textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_SCANNING:
-                                    button_connect_thermometer.setText("Stop scan");
-                                    isDisconnectedThermometer = false;
-                                    textview_thermometer_connection_result.setText("Scanning");
-                                    textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTING:
-                                    button_connect_thermometer.setText("Disconnect");
-                                    isDisconnectedThermometer = false;
-                                    textview_thermometer_connection_result.setText("Connecting");
-                                    textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTED:
-                                    button_connect_thermometer.setText("Disconnect");
-                                    isDisconnectedThermometer = false;
-                                    textview_thermometer_connection_result.setText("Connected");
-                                    textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
-                                    break;
-                            }
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_OXIMETER) {
-
-                            switch (status) {
-                                case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                    button_connect_oximeter.setText("Connect");
-                                    isDisconnectedOximeter = true;
-                                    textview_oximeter_connection_result.setText("Disconnected");
-                                    textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_SCANNING:
-                                    button_connect_oximeter.setText("Stop scan");
-                                    isDisconnectedOximeter = false;
-                                    textview_oximeter_connection_result.setText("Scanning");
-                                    textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTING:
-                                    button_connect_oximeter.setText("Disconnect");
-                                    isDisconnectedOximeter = false;
-                                    textview_oximeter_connection_result.setText("Connecting");
-                                    textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTED:
-                                    button_connect_oximeter.setText("Disconnect");
-                                    isDisconnectedOximeter = false;
-                                    textview_oximeter_connection_result.setText("Connected");
-                                    textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
-                                    break;
-                            }
-                        } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOMETER) {
-
-                            switch (status) {
-                                case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                    button_connect_tensiometer.setText("Connect");
-                                    isDisconnectedTensiometer = true;
-                                    textview_tensiometer_connection_result.setText("Disconnected");
-                                    textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_SCANNING:
-                                    button_connect_tensiometer.setText("Stop scan");
-                                    isDisconnectedTensiometer = false;
-                                    textview_tensiometer_connection_result.setText("Scanning");
-                                    textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTING:
-                                    button_connect_tensiometer.setText("Disconnect");
-                                    isDisconnectedTensiometer = false;
-                                    textview_tensiometer_connection_result.setText("Connecting");
-                                    textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
-                                    break;
-                                case LifevitSDKConstants.STATUS_CONNECTED:
-                                    button_connect_tensiometer.setText("Disconnect");
-                                    isDisconnectedTensiometer = false;
-                                    textview_tensiometer_connection_result.setText("Connected");
-                                    textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
-                                    break;
-                            }
+                        switch (status) {
+                            case LifevitSDKConstants.STATUS_DISCONNECTED:
+                                button_connect.setText("Connect");
+                                isDisconnectedBracelet = true;
+                                textview_bracelet_connection_result.setText("Disconnected");
+                                textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_SCANNING:
+                                button_connect.setText("Stop scan");
+                                isDisconnectedBracelet = false;
+                                textview_bracelet_connection_result.setText("Scanning");
+                                textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTING:
+                                button_connect.setText("Disconnect");
+                                isDisconnectedBracelet = false;
+                                textview_bracelet_connection_result.setText("Connecting");
+                                textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTED:
+                                button_connect.setText("Disconnect");
+                                isDisconnectedBracelet = false;
+                                textview_bracelet_connection_result.setText("Connected");
+                                textview_bracelet_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
+                                break;
                         }
 
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_THERMOMETER) {
+
+                        switch (status) {
+                            case LifevitSDKConstants.STATUS_DISCONNECTED:
+                                button_connect_thermometer.setText("Connect");
+                                isDisconnectedThermometer = true;
+                                textview_thermometer_connection_result.setText("Disconnected");
+                                textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_SCANNING:
+                                button_connect_thermometer.setText("Stop scan");
+                                isDisconnectedThermometer = false;
+                                textview_thermometer_connection_result.setText("Scanning");
+                                textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTING:
+                                button_connect_thermometer.setText("Disconnect");
+                                isDisconnectedThermometer = false;
+                                textview_thermometer_connection_result.setText("Connecting");
+                                textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTED:
+                                button_connect_thermometer.setText("Disconnect");
+                                isDisconnectedThermometer = false;
+                                textview_thermometer_connection_result.setText("Connected");
+                                textview_thermometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
+                                break;
+                        }
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_OXIMETER) {
+
+                        switch (status) {
+                            case LifevitSDKConstants.STATUS_DISCONNECTED:
+                                button_connect_oximeter.setText("Connect");
+                                isDisconnectedOximeter = true;
+                                textview_oximeter_connection_result.setText("Disconnected");
+                                textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_SCANNING:
+                                button_connect_oximeter.setText("Stop scan");
+                                isDisconnectedOximeter = false;
+                                textview_oximeter_connection_result.setText("Scanning");
+                                textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTING:
+                                button_connect_oximeter.setText("Disconnect");
+                                isDisconnectedOximeter = false;
+                                textview_oximeter_connection_result.setText("Connecting");
+                                textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTED:
+                                button_connect_oximeter.setText("Disconnect");
+                                isDisconnectedOximeter = false;
+                                textview_oximeter_connection_result.setText("Connected");
+                                textview_oximeter_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
+                                break;
+                        }
+                    } else if (deviceType == LifevitSDKConstants.DEVICE_TENSIOMETER) {
+
+                        switch (status) {
+                            case LifevitSDKConstants.STATUS_DISCONNECTED:
+                                button_connect_tensiometer.setText("Connect");
+                                isDisconnectedTensiometer = true;
+                                textview_tensiometer_connection_result.setText("Disconnected");
+                                textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_red_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_SCANNING:
+                                button_connect_tensiometer.setText("Stop scan");
+                                isDisconnectedTensiometer = false;
+                                textview_tensiometer_connection_result.setText("Scanning");
+                                textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_blue_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTING:
+                                button_connect_tensiometer.setText("Disconnect");
+                                isDisconnectedTensiometer = false;
+                                textview_tensiometer_connection_result.setText("Connecting");
+                                textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_orange_dark));
+                                break;
+                            case LifevitSDKConstants.STATUS_CONNECTED:
+                                button_connect_tensiometer.setText("Disconnect");
+                                isDisconnectedTensiometer = false;
+                                textview_tensiometer_connection_result.setText("Connected");
+                                textview_tensiometer_connection_result.setTextColor(ContextCompat.getColor(MultipleConnectionActivity.this, android.R.color.holo_green_dark));
+                                break;
+                        }
                     }
+
                 });
             }
         };

@@ -1,12 +1,13 @@
 package es.lifevit.sdk.sampleapp.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.text.DecimalFormat;
 
@@ -16,6 +17,7 @@ import es.lifevit.sdk.listeners.LifevitSDKDeviceListener;
 import es.lifevit.sdk.sampleapp.R;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
 
+@SuppressLint("SetTextI18n")
 public class BabyTempBT125Activity extends AppCompatActivity {
 
     private static final String TAG = BabyTempBT125Activity.class.getSimpleName();
@@ -79,14 +81,11 @@ public class BabyTempBT125Activity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDisconnected) {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BABY_TEMP_BT125, 10000);
-                } else {
-                    SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BABY_TEMP_BT125);
-                }
+        button_connect.setOnClickListener(view -> {
+            if (isDisconnected) {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BABY_TEMP_BT125, 10000);
+            } else {
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectDevice(LifevitSDKConstants.DEVICE_BABY_TEMP_BT125);
             }
         });
     }
@@ -99,71 +98,57 @@ public class BabyTempBT125Activity extends AppCompatActivity {
 
             @Override
             public void deviceOnConnectionError(int deviceType, final int errorCode) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
-                            textview_connection_result.setText("ERROR: Debe activar permisos localización");
-                        } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
-                            textview_connection_result.setText("ERROR: El bluetooth no está activado");
-                        } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
-                            textview_connection_result.setText("ERROR: La Ubicación está apagada");
-                        } else {
-                            textview_connection_result.setText("ERROR: Desconocido");
-                        }
+                runOnUiThread(() -> {
+                    if (errorCode == LifevitSDKConstants.CODE_LOCATION_DISABLED) {
+                        textview_connection_result.setText("ERROR: Debe activar permisos localización");
+                    } else if (errorCode == LifevitSDKConstants.CODE_BLUETOOTH_DISABLED) {
+                        textview_connection_result.setText("ERROR: El bluetooth no está activado");
+                    } else if (errorCode == LifevitSDKConstants.CODE_LOCATION_TURN_OFF) {
+                        textview_connection_result.setText("ERROR: La Ubicación está apagada");
+                    } else {
+                        textview_connection_result.setText("ERROR: Desconocido");
                     }
                 });
             }
 
             @Override
             public void deviceOnConnectionChanged(int deviceType, final int status) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (status) {
-                            case LifevitSDKConstants.STATUS_DISCONNECTED:
-                                button_connect.setText("Connect");
-                                isDisconnected = true;
-                                textview_connection_result.setText("Disconnected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_red_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_SCANNING:
-                                button_connect.setText("Stop scan");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Scanning");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_blue_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTING:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connecting");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_orange_dark));
-                                break;
-                            case LifevitSDKConstants.STATUS_CONNECTED:
-                                button_connect.setText("Disconnect");
-                                isDisconnected = false;
-                                textview_connection_result.setText("Connected");
-                                textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_green_dark));
-                                break;
-                        }
+                runOnUiThread(() -> {
+                    switch (status) {
+                        case LifevitSDKConstants.STATUS_DISCONNECTED:
+                            button_connect.setText("Connect");
+                            isDisconnected = true;
+                            textview_connection_result.setText("Disconnected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_red_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_SCANNING:
+                            button_connect.setText("Stop scan");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Scanning");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_blue_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTING:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connecting");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_orange_dark));
+                            break;
+                        case LifevitSDKConstants.STATUS_CONNECTED:
+                            button_connect.setText("Disconnect");
+                            isDisconnected = false;
+                            textview_connection_result.setText("Connected");
+                            textview_connection_result.setTextColor(ContextCompat.getColor(BabyTempBT125Activity.this, android.R.color.holo_green_dark));
+                            break;
                     }
                 });
             }
         };
 
-        LifevitSDKBabyTempBT125Listener btListener = new LifevitSDKBabyTempBT125Listener() {
-            @Override
-            public void onBabyTempDataReady(final double bodyTemperature, final double environmentTemperature) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        DecimalFormat df = new DecimalFormat("#.00");
-                        textview_measurement_result_body.setText(df.format(environmentTemperature));
-                        textview_measurement_result_env.setText(df.format(bodyTemperature));
-                    }
-                });
-            }
-        };
+        LifevitSDKBabyTempBT125Listener btListener = (bodyTemperature, environmentTemperature) -> runOnUiThread(() -> {
+            DecimalFormat df = new DecimalFormat("#.00");
+            textview_measurement_result_body.setText(df.format(environmentTemperature));
+            textview_measurement_result_env.setText(df.format(bodyTemperature));
+        });
 
         SDKTestApplication.getInstance().getLifevitSDKManager().addDeviceListener(cl);
         SDKTestApplication.getInstance().getLifevitSDKManager().setBabyTempBT125Listener(btListener);
