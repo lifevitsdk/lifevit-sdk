@@ -1,6 +1,9 @@
 
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
+}
 
 android {
     compileSdkVersion project.compileSdkVersion
@@ -39,7 +42,7 @@ android {
 }
 
 
-uploadArchives {
+/*uploadArchives {
     repositories.mavenDeployer {
         repository(url: "file:///Users/aescanuela/Development/LifevitSDKUpload")
         pom.project {
@@ -48,7 +51,7 @@ uploadArchives {
             version project.versionName
         }
     }
-}
+}*/
 
 
 dependencies {
@@ -65,6 +68,18 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.2.4'
     implementation files('libs/nrf-logger-v2.0.jar')
+}
 
+afterEvaluate{
+    publishing{
+        publications{
+            release(MavenPublication){
+                from components.release
 
+                groupId='com.github.FerranRoigCodi'
+                artifactId = 'lifevitsdk'
+                version = '1.0'
+            }
+        }
+    }
 }
