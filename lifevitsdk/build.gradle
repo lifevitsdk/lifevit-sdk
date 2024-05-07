@@ -76,7 +76,7 @@ afterEvaluate{
             release(MavenPublication){
                 from components.release
 
-                groupId='com.github.FerranRoigCodi'
+                groupId='com.github.lifevitsdk'
                 artifactId = 'lifevitsdk'
                 version = '1.0'
             }
