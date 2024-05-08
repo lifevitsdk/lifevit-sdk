@@ -1,5 +1,9 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
+
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
+}
 
 android {
     compileSdkVersion project.compileSdkVersion
@@ -36,7 +40,7 @@ android {
 }
 
 
-uploadArchives {
+/*uploadArchives {
     repositories.mavenDeployer {
         repository(url: "file:///Users/aescanuela/Development/LifevitSDKUpload")
         pom.project {
@@ -45,13 +49,35 @@ uploadArchives {
             version project.versionName
         }
     }
-}
+}*/
 
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    testImplementation 'junit:junit:4.12'
 
+    // AT-250 Firmware Update
+//    compile 'no.nordicsemi.android:dfu:1.6.1'
+  //  compile project(':dfu')
+
+    implementation 'com.google.code.gson:gson:2.2.4'
     implementation files('libs/nrf-logger-v2.0.jar')
+}
+
+afterEvaluate{
+    publishing{
+        publications{
+            release(MavenPublication){
+                from components.release
+
+                groupId='com.github.FerranRoigCodi'
+                artifactId = 'lifevitsdk'
+                version = '1.0'
+            }
+        }
+    }
 }
