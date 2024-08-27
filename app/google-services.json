@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "316753982178",
+    "project_id": "lifevit-1d1f0",
+    "storage_bucket": "lifevit-1d1f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316753982178:android:a8e13f61fc26adc74824bb",
+        "android_client_info": {
+          "package_name": "es.lifevit.sdk.sampleapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi__PAb6zjAB6-EULLsr_04Hu6O7GI9Z8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

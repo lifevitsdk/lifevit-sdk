@@ -6,10 +6,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion project.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 18
+        compileSdk project.compileSdkVersion
+        minSdkVersion project.minSdkVersion
         targetSdkVersion project.targetSdkVersion
 
         multiDexEnabled true
@@ -51,39 +51,23 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-
-/*uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: "file:///Users/aescanuela/Development/LifevitSDKUpload")
-        pom.project {
-            groupId 'es.lifevit'
-            artifactId 'lifevit-sdk'
-            version project.versionName
-        }
-    }
-}*/
-
-
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    testImplementation 'junit:junit:4.12'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.7.0'
 
-    // AT-250 Firmware Update
-//    compile 'no.nordicsemi.android:dfu:1.6.1'
-  //  compile project(':dfu')
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'no.nordicsemi.android:ble:2.8.0'
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.6.0'
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0"
 
-    implementation 'com.google.code.gson:gson:2.2.4'
     implementation files('libs/nrf-logger-v2.0.jar')
+    implementation files('libs/lifesense-device-ble-2.3.9-build1.jar')
 }
 
-afterEvaluate{
-    publishing{
-        publications{
-            release(MavenPublication){
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
                 from components.release
 
                 groupId='com.github.lifevitsdk'

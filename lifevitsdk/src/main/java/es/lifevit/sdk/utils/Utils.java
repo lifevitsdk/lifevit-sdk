@@ -3,9 +3,7 @@ package es.lifevit.sdk.utils;
 import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.os.Build;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 
@@ -29,13 +27,17 @@ public class Utils {
 
     private static final char[] DIGITS_UPPER = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    @Deprecated
     public static final int IO_BUFFER_SIZE = 8 * 1024;
+    @Deprecated
     static final Charset US_ASCII = Charset.forName("US-ASCII");
+    @Deprecated
     static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private Utils() {
     }
 
+    @Deprecated
     public static String getMeters(int cm) {
         double m;
         m = (double) cm / 100;
@@ -56,13 +58,11 @@ public class Utils {
         if ((m < cal.get(Calendar.MONTH)) || ((m == cal.get(Calendar.MONTH)) && (d < cal.get(Calendar.DAY_OF_MONTH)))) {
             --a;
         }
-        if (a < 0) {
-            return 0;
-//            throw new IllegalArgumentException("Age < 0");
-        }
-        return a;
+        //            throw new IllegalArgumentException("Age < 0");
+        return Math.max(a, 0);
     }
 
+    @Deprecated
     public static int getAge(int _year, int _month, int _day) {
 
         Calendar cal = Calendar.getInstance();
@@ -83,27 +83,17 @@ public class Utils {
         return a;
     }
 
+    @Deprecated
     public static boolean isExternalStorageRemovable() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            return Environment.isExternalStorageRemovable();
-        }
+        return Environment.isExternalStorageRemovable();
+    }
+
+    @Deprecated
+    public static boolean hasExternalCacheDir() {
         return true;
     }
 
-    public static File getExternalCacheDir(Context context) {
-        if (hasExternalCacheDir()) {
-            return context.getExternalCacheDir();
-        }
-
-        // Before Froyo we need to construct the external cache dir ourselves
-        final String cacheDir = "/Android/data/" + context.getPackageName() + "/cache/";
-        return new File(Environment.getExternalStorageDirectory().getPath() + cacheDir);
-    }
-
-    public static boolean hasExternalCacheDir() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO;
-    }
-
+    @Deprecated
     static String readFully(Reader reader) throws IOException {
         try {
             StringWriter writer = new StringWriter();
@@ -122,6 +112,7 @@ public class Utils {
      * Deletes the contents of {@code dir}. Throws an IOException if any file could not be deleted, or if {@code dir} is
      * not a readable directory.
      */
+    @Deprecated
     static void deleteContents(File dir) throws IOException {
         File[] files = dir.listFiles();
         if (files == null) {
@@ -137,6 +128,7 @@ public class Utils {
         }
     }
 
+    @Deprecated
     static void closeQuietly(/* Auto */Closeable closeable) {
         if (closeable != null) {
             try {
@@ -150,34 +142,29 @@ public class Utils {
 
     @Deprecated
     public static boolean isForeground(Context context, String activity) {
-        String topActivityName = null;
+        String topActivityName;
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final List<ActivityManager.RunningAppProcessInfo> processInfos = manager.getRunningAppProcesses();
-            topActivityName = processInfos.get(0).processName;
+        final List<ActivityManager.RunningAppProcessInfo> processInfos = manager.getRunningAppProcesses();
+        topActivityName = processInfos.get(0).processName;
 
-            UsageStatsManager mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-            long time = System.currentTimeMillis();
-            // We get usage stats for the last 10 seconds
-            List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 300, time);
-            // Sort the stats by the last time used
-            if (stats != null) {
-                SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
-                for (UsageStats usageStats : stats) {
-                    mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
-                }
-                if (mySortedMap != null && !mySortedMap.isEmpty()) {
-                    topActivityName = mySortedMap.get(mySortedMap.lastKey()).getClass().getName();
-                }
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        long time = System.currentTimeMillis();
+        // We get usage stats for the last 10 seconds
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 300, time);
+        // Sort the stats by the last time used
+        if (stats != null) {
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+            for (UsageStats usageStats : stats) {
+                mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
             }
-        } else {
-            List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
-            ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
-            topActivityName = componentInfo.getClassName();
+            if (mySortedMap != null && !mySortedMap.isEmpty()) {
+                topActivityName = mySortedMap.get(mySortedMap.lastKey()).getClass().getName();
+            }
         }
         return topActivityName.equals(activity);
     }
 
+    @Deprecated
     public static boolean isSameDay(Calendar cal1, Calendar cal2) {
         if (cal1 == null || cal2 == null) {
             throw new IllegalArgumentException("The dates must not be null");
@@ -187,15 +174,15 @@ public class Utils {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
     }
 
+    @Deprecated
     public static String formatToString(double value) {
         return String.format(Locale.ENGLISH, "%.1f", value);
     }
 
-
+    @Deprecated
     public static boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
 
     public static int bytesToInt(byte[] bytes) {
         return (((bytes[3] & 0xFF) | ((bytes[2] << 8) & 0xFF00)) | ((bytes[1] << 16) & 0xFF0000)) | ((bytes[0] << 24) & -16777216);
@@ -210,13 +197,13 @@ public class Utils {
                 (byte) value};
     }
 
-
+    @Deprecated
     public static int dpToPx(Context context, int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-
+    @Deprecated
     public static int pxToDp(Context context, int px) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
@@ -226,11 +213,12 @@ public class Utils {
         return (valueKg * 2.20462);
     }
 
+    @Deprecated
     public static double lbToKg(double valueLb) {
         return (0.453592 * valueLb);
     }
 
-
+    @Deprecated
     public static void postDelayed(final Runnable runnable, final long delay) {
         new Thread(() -> {
             try {
@@ -242,7 +230,6 @@ public class Utils {
 
         }).start();
     }
-
 
     protected static char[] encodeHex(byte[] data, char[] toDigits) {
         if (data == null)
@@ -256,7 +243,6 @@ public class Utils {
         return out;
     }
 
-
     public static String encodeHexStr(byte[] data) {
         return encodeHexStr(data, true);
     }
@@ -264,7 +250,6 @@ public class Utils {
     public static String encodeHexStr(byte[] data, boolean toLowerCase) {
         return encodeHexStr(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
     }
-
 
     protected static String encodeHexStr(byte[] data, char[] toDigits) {
         return new String(encodeHex(data, toDigits));
@@ -283,16 +268,13 @@ public class Utils {
      * @return String
      */
     public static String bytetoString(byte[] bytearray) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         char temp;
 
-        int length = bytearray.length;
-        for (int i = 0; i < length; i++) {
-            temp = (char) bytearray[i];
-            result += temp;
+        for (byte b : bytearray) {
+            temp = (char) b;
+            result.append(temp);
         }
-        return result;
+        return result.toString();
     }
-
-
 }

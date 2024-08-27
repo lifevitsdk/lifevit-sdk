@@ -1151,7 +1151,7 @@ public abstract class DfuBaseService extends IntentService {
         }
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        NotificationChannel mChannel = null;
+        NotificationChannel mChannel;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && mNotificationManager != null) {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_DFU, channelName, importance);
@@ -1167,7 +1167,6 @@ public abstract class DfuBaseService extends IntentService {
 
         return builder.build();
     }
-
 
     @Override
     public void onDestroy() {
@@ -2584,12 +2583,7 @@ public abstract class DfuBaseService extends IntentService {
         mRequestCompleted = false;
 
         sendLogBroadcast(LOG_LEVEL_VERBOSE, "Starting pairing...");
-//		if (Build.VERSION.SDK_INT >= 19) {
-//			sendLogBroadcast(LOG_LEVEL_DEBUG, "gatt.getDevice().createBond()");
-//			result = device.createBond();
-//		} else {
         result = createBondApi18(device);
-        //	}
 
         // We have to wait until device is bounded
         try {

@@ -1,7 +1,10 @@
 package es.lifevit.sdk;
 
+import static es.lifevit.sdk.LifevitSDKConstants.STATUS_CONNECTED;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -25,6 +28,16 @@ import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+
+import com.lifesense.plugin.ble.LSBluetoothManager;
+import com.lifesense.plugin.ble.OnSearchingListener;
+import com.lifesense.plugin.ble.OnSyncingListener;
+import com.lifesense.plugin.ble.data.LSConnectState;
+import com.lifesense.plugin.ble.data.LSDeviceInfo;
+import com.lifesense.plugin.ble.data.LSDeviceType;
+import com.lifesense.plugin.ble.data.LSManagerStatus;
+import com.lifesense.plugin.ble.data.LSProtocolType;
+import com.lifesense.plugin.ble.data.bpm.LSBloodPressure;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,11 +72,11 @@ import es.lifevit.sdk.listeners.LifevitSDKPillReminderListener;
 import es.lifevit.sdk.listeners.LifevitSDKTensiobraceletListener;
 import es.lifevit.sdk.listeners.LifevitSDKThermometerListener;
 import es.lifevit.sdk.listeners.LifevitSDKWeightScaleListener;
+import es.lifevit.sdk.newconnection.nordic.Aoj20fBleManager;
 import es.lifevit.sdk.pillreminder.LifevitSDKPillReminderAlarmData;
 import es.lifevit.sdk.utils.BLEAdvertisedData;
 import es.lifevit.sdk.utils.BLEUtil;
 import es.lifevit.sdk.utils.LogUtils;
-
 
 /**
  * Created by aescanuela on 26/1/16.
@@ -150,7 +163,6 @@ public class LifevitSDKManager {
     private LifevitSDKBraceletVitalListener braceletVitalListener;
     private LifevitSDKGlucometerListener glucometerListener;
 
-
     // Dispositivos conectados
     private ConcurrentHashMap<Integer, LifevitSDKBleDevice> hshDeviceByType = new ConcurrentHashMap<>();
 
@@ -175,11 +187,11 @@ public class LifevitSDKManager {
 
     private boolean mNotificationListenerStarted = false;
 
-    private HandlerThread mHandlerThread = null;
-    private HandlerThread mHandlerScansThread = null;
-    private HandlerThread mHandlerConnectThread = null;
+    private final HandlerThread mHandlerThread;
+    private final HandlerThread mHandlerScansThread;
+    private final HandlerThread mHandlerConnectThread;
     private Timer deviceDetectionTimer;
-
+    public Aoj20fBleManager aoj20fBleManager;
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public LifevitSDKManager(Context context) {
@@ -191,6 +203,8 @@ public class LifevitSDKManager {
         } else {
             context.registerReceiver(notificationReceiver, new IntentFilter(NotificationReceiverService.BROADCAST_NOTIFICATION));
         }
+
+        LSBluetoothManager.getInstance().initManager(context);
 
         mHandlerThread = new HandlerThread("HandlerThread");
         mHandlerThread.start();
@@ -206,17 +220,15 @@ public class LifevitSDKManager {
         mBluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            scan_batch_results = false;
-        } else {
-            //scan_batch_results = mBluetoothAdapter.isOffloadedScanBatchingSupported();
-        }
+        //scan_batch_results = mBluetoothAdapter.isOffloadedScanBatchingSupported();
         // Start BLE Scanner
         initializeBleScanner();
 
         initCallbacks();
 
         mContext = context;
+
+        aoj20fBleManager = new Aoj20fBleManager(mContext);
 
         // No conectar automaticamente pulsera
         // checkBracelet();
@@ -343,15 +355,12 @@ public class LifevitSDKManager {
         return LogUtils.setLogLevel(logLevel);
     }
 
-
     // -------------------------- Public Methods ----------------------- //
-
 
     public void connectDevice(int deviceType, long scanPeriod) {
 //        LogUtils.log(Log.DEBUG, CLASS_TAG, "connectDevice. deviceType = " + LogUtils.getDeviceNameByType(deviceType) + ", scanPeriod: " + scanPeriod);
         connectDevice(deviceType, scanPeriod, null);
     }
-
 
     public void connectDevice(final int deviceType, final long scanPeriod, final String address) {
 
@@ -437,7 +446,7 @@ public class LifevitSDKManager {
 
                 LifevitScanResult bestResult = null;
                 for (LifevitScanResult result : detectedDevices) {
-                    if (uuid != null && uuid.length() > 0) {
+                    if (uuid != null && !uuid.isEmpty()) {
                         //Conectamos solo a UUID
                         if (result.getDevice().getAddress().equalsIgnoreCase(uuid)) {
                             bestResult = result;
@@ -457,7 +466,7 @@ public class LifevitSDKManager {
                     synchronized (lock) {
                         LogUtils.log(Log.DEBUG, CLASS_TAG, "[CHECK ScanningQueue]" + printScanningQueue());
                         if (hshConnectingDevices.get(type) == null) {
-                            boolean connecting = connect(bestResult.device);
+                            boolean connecting = connect(bestResult);
                             if (connecting) {
                                 hshConnectingDevices.put(type, bestResult.device.getAddress());
 
@@ -493,15 +502,15 @@ public class LifevitSDKManager {
         }
     }
 
-
     private boolean checkIfCanStartScan(int deviceType) {
 
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 
             // Return NO permissions
-            if (deviceListeners.size() > 0) {
+            if (!deviceListeners.isEmpty()) {
                 ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);
                 for (LifevitSDKDeviceListener deviceListener : listeners) {
                     deviceListener.deviceOnConnectionError(deviceType, LifevitSDKConstants.CODE_LOCATION_DISABLED);
@@ -518,7 +527,7 @@ public class LifevitSDKManager {
         // displays a dialog requesting user permission to enable Bluetooth.
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
 
-            if (deviceListeners.size() > 0) {
+            if (!deviceListeners.isEmpty()) {
                 ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);
                 for (LifevitSDKDeviceListener deviceListener : listeners) {
                     deviceListener.deviceOnConnectionError(deviceType, LifevitSDKConstants.CODE_BLUETOOTH_DISABLED);
@@ -531,7 +540,7 @@ public class LifevitSDKManager {
         }
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && LifevitSDKConstants.CHECK_GPS) {
+        if (LifevitSDKConstants.CHECK_GPS) {
 
             LocationManager lm = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
             boolean gps_enabled = false;
@@ -566,6 +575,125 @@ public class LifevitSDKManager {
         return true;
     }
 
+    public interface BPM260ConnectionListener {
+        void statusChanged(int status);
+        void onMeasurementFinish(int systolic, int diastolic, int pulse);
+    }
+
+    public void connectToBPM260(Activity activity, String mac, BPM260ConnectionListener listener) {
+
+        LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
+        List<LSDeviceType> types = new ArrayList<>();
+        types.add(LSDeviceType.BloodPressureMeter);
+        if(mac != null) {
+            LSDeviceInfo lsDevice = new LSDeviceInfo();
+            lsDevice.setProtocolType(LSProtocolType.Standard.toString());
+            lsDevice.setBroadcastID(mac.replace(":", ""));
+            lsDevice.setMacAddress(mac);
+            lsDevice.setDeviceType(LSDeviceType.BloodPressureMeter.toString());
+            List<LSDeviceInfo> devices = new ArrayList<>();
+            devices.add(lsDevice);
+            lifesenseManager.setDevices(devices);
+        }
+
+
+        if(lifesenseManager.getManagerStatus() == LSManagerStatus.Free) {
+            listener.statusChanged(LifevitSDKConstants.STATUS_SCANNING);
+            lifesenseManager.searchDevice(types, new OnSearchingListener() {
+                @Override
+                public void onSearchResults(LSDeviceInfo lsDeviceInfo) {
+
+                    final IntentFilter bondFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
+                    BroadcastReceiver mBondStateBroadcastReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(final Context context, final Intent intent) {
+                            // Obtain the device and check it this is the one that we are connected to
+                            final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                            // Read bond state
+                            final int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
+                            if (bondState == BluetoothDevice.BOND_BONDED) {
+                                connectAndReadDataBPM260(lsDeviceInfo, listener);
+                            }
+                        }
+                    };
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        activity.registerReceiver(mBondStateBroadcastReceiver, bondFilter, Context.RECEIVER_EXPORTED);
+                    } else {
+                        activity.registerReceiver(mBondStateBroadcastReceiver, bondFilter);
+                    }
+                    connectAndReadDataBPM260(lsDeviceInfo, listener);
+                }
+            });
+        } else {
+            disconnectBPM260();
+            listener.statusChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
+            connectToBPM260(activity, mac, listener);
+        }
+    }
+
+    private void connectAndReadDataBPM260(LSDeviceInfo lsDeviceInfo, BPM260ConnectionListener listener) {
+        LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
+        lifesenseManager.stopSearch();
+        lifesenseManager.addDevice(lsDeviceInfo);
+        //State detection to avoid repeated calls to the interface
+        if(lifesenseManager.getManagerStatus() == LSManagerStatus.Free) {
+            //allow
+            lifesenseManager.startDeviceSync(new OnSyncingListener() {
+                @Override
+                public void onStateChanged(String s, LSConnectState lsConnectState) {
+                    switch (lsConnectState) {
+                        case Connecting, GattConnected -> listener.statusChanged(LifevitSDKConstants.STATUS_CONNECTING);
+                        case Disconnect, ConnectFailure, RequestDisconnect -> listener.statusChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
+                        case ConnectSuccess -> {
+                            listener.statusChanged(STATUS_CONNECTED);
+                        }
+                    }
+                }
+
+                @Override
+                public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
+                    listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
+                    disconnectBPM260();
+                }
+            });
+        } else if(lifesenseManager.getManagerStatus() == LSManagerStatus.Syncing) {
+            lifesenseManager.stopDeviceSync();
+        }
+    }
+
+    public void disconnectBPM260() {
+        LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
+        lifesenseManager.stopSearch();
+        lifesenseManager.stopDiscovery();
+        lifesenseManager.stopDeviceSync();
+    }
+
+    public enum ThermometerModes {
+        MODE_ADULT(1), MODEL_KID(2), MODEL_EAR(3), MODEL_OBJECTS(4);
+        private final int value; ThermometerModes(int value) {this.value = value;} public int getValue() {return value;}
+    }
+
+    public interface Aoj20fConnectionListener {
+        void statusChanged(int status);
+        void onMeasurementTaken(Double temperate, ThermometerModes mode);
+    }
+
+    public void connectToAoj20f(Aoj20fConnectionListener listener) {
+
+        if(aoj20fBleManager.isDeviceConnected()) {
+            disconnectAoj20f();
+        }
+        listener.statusChanged(LifevitSDKConstants.STATUS_SCANNING);
+        aoj20fBleManager.connectToThermomether(listener);
+    }
+
+    public void disconnectAoj20f() {
+        aoj20fBleManager.stopScan();
+        aoj20fBleManager.disconnectAllDevices();
+    }
 
     public void disconnectDevice(int deviceType) {
 
@@ -589,11 +717,9 @@ public class LifevitSDKManager {
         }
     }
 
-
     private LifevitSDKBleDevice getDeviceByType(int deviceType) {
         return hshDeviceByType.get(deviceType);
     }
-
 
     private UUID[] getDeviceUUIDs(int deviceType) {
         switch (deviceType) {
@@ -627,7 +753,7 @@ public class LifevitSDKManager {
 
     public boolean isDeviceConnected(int deviceType) {
         LifevitSDKBleDevice device = getDeviceByType(deviceType);
-        boolean result = device != null && device.getDeviceStatus() == LifevitSDKConstants.STATUS_CONNECTED;
+        boolean result = device != null && device.getDeviceStatus() == STATUS_CONNECTED;
         LogUtils.log(Log.DEBUG, CLASS_TAG, "[isDeviceConnected] deviceType = " + LogUtils.getDeviceNameByType(deviceType) + ", device object: " + device + " ==> is connected? " + result);
         return result;
     }
@@ -655,70 +781,66 @@ public class LifevitSDKManager {
 
 
     private void initializeBleScanner() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (mBluetoothAdapter != null) {
-                mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            }
+        if (mBluetoothAdapter != null) {
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
         }
     }
 
 
     @SuppressLint("NewApi")
     private void initCallbacks() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mNewScanCallback = new ScanCallback() {
-                @Override
-                public void onScanResult(final int callbackType, final ScanResult result) {
-                    new Handler(mHandlerScansThread.getLooper()).post(() -> {
-                        if (hshDetectedDevices.size() == 0) {
-                            stopLeScan();
-                            cleanConnectingData();
-                            return;
-                        }
-                        BluetoothDevice btDevice = result.getDevice();
+        mNewScanCallback = new ScanCallback() {
+            @Override
+            public void onScanResult(final int callbackType, final ScanResult result) {
+                new Handler(mHandlerScansThread.getLooper()).post(() -> {
+                    if (hshDetectedDevices.isEmpty()) {
+                        stopLeScan();
+                        cleanConnectingData();
+                        return;
+                    }
+                    BluetoothDevice btDevice = result.getDevice();
 
-                        if (btDevice == null) {
-                            LogUtils.log(Log.ERROR, CLASS_TAG, "btDevice is NULL!!");
-                            return;
-                        }
-                        LogUtils.log(Log.DEBUG, CLASS_TAG, "[New scan] onScanResult: " + LogUtils.getCallbackTypeName(callbackType) + ", RSSI: " + result.getRssi() + " , NAME: " + btDevice.getName());
+                    if (btDevice == null) {
+                        LogUtils.log(Log.ERROR, CLASS_TAG, "btDevice is NULL!!");
+                        return;
+                    }
+                    LogUtils.log(Log.DEBUG, CLASS_TAG, "[New scan] onScanResult: " + LogUtils.getCallbackTypeName(callbackType) + ", RSSI: " + result.getRssi() + " , NAME: " + btDevice.getName());
 
 
-                        String deviceName = result.getDevice().getName();
-                        String bAdData = "";
-                        final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(result.getScanRecord().getBytes());
-                        if (badata != null) {
-                            bAdData = badata.getName();
-                        }
-                        if (deviceName == null) {
-                            deviceName = badata.getName();
-                        }
-
-                        if (deviceName != null) {
-
-                            addToDetectedDevice(new LifevitScanResult(deviceName, bAdData, result.getRssi(), result.getDevice()));
-                        }
-                    });
-
-                }
-
-                @Override
-                public void onBatchScanResults(List<ScanResult> results) {
-                    LogUtils.log(Log.DEBUG, CLASS_TAG, "onBatchScanResults - Results: " + results.size());
-                    for (ScanResult scanResult : results) {
-                        LogUtils.log(Log.DEBUG, CLASS_TAG, "     * Address:" + scanResult.getDevice().getAddress() + ", name: " + scanResult.getDevice().getName());
-                        onScanResult(0, scanResult);
+                    String deviceName = result.getDevice().getName();
+                    String bAdData = "";
+                    final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(result.getScanRecord().getBytes());
+                    if (badata != null) {
+                        bAdData = badata.getName();
+                    }
+                    if (deviceName == null) {
+                        deviceName = badata.getName();
                     }
 
-                    checkDetectedDevices();
+                    if (deviceName != null) {
+
+                        addToDetectedDevice(new LifevitScanResult(deviceName, bAdData, result.getRssi(), result.getDevice()));
+                    }
+                });
+
+            }
+
+            @Override
+            public void onBatchScanResults(List<ScanResult> results) {
+                LogUtils.log(Log.DEBUG, CLASS_TAG, "onBatchScanResults - Results: " + results.size());
+                for (ScanResult scanResult : results) {
+                    LogUtils.log(Log.DEBUG, CLASS_TAG, "     * Address:" + scanResult.getDevice().getAddress() + ", name: " + scanResult.getDevice().getName());
+                    onScanResult(0, scanResult);
                 }
 
-                @Override
-                public void onScanFailed(int errorCode) {
-                    LogUtils.log(Log.ERROR, CLASS_TAG, "onScanFailed - Error Code: " + errorCode);
-                }
-            };
-        }
+                checkDetectedDevices();
+            }
+
+            @Override
+            public void onScanFailed(int errorCode) {
+                LogUtils.log(Log.ERROR, CLASS_TAG, "onScanFailed - Error Code: " + errorCode);
+            }
+        };
     }
 
     private void addToDetectedDevice(final LifevitScanResult result) {
@@ -734,8 +856,7 @@ public class LifevitSDKManager {
 
         int deviceType = LifevitSDKConstants.DEVICE_OTHERS;
         if (dName != null) {
-            if (LifevitSDKBleDeviceTensiometer.isTensiometerDevice(dName)
-                    || LifevitSDKBleDeviceTensiometerV2.isNewTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerV3.isNewTensiometerDevice(dName)) {
+            if (LifevitSDKBleDeviceTensiometer.isTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerV2.isNewTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerV3.isNewTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerBPM260.isTensiometerBPM260Device(dName)) {
                 deviceType = LifevitSDKConstants.DEVICE_TENSIOMETER;
             } else if (LifevitSDKBleDeviceBraceletAT500HR.isAt500HrBraceletDevice(dName)) {
                 deviceType = LifevitSDKConstants.DEVICE_BRACELET_AT500HR;
@@ -772,7 +893,7 @@ public class LifevitSDKManager {
                         if (uuid != null && uuid.equalsIgnoreCase(result.getDevice().getAddress())) {
                             //connect(result.getDevice());
                             if (hshConnectingDevices.get(deviceType) == null) {
-                                boolean connecting = connect(result.getDevice());
+                                boolean connecting = connect(result);
                                 if (connecting) {
                                     hshConnectingDevices.put(deviceType, result.getDevice().getAddress());
                                 }
@@ -786,7 +907,7 @@ public class LifevitSDKManager {
         }
 
         if (!hshAllDevicesFound.containsKey(deviceType)) {
-            hshAllDevicesFound.put(deviceType, new ArrayList<LifevitSDKDeviceScanData>());
+            hshAllDevicesFound.put(deviceType, new ArrayList<>());
         }
         List<LifevitSDKDeviceScanData> detectedDevices = hshAllDevicesFound.get(deviceType);
         boolean alreadyAdded = false;
@@ -804,32 +925,28 @@ public class LifevitSDKManager {
         }
     }
 
+    private BluetoothAdapter.LeScanCallback mOldScanCallback = (device, rssi, scanRecord) -> {
 
-    private BluetoothAdapter.LeScanCallback mOldScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
-
-            if (hshDetectedDevices.size() == 0) {
-                stopLeScan();
-                cleanConnectingData();
-                return;
-            }
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "[Old scan] RSSI: " + rssi + ", deviceName: " + device.getName());
-
-            // We are going to wait some time to find the nearest device
-            final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(scanRecord);
-            String deviceName = device.getName();
-            String bAdName = badata != null ? badata.getName() : deviceName;
-            if (deviceName == null) {
-                deviceName = bAdName;
-            }
-            LifevitScanResult scanResult = new LifevitScanResult(deviceName, bAdName, rssi, device);
-
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "[RSSI] Current result RSSI: " + scanResult.getRssi() + " from " + scanResult.getDevice().getAddress());
-
-            addToDetectedDevice(scanResult);
-
+        if (hshDetectedDevices.size() == 0) {
+            stopLeScan();
+            cleanConnectingData();
+            return;
         }
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[Old scan] RSSI: " + rssi + ", deviceName: " + device.getName());
+
+        // We are going to wait some time to find the nearest device
+        final BLEAdvertisedData badata = BLEUtil.parseAdertisedData(scanRecord);
+        String deviceName = device.getName();
+        String bAdName = badata != null ? badata.getName() : deviceName;
+        if (deviceName == null) {
+            deviceName = bAdName;
+        }
+        LifevitScanResult scanResult = new LifevitScanResult(deviceName, bAdName, rssi, device);
+
+        LogUtils.log(Log.DEBUG, CLASS_TAG, "[RSSI] Current result RSSI: " + scanResult.getRssi() + " from " + scanResult.getDevice().getAddress());
+
+        addToDetectedDevice(scanResult);
+
     };
 
 
@@ -843,14 +960,8 @@ public class LifevitSDKManager {
                 mScanning = false;
                 LogUtils.log(Log.INFO, CLASS_TAG, "[stopLeScan]");
 
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    if (mBluetoothAdapter != null) {
-                        mBluetoothAdapter.stopLeScan(mOldScanCallback);
-                    }
-                } else {
-                    if (mLEScanner != null) {
-                        mLEScanner.stopScan(mNewScanCallback);
-                    }
+                if (mLEScanner != null) {
+                    mLEScanner.stopScan(mNewScanCallback);
                 }
 
                 hshAllDevicesFound.clear();
@@ -886,48 +997,38 @@ public class LifevitSDKManager {
         LogUtils.log(Log.DEBUG, CLASS_TAG, "startLeScan. serviceUuids = " + serviceUuids + ", filterByUUIDs: " + filterByUUIDs + ", userStarted: " + userStarted);
         LogUtils.log(Log.INFO, CLASS_TAG, "[connection] startLeScan");
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            LogUtils.log(Log.DEBUG, CLASS_TAG, "old scan");
+        ScanSettings.Builder builder = new ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER);
 
-            mBluetoothAdapter.startLeScan(mOldScanCallback);
+        builder.setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES);
+        builder.setMatchMode(ScanSettings.MATCH_MODE_STICKY);
 
+        if (scan_batch_results) {
+            builder.setReportDelay(DETECTION_TIME_MILLIS);
+        }
+        ScanSettings settings = builder.build();
+
+        List<ScanFilter> filters = new ArrayList<>();
+        if (serviceUuids != null && serviceUuids.length > 0 && filterByUUIDs) {
+            // Note scan filter does not support matching an UUID array so we put one
+            // UUID to hardware and match the whole array in callback.
+            ScanFilter filter = new ScanFilter.Builder().setServiceUuid(
+                    new ParcelUuid(serviceUuids[0])).build();
+            filters.add(filter);
+        }
+
+        if (mLEScanner != null && mNewScanCallback != null) {
+
+            //if (filters.size() > 0) {
+            mLEScanner.startScan(filters, settings, mNewScanCallback);
+            /*} else {
+                mLEScanner.startScan(mNewScanCallback);
+            }*/
         } else {
 
-            ScanSettings.Builder builder = new ScanSettings.Builder()
-                    .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER);
+            LogUtils.log(Log.ERROR, CLASS_TAG, "Error in startLeScan: mLEScanner is null.");
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                builder.setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES);
-                builder.setMatchMode(ScanSettings.MATCH_MODE_STICKY);
-            }
-
-            if (scan_batch_results) {
-                builder.setReportDelay(DETECTION_TIME_MILLIS);
-            }
-            ScanSettings settings = builder.build();
-
-            List<ScanFilter> filters = new ArrayList<>();
-            if (serviceUuids != null && serviceUuids.length > 0 && filterByUUIDs) {
-                // Note scan filter does not support matching an UUID array so we put one
-                // UUID to hardware and match the whole array in callback.
-                ScanFilter filter = new ScanFilter.Builder().setServiceUuid(
-                        new ParcelUuid(serviceUuids[0])).build();
-                filters.add(filter);
-            }
-
-            if (mLEScanner != null && mNewScanCallback != null) {
-
-                //if (filters.size() > 0) {
-                mLEScanner.startScan(filters, settings, mNewScanCallback);
-                /*} else {
-                    mLEScanner.startScan(mNewScanCallback);
-                }*/
-            } else {
-
-                LogUtils.log(Log.ERROR, CLASS_TAG, "Error in startLeScan: mLEScanner is null.");
-
-                initializeBleScanner();
-            }
+            initializeBleScanner();
         }
     }
 
@@ -935,73 +1036,77 @@ public class LifevitSDKManager {
     // -------------------------- Device Connection Methods ----------------------- //
 
 
-    private boolean connect(BluetoothDevice device) {
+    private boolean connect(LifevitScanResult scanResult) {
 
-        LogUtils.log(Log.INFO, CLASS_TAG, "[connect] device = " + device);
+        LogUtils.log(Log.INFO, CLASS_TAG, "[connect] device = " + scanResult);
 
-        if (device != null) {
+        if (scanResult != null) {
 
             LifevitSDKBleDevice bleDevice = null;
 
-            if (LifevitSDKBleDeviceTensiometer.isTensiometerDevice(device.getName())) {
+            if (LifevitSDKBleDeviceTensiometer.isTensiometerDevice(scanResult.getName())) {
 
-                bleDevice = new LifevitSDKBleDeviceTensiometer(device, this);
+                bleDevice = new LifevitSDKBleDeviceTensiometer(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceTensiometerV2.isNewTensiometerDevice(device.getName()) /*&& !mIsConnecting*/) {
+            } else if (LifevitSDKBleDeviceTensiometerV2.isNewTensiometerDevice(scanResult.getName()) /*&& !mIsConnecting*/) {
 
-                bleDevice = new LifevitSDKBleDeviceTensiometerV2(device, this);
+                bleDevice = new LifevitSDKBleDeviceTensiometerV2(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceTensiometerV3.isNewTensiometerDevice(device.getName()) /*&& !mIsConnecting*/) {
+            } else if (LifevitSDKBleDeviceTensiometerV3.isNewTensiometerDevice(scanResult.getName()) /*&& !mIsConnecting*/) {
 
-                bleDevice = new LifevitSDKBleDeviceTensiometerV3(device, this);
+                bleDevice = new LifevitSDKBleDeviceTensiometerV3(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceBraceletAT500HR.matchDevice(device)) {
+            } else if (LifevitSDKBleDeviceTensiometerBPM260.isTensiometerBPM260Device(scanResult.getName()) /*&& !mIsConnecting*/) {
 
-                bleDevice = new LifevitSDKBleDeviceBraceletAT500HR(device, this);
+                bleDevice = new LifevitSDKBleDeviceTensiometerBPM260(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceBraceletVital.matchDevice(device)) {
+            } else if (LifevitSDKBleDeviceBraceletAT500HR.matchDevice(scanResult.device)) {
 
-                bleDevice = new LifevitSDKBleDeviceBraceletVital(device, this);
+                bleDevice = new LifevitSDKBleDeviceBraceletAT500HR(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceBraceletAT250.matchDevice(device)) {
+            } else if (LifevitSDKBleDeviceBraceletVital.matchDevice(scanResult.device)) {
 
-                bleDevice = new LifevitSDKBleDeviceBraceletAT250(device, this);
+                bleDevice = new LifevitSDKBleDeviceBraceletVital(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceOximeter.isOximeterDevice(device.getName())) {
+            } else if (LifevitSDKBleDeviceBraceletAT250.matchDevice(scanResult.device)) {
 
-                bleDevice = new LifevitSDKBleDeviceOximeter(device, this);
+                bleDevice = new LifevitSDKBleDeviceBraceletAT250(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceTensiobracelet.matchDevice(device)) {
+            } else if (LifevitSDKBleDeviceOximeter.isOximeterDevice(scanResult.getName())) {
 
-                bleDevice = new LifevitSDKBleDeviceTensiobracelet(device, this);
+                bleDevice = new LifevitSDKBleDeviceOximeter(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceThermometer.isThermometerDevice(device.getName())) {
+            } else if (LifevitSDKBleDeviceTensiobracelet.matchDevice(scanResult.device)) {
 
-                bleDevice = new LifevitSDKBleDeviceThermometer(device, this);
+                bleDevice = new LifevitSDKBleDeviceTensiobracelet(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceThermometerV2.isThermometerDevice(device.getName())) {
+            } else if (LifevitSDKBleDeviceThermometer.isThermometerDevice(scanResult.getName())) {
 
-                bleDevice = new LifevitSDKBleDeviceThermometerV2(device, this);
+                bleDevice = new LifevitSDKBleDeviceThermometer(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceWeightScale.isWeightScaleDevice(device.getName())) {
+            } else if (LifevitSDKBleDeviceThermometerV2.isThermometerDevice(scanResult.getName())) {
 
-                bleDevice = new LifevitSDKBleDeviceWeightScale(device, this);
+                bleDevice = new LifevitSDKBleDeviceThermometerV2(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceBabyTempBT125.isBabyTempDevice(device.getName())) {
+            } else if (LifevitSDKBleDeviceWeightScale.isWeightScaleDevice(scanResult.getName())) {
 
-                bleDevice = new LifevitSDKBleDeviceBabyTempBT125(device, this);
+                bleDevice = new LifevitSDKBleDeviceWeightScale(scanResult.device, this);
 
-            } else if (LifevitSDKBleDeviceBraceletAT250FirmwareUpdater.matchDevice(device)) {
+            } else if (LifevitSDKBleDeviceBabyTempBT125.isBabyTempDevice(scanResult.getName())) {
 
-                bleDevice = new LifevitSDKBleDeviceBraceletAT250FirmwareUpdater(device, this);
+                bleDevice = new LifevitSDKBleDeviceBabyTempBT125(scanResult.device, this);
 
-            } else if (LifevitSDKBleDevicePillReminder.matchDevice(device)) {
+            } else if (LifevitSDKBleDeviceBraceletAT250FirmwareUpdater.matchDevice(scanResult.device)) {
 
-                bleDevice = new LifevitSDKBleDevicePillReminder(device, this);
+                bleDevice = new LifevitSDKBleDeviceBraceletAT250FirmwareUpdater(scanResult.device, this);
 
-            }else if (LifevitSDKBleDeviceGlucometer.matchDevice(device)) {
+            } else if (LifevitSDKBleDevicePillReminder.matchDevice(scanResult.device)) {
 
-                bleDevice = new LifevitSDKBleDeviceGlucometer(device, this);
+                bleDevice = new LifevitSDKBleDevicePillReminder(scanResult.device, this);
+
+            }else if (LifevitSDKBleDeviceGlucometer.matchDevice(scanResult.device)) {
+
+                bleDevice = new LifevitSDKBleDeviceGlucometer(scanResult.device, this);
             }
 
             if (bleDevice != null) {
@@ -1050,7 +1155,7 @@ public class LifevitSDKManager {
             }
         }
 
-        if (deviceStatus == LifevitSDKConstants.STATUS_CONNECTED) {
+        if (deviceStatus == STATUS_CONNECTED) {
 
             LogUtils.log(Log.DEBUG, CLASS_TAG, "(device is connected!), deviceToConnect: " + LogUtils.getDeviceNameByType(deviceType));
 

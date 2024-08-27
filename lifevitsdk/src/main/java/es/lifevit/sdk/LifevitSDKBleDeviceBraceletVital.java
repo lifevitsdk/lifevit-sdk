@@ -2473,10 +2473,9 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         bytes[0] = Constants.REQUEST_SCREEN_NOTIF;
         bytes[1] = (byte) data.getType().value;
 
-        byte[] bText = data.getText().getBytes();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            bText = data.getText().getBytes(StandardCharsets.UTF_8);
-        }
+        data.getText().getBytes();
+        byte[] bText;
+        bText = data.getText().getBytes(StandardCharsets.UTF_8);
         int length = Math.min(60, bText.length);
         bytes[2] = (byte) 60;
         for (int i = 0; i < length; i++) {
@@ -2484,9 +2483,7 @@ public class LifevitSDKBleDeviceBraceletVital extends LifevitSDKBleDevice {
         }
 
         byte[] bText2 = data.getContact().getBytes();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            bText2 = data.getContact().getBytes(StandardCharsets.UTF_8);
-        }
+        bText2 = data.getContact().getBytes(StandardCharsets.UTF_8);
         int length2 = Math.min(60, bText2.length);
         bytes[63] = (byte) 60;
         for (int i = 0; i < length2; i++) {

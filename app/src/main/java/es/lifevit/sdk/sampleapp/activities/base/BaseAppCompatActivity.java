@@ -107,7 +107,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     public void requestPermission(View main, String permission, int requestCode, int errorMessage, boolean indefinite, RequestAcceptListener listener) {
         requestAcceptListener = listener;
 
-        if (Build.VERSION.SDK_INT < 23 || ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             requestAcceptListener.onRequestAccepted(true);
         } else {
             // Should we show an explanation?
@@ -144,7 +144,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             allGranted = allGranted && ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
         }
 
-        if (Build.VERSION.SDK_INT < 23 || allGranted) {
+        if (allGranted) {
             requestAcceptListener.onRequestAccepted(true);
         } else {
             boolean shouldRequestPermission = true;
@@ -223,22 +223,17 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
         if (isLocked != show) {
             isLocked = show;
             if (mProgressView != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-                    int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                    mProgressView.animate().setDuration(shortAnimTime).alpha(
-                            show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                            mProgressView.requestFocus();
-                        }
-                    });
-                } else {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                    mProgressView.requestFocus();
-                }
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mProgressView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                        mProgressView.requestFocus();
+                    }
+                });
             }
         }
     }

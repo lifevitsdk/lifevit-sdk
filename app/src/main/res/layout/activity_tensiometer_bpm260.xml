@@ -17,6 +17,7 @@
 
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,23 +31,25 @@
             android:text="Connection result: " />
 
         <TextView
-            android:id="@+id/connection_result"
+            android:id="@+id/result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="---" />
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/command"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="send command" />
 
     <LinearLayout
+        android:id="@+id/measurement_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <Button
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start measurement" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -61,7 +64,26 @@
                 android:text="Measurement State: " />
 
             <TextView
-                android:id="@+id/measurement_info"
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Result Systolic: " />
+
+            <TextView
+                android:id="@+id/systolic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="---" />
@@ -78,10 +100,28 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Result: " />
+                android:text="Result Diastolic: " />
 
             <TextView
-                android:id="@+id/measurement_result"
+                android:id="@+id/diastolic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Result Pulse: " />
+
+            <TextView
+                android:id="@+id/pulse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="---" />
