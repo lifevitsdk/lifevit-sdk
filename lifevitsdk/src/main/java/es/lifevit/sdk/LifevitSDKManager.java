@@ -72,7 +72,7 @@ import es.lifevit.sdk.listeners.LifevitSDKPillReminderListener;
 import es.lifevit.sdk.listeners.LifevitSDKTensiobraceletListener;
 import es.lifevit.sdk.listeners.LifevitSDKThermometerListener;
 import es.lifevit.sdk.listeners.LifevitSDKWeightScaleListener;
-import es.lifevit.sdk.newconnection.nordic.Aoj20fBleManager;
+import es.lifevit.sdk.newconnection.nordic.KelvinPlusBleManager;
 import es.lifevit.sdk.pillreminder.LifevitSDKPillReminderAlarmData;
 import es.lifevit.sdk.utils.BLEAdvertisedData;
 import es.lifevit.sdk.utils.BLEUtil;
@@ -191,7 +191,7 @@ public class LifevitSDKManager {
     private final HandlerThread mHandlerScansThread;
     private final HandlerThread mHandlerConnectThread;
     private Timer deviceDetectionTimer;
-    public Aoj20fBleManager aoj20fBleManager;
+    public KelvinPlusBleManager kelvinPlusBleManager;
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public LifevitSDKManager(Context context) {
@@ -228,7 +228,7 @@ public class LifevitSDKManager {
 
         mContext = context;
 
-        aoj20fBleManager = new Aoj20fBleManager(mContext);
+        kelvinPlusBleManager = new KelvinPlusBleManager(mContext);
 
         // No conectar automaticamente pulsera
         // checkBracelet();
@@ -580,6 +580,11 @@ public class LifevitSDKManager {
         void onMeasurementFinish(int systolic, int diastolic, int pulse);
     }
 
+    public interface BPM300ConnectionListener {
+        void statusChanged(int status);
+        void onMeasurementFinish(int systolic, int diastolic, int pulse);
+    }
+
     public void connectToBPM260(Activity activity, String mac, BPM260ConnectionListener listener) {
 
         LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
@@ -671,28 +676,119 @@ public class LifevitSDKManager {
         lifesenseManager.stopDeviceSync();
     }
 
+    public void connectToBPM300(Activity activity, String mac, BPM300ConnectionListener listener) {
+
+        LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
+        List<LSDeviceType> types = new ArrayList<>();
+        types.add(LSDeviceType.BloodPressureMeter);
+        if(mac != null) {
+            LSDeviceInfo lsDevice = new LSDeviceInfo();
+            lsDevice.setProtocolType(LSProtocolType.Standard.toString());
+            lsDevice.setBroadcastID(mac.replace(":", ""));
+            lsDevice.setMacAddress(mac);
+            lsDevice.setDeviceType(LSDeviceType.BloodPressureMeter.toString());
+            List<LSDeviceInfo> devices = new ArrayList<>();
+            devices.add(lsDevice);
+            lifesenseManager.setDevices(devices);
+        }
+
+
+        if(lifesenseManager.getManagerStatus() == LSManagerStatus.Free) {
+            listener.statusChanged(LifevitSDKConstants.STATUS_SCANNING);
+            lifesenseManager.searchDevice(types, new OnSearchingListener() {
+                @Override
+                public void onSearchResults(LSDeviceInfo lsDeviceInfo) {
+
+                    final IntentFilter bondFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
+                    BroadcastReceiver mBondStateBroadcastReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(final Context context, final Intent intent) {
+                            // Obtain the device and check it this is the one that we are connected to
+                            final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                            // Read bond state
+                            final int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
+                            if (bondState == BluetoothDevice.BOND_BONDED) {
+                                connectAndReadDataBPM300(lsDeviceInfo, listener);
+                            }
+                        }
+                    };
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        activity.registerReceiver(mBondStateBroadcastReceiver, bondFilter, Context.RECEIVER_EXPORTED);
+                    } else {
+                        activity.registerReceiver(mBondStateBroadcastReceiver, bondFilter);
+                    }
+                    connectAndReadDataBPM300(lsDeviceInfo, listener);
+                }
+            });
+        } else {
+            disconnectBPM300();
+            listener.statusChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
+            connectToBPM300(activity, mac, listener);
+        }
+    }
+
+    private void connectAndReadDataBPM300(LSDeviceInfo lsDeviceInfo, BPM300ConnectionListener listener) {
+        LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
+        lifesenseManager.stopSearch();
+        lifesenseManager.addDevice(lsDeviceInfo);
+        //State detection to avoid repeated calls to the interface
+        if(lifesenseManager.getManagerStatus() == LSManagerStatus.Free) {
+            //allow
+            lifesenseManager.startDeviceSync(new OnSyncingListener() {
+                @Override
+                public void onStateChanged(String s, LSConnectState lsConnectState) {
+                    switch (lsConnectState) {
+                        case Connecting, GattConnected -> listener.statusChanged(LifevitSDKConstants.STATUS_CONNECTING);
+                        case Disconnect, ConnectFailure, RequestDisconnect -> listener.statusChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
+                        case ConnectSuccess -> {
+                            listener.statusChanged(STATUS_CONNECTED);
+                        }
+                    }
+                }
+
+                @Override
+                public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
+                    listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
+                    disconnectBPM300();
+                }
+            });
+        } else if(lifesenseManager.getManagerStatus() == LSManagerStatus.Syncing) {
+            lifesenseManager.stopDeviceSync();
+        }
+    }
+
+    public void disconnectBPM300() {
+        LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
+        lifesenseManager.stopSearch();
+        lifesenseManager.stopDiscovery();
+        lifesenseManager.stopDeviceSync();
+    }
+
     public enum ThermometerModes {
-        MODE_ADULT(1), MODEL_KID(2), MODEL_EAR(3), MODEL_OBJECTS(4);
+        MODE_ADULT(1), MODE_KID(2), MODE_EAR(3), MODE_OBJECTS(4);
         private final int value; ThermometerModes(int value) {this.value = value;} public int getValue() {return value;}
     }
 
-    public interface Aoj20fConnectionListener {
+    public interface KelvinPlusConnectionListener {
         void statusChanged(int status);
         void onMeasurementTaken(Double temperate, ThermometerModes mode);
     }
 
-    public void connectToAoj20f(Aoj20fConnectionListener listener) {
+    public void connectToKelvinPlus(KelvinPlusConnectionListener listener) {
 
-        if(aoj20fBleManager.isDeviceConnected()) {
-            disconnectAoj20f();
+        if(kelvinPlusBleManager.isDeviceConnected()) {
+            disconnectKelvinPlus();
         }
         listener.statusChanged(LifevitSDKConstants.STATUS_SCANNING);
-        aoj20fBleManager.connectToThermomether(listener);
+        kelvinPlusBleManager.connectToThermomether(listener);
     }
 
-    public void disconnectAoj20f() {
-        aoj20fBleManager.stopScan();
-        aoj20fBleManager.disconnectAllDevices();
+    public void disconnectKelvinPlus() {
+        kelvinPlusBleManager.stopScan();
+        kelvinPlusBleManager.disconnectAllDevices();
     }
 
     public void disconnectDevice(int deviceType) {
@@ -856,7 +952,7 @@ public class LifevitSDKManager {
 
         int deviceType = LifevitSDKConstants.DEVICE_OTHERS;
         if (dName != null) {
-            if (LifevitSDKBleDeviceTensiometer.isTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerV2.isNewTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerV3.isNewTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerBPM260.isTensiometerBPM260Device(dName)) {
+            if (LifevitSDKBleDeviceTensiometer.isTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerV2.isNewTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerV3.isNewTensiometerDevice(dName) || LifevitSDKBleDeviceTensiometerBPM260.isTensiometerBPM260Device(dName) || LifevitSDKBleDeviceTensiometerBPM300.isTensiometerBPM300Device(dName)) {
                 deviceType = LifevitSDKConstants.DEVICE_TENSIOMETER;
             } else if (LifevitSDKBleDeviceBraceletAT500HR.isAt500HrBraceletDevice(dName)) {
                 deviceType = LifevitSDKConstants.DEVICE_BRACELET_AT500HR;
@@ -1059,6 +1155,10 @@ public class LifevitSDKManager {
             } else if (LifevitSDKBleDeviceTensiometerBPM260.isTensiometerBPM260Device(scanResult.getName()) /*&& !mIsConnecting*/) {
 
                 bleDevice = new LifevitSDKBleDeviceTensiometerBPM260(scanResult.device, this);
+
+            } else if (LifevitSDKBleDeviceTensiometerBPM300.isTensiometerBPM300Device(scanResult.getName()) /*&& !mIsConnecting*/) {
+
+                bleDevice = new LifevitSDKBleDeviceTensiometerBPM300(scanResult.device, this);
 
             } else if (LifevitSDKBleDeviceBraceletAT500HR.matchDevice(scanResult.device)) {
 

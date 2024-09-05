@@ -72,10 +72,10 @@
             android:name=".activities.TensiometerBPM260Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.NewTensiometerBPM260Activity"
+            android:name=".activities.TensiometerBPM300Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ThermometerAoj20fActivity"
+            android:name=".activities.ThermometerKelvinPlusActivity"
             android:screenOrientation="portrait" />
 
         <service

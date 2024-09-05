@@ -39,8 +39,9 @@ public class MainActivity extends BaseAppCompatActivity {
                 new Pair<>(binding.scanAllDevices, ScanAllDevicesActivity.class),
                 new Pair<>(binding.braceletVital, BraceletVitalActivity.class),
                 new Pair<>(binding.glucometer, GlucometerActivity.class),
-                new Pair<>(binding.tensiometerBpm260, NewTensiometerBPM260Activity.class),
-                new Pair<>(binding.thermometerAoj20f, ThermometerAoj20fActivity.class)
+                new Pair<>(binding.tensiometerBpm260, TensiometerBPM260Activity.class),
+                new Pair<>(binding.tensiometerBpm300, TensiometerBPM300Activity.class),
+                new Pair<>(binding.thermometerKelvinPlus, ThermometerKelvinPlusActivity.class)
         );
     }
 

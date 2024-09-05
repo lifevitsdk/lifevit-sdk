@@ -103,7 +103,13 @@
             android:text="Tensiometer BPM-260" />
 
         <Button
-            android:id="@+id/thermometer_aoj_20f"
+            android:id="@+id/tensiometer_bpm_300"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tensiometer BPM-300" />
+
+        <Button
+            android:id="@+id/thermometer_kelvin_plus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Thermometer Kelvin Plus" />

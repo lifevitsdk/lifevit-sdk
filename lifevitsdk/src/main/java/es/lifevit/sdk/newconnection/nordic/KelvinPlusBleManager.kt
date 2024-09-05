@@ -12,7 +12,7 @@ import android.text.TextUtils
 import es.lifevit.sdk.BuildConfig
 import es.lifevit.sdk.LifevitSDKConstants
 import es.lifevit.sdk.LifevitSDKManager
-import es.lifevit.sdk.LifevitSDKManager.Aoj20fConnectionListener
+import es.lifevit.sdk.LifevitSDKManager.KelvinPlusConnectionListener
 import es.lifevit.sdk.utils.HexUtils
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.data.Data
@@ -22,7 +22,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
 
 
-open class Aoj20fBleManager(context: Context) : BleManager(context) {
+open class KelvinPlusBleManager(context: Context) : BleManager(context) {
 
     companion object {
         private var mGatt: BluetoothGatt? = null
@@ -166,7 +166,7 @@ open class Aoj20fBleManager(context: Context) : BleManager(context) {
     fun connectTo(device: BluetoothDevice, listener: NordicListener) {
         mMacToConnect = device.address
         mListener = listener
-        NordicConnectionObserver(this@Aoj20fBleManager, mListener).connect(device)
+        NordicConnectionObserver(this@KelvinPlusBleManager, mListener).connect(device)
     }
 
     @SuppressLint("MissingPermission")
@@ -250,7 +250,7 @@ open class Aoj20fBleManager(context: Context) : BleManager(context) {
         closeConnection()
     }
 
-    fun connectToThermomether(listener: Aoj20fConnectionListener) {
+    fun connectToThermomether(listener: KelvinPlusConnectionListener) {
         listener.statusChanged(LifevitSDKConstants.STATUS_CONNECTING)
         scan(DEVICE_NAME, object : ScanListener {
             override fun newDevice(device: ScanResult?) {

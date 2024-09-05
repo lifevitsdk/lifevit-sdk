@@ -10,22 +10,22 @@ import androidx.core.content.ContextCompat;
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKManager;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
-import es.lifevit.sdk.sampleapp.databinding.ActivityNewTensiometerBpm260Binding;
+import es.lifevit.sdk.sampleapp.databinding.ActivityTensiometerBpm300Binding;
 
 @SuppressLint("SetTextI18n")
-public class NewTensiometerBPM260Activity extends AppCompatActivity {
+public class TensiometerBPM300Activity extends AppCompatActivity {
 
-    private static final String TAG = NewTensiometerBPM260Activity.class.getSimpleName();
+    private static final String TAG = TensiometerBPM300Activity.class.getSimpleName();
 
     boolean isDisconnected = true;
     String lastDeviceConnectedAddress = "";
 
-    private ActivityNewTensiometerBpm260Binding binding;
+    private ActivityTensiometerBpm300Binding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityNewTensiometerBpm260Binding.inflate(getLayoutInflater());
+        binding = ActivityTensiometerBpm300Binding.inflate(getLayoutInflater());
         initListeners();
         setContentView(binding.getRoot());
     }
@@ -33,10 +33,10 @@ public class NewTensiometerBPM260Activity extends AppCompatActivity {
     private void initListeners() {
         binding.connect.setOnClickListener(view -> {
             if (isDisconnected) {
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectToBPM260(
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectToBPM300(
                     this,
                     null,
-                    new LifevitSDKManager.BPM260ConnectionListener() {
+                    new LifevitSDKManager.BPM300ConnectionListener() {
                         @Override
                         public void statusChanged(int status) {
                             onConnectionChanged(status);
@@ -54,7 +54,7 @@ public class NewTensiometerBPM260Activity extends AppCompatActivity {
                     }
                 );
             } else {
-                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectBPM260();
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectBPM300();
             }
         });
     }
@@ -69,26 +69,26 @@ public class NewTensiometerBPM260Activity extends AppCompatActivity {
                     binding.connect.setText("Connect");
                     isDisconnected = true;
                     binding.result.setText("Disconnected");
-                    binding.result.setTextColor(ContextCompat.getColor(NewTensiometerBPM260Activity.this, android.R.color.holo_red_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(TensiometerBPM300Activity.this, android.R.color.holo_red_dark));
                     break;
                 case LifevitSDKConstants.STATUS_SCANNING:
                     binding.connect.setText("Stop scan");
                     isDisconnected = false;
                     binding.result.setText("Scanning");
-                    binding.result.setTextColor(ContextCompat.getColor(NewTensiometerBPM260Activity.this, android.R.color.holo_blue_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(TensiometerBPM300Activity.this, android.R.color.holo_blue_dark));
                     break;
                 case LifevitSDKConstants.STATUS_CONNECTING:
                     binding.connect.setText("Disconnect");
                     isDisconnected = false;
                     binding.result.setText("Connecting");
-                    binding.result.setTextColor(ContextCompat.getColor(NewTensiometerBPM260Activity.this, android.R.color.holo_orange_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(TensiometerBPM300Activity.this, android.R.color.holo_orange_dark));
 
                     break;
                 case LifevitSDKConstants.STATUS_CONNECTED:
                     binding.connect.setText("Disconnect");
                     isDisconnected = false;
                     binding.result.setText("Connected");
-                    binding.result.setTextColor(ContextCompat.getColor(NewTensiometerBPM260Activity.this, android.R.color.holo_green_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(TensiometerBPM300Activity.this, android.R.color.holo_green_dark));
 
                     // Save connected device address
                     lastDeviceConnectedAddress = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_TENSIOMETER);
@@ -99,7 +99,7 @@ public class NewTensiometerBPM260Activity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        SDKTestApplication.getInstance().getLifevitSDKManager().disconnectBPM260();
+        SDKTestApplication.getInstance().getLifevitSDKManager().disconnectBPM300();
         super.onPause();
     }
 }

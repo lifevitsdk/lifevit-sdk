@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.util.Log
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 
-class NordicConnectionObserver(var parentManager: Aoj20fBleManager, var mListener: Aoj20fBleManager.NordicListener) : ConnectionObserver {
+class NordicConnectionObserver(var parentManager: KelvinPlusBleManager, var mListener: KelvinPlusBleManager.NordicListener) : ConnectionObserver {
 
     fun connect(device: BluetoothDevice) {
         parentManager.connectionObserver = this

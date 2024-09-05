@@ -12,22 +12,22 @@ import org.jetbrains.annotations.NotNull;
 import es.lifevit.sdk.LifevitSDKConstants;
 import es.lifevit.sdk.LifevitSDKManager;
 import es.lifevit.sdk.sampleapp.SDKTestApplication;
-import es.lifevit.sdk.sampleapp.databinding.ActivityThermometerAoj20fBinding;
+import es.lifevit.sdk.sampleapp.databinding.ActivityThermometerKelvinPlusBinding;
 
 @SuppressLint("SetTextI18n")
-public class ThermometerAoj20fActivity extends AppCompatActivity {
+public class ThermometerKelvinPlusActivity extends AppCompatActivity {
 
-    private static final String TAG = ThermometerAoj20fActivity.class.getSimpleName();
+    private static final String TAG = ThermometerKelvinPlusActivity.class.getSimpleName();
 
     boolean isDisconnected = true;
     String lastDeviceConnectedAddress = "";
 
-    private ActivityThermometerAoj20fBinding binding;
+    private ActivityThermometerKelvinPlusBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityThermometerAoj20fBinding.inflate(getLayoutInflater());
+        binding = ActivityThermometerKelvinPlusBinding.inflate(getLayoutInflater());
         initListeners();
         setContentView(binding.getRoot());
     }
@@ -35,8 +35,8 @@ public class ThermometerAoj20fActivity extends AppCompatActivity {
     private void initListeners() {
         binding.connect.setOnClickListener(view -> {
             if (isDisconnected) {
-                SDKTestApplication.getInstance().getLifevitSDKManager().connectToAoj20f(
-                        new LifevitSDKManager.Aoj20fConnectionListener() {
+                SDKTestApplication.getInstance().getLifevitSDKManager().connectToKelvinPlus(
+                        new LifevitSDKManager.KelvinPlusConnectionListener() {
                             @Override
                             public void statusChanged(int status) {
                                 onConnectionChanged(status);
@@ -52,7 +52,7 @@ public class ThermometerAoj20fActivity extends AppCompatActivity {
                         }
                 );
             } else {
-                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectAoj20f();
+                SDKTestApplication.getInstance().getLifevitSDKManager().disconnectKelvinPlus();
                 onConnectionChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
             }
         });
@@ -68,26 +68,26 @@ public class ThermometerAoj20fActivity extends AppCompatActivity {
                     binding.connect.setText("Connect");
                     isDisconnected = true;
                     binding.result.setText("Disconnected");
-                    binding.result.setTextColor(ContextCompat.getColor(ThermometerAoj20fActivity.this, android.R.color.holo_red_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(ThermometerKelvinPlusActivity.this, android.R.color.holo_red_dark));
                     break;
                 case LifevitSDKConstants.STATUS_SCANNING:
                     binding.connect.setText("Stop scan");
                     isDisconnected = false;
                     binding.result.setText("Scanning");
-                    binding.result.setTextColor(ContextCompat.getColor(ThermometerAoj20fActivity.this, android.R.color.holo_blue_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(ThermometerKelvinPlusActivity.this, android.R.color.holo_blue_dark));
                     break;
                 case LifevitSDKConstants.STATUS_CONNECTING:
                     binding.connect.setText("Disconnect");
                     isDisconnected = false;
                     binding.result.setText("Connecting");
-                    binding.result.setTextColor(ContextCompat.getColor(ThermometerAoj20fActivity.this, android.R.color.holo_orange_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(ThermometerKelvinPlusActivity.this, android.R.color.holo_orange_dark));
 
                     break;
                 case LifevitSDKConstants.STATUS_CONNECTED:
                     binding.connect.setText("Disconnect");
                     isDisconnected = false;
                     binding.result.setText("Connected");
-                    binding.result.setTextColor(ContextCompat.getColor(ThermometerAoj20fActivity.this, android.R.color.holo_green_dark));
+                    binding.result.setTextColor(ContextCompat.getColor(ThermometerKelvinPlusActivity.this, android.R.color.holo_green_dark));
 
                     // Save connected device address
                     lastDeviceConnectedAddress = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_TENSIOMETER);
@@ -98,7 +98,7 @@ public class ThermometerAoj20fActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        SDKTestApplication.getInstance().getLifevitSDKManager().disconnectAoj20f();
+        SDKTestApplication.getInstance().getLifevitSDKManager().disconnectKelvinPlus();
         onConnectionChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
         super.onPause();
     }
