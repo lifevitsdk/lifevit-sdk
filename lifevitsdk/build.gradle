@@ -72,7 +72,7 @@ afterEvaluate {
 
                 groupId='com.github.lifevitsdk'
                 artifactId = 'lifevitsdk'
-                version = '1.3.2'
+                version = '1.3.3'
             }
         }
     }
