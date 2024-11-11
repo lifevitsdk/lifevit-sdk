@@ -639,6 +639,59 @@ public class LifevitSDKManager {
         }
     }
 
+    public void connectToBPM260Service(Context context, String mac, BPM260ConnectionListener listener) {
+
+        LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
+        List<LSDeviceType> types = new ArrayList<>();
+        types.add(LSDeviceType.BloodPressureMeter);
+        if(mac != null) {
+            LSDeviceInfo lsDevice = new LSDeviceInfo();
+            lsDevice.setProtocolType(LSProtocolType.Standard.toString());
+            lsDevice.setBroadcastID(mac.replace(":", ""));
+            lsDevice.setMacAddress(mac);
+            lsDevice.setDeviceType(LSDeviceType.BloodPressureMeter.toString());
+            List<LSDeviceInfo> devices = new ArrayList<>();
+            devices.add(lsDevice);
+            lifesenseManager.setDevices(devices);
+        }
+
+        if(lifesenseManager.getManagerStatus() == LSManagerStatus.Free) {
+            listener.statusChanged(LifevitSDKConstants.STATUS_SCANNING);
+            lifesenseManager.searchDevice(types, new OnSearchingListener() {
+                @Override
+                public void onSearchResults(LSDeviceInfo lsDeviceInfo) {
+
+                    final IntentFilter bondFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
+                    BroadcastReceiver mBondStateBroadcastReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(final Context context, final Intent intent) {
+                            // Obtain the device and check if it is the one that we are connected to
+                            final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                            // Read bond state
+                            final int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
+                            if (bondState == BluetoothDevice.BOND_BONDED) {
+                                connectAndReadDataBPM260(lsDeviceInfo, listener);
+                            }
+                        }
+                    };
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        context.registerReceiver(mBondStateBroadcastReceiver, bondFilter, Context.RECEIVER_EXPORTED);
+                    } else {
+                        context.registerReceiver(mBondStateBroadcastReceiver, bondFilter);
+                    }
+                    connectAndReadDataBPM260(lsDeviceInfo, listener);
+                }
+            });
+        } else {
+            disconnectBPM260();
+            listener.statusChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
+            connectToBPM260Service(context, mac, listener); // Recurse to attempt reconnection
+        }
+    }
+
     private void connectAndReadDataBPM260(LSDeviceInfo lsDeviceInfo, BPM260ConnectionListener listener) {
         LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
         lifesenseManager.stopSearch();
