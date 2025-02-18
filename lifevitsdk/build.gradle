@@ -29,26 +29,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_22
+        targetCompatibility JavaVersion.VERSION_22
     }
     namespace 'es.lifevit.sdk'
     lint {
         abortOnError false
     }
-
-}
-
-java {
-    toolchain {
-        implementation = JvmImplementation.J9
-    }
-}
-//===============================
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17            // << --- ADD This
-    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {

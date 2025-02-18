@@ -22,6 +22,7 @@ public class LifevitSDKBleDeviceTensiometerBPM260 extends LifevitSDKBleDevice {
     private final static String CLASS_TAG = LifevitSDKBleDeviceTensiometerBPM260.class.getSimpleName();
 
     private static final String DEVICE_STARTS = "e-Distri";
+    private static final String DEVICE_STARTS_NEW = "TMB-2296-B";
 
     /*
     00001801-0000-1000-8000-00805f9b34fb
@@ -76,7 +77,7 @@ public class LifevitSDKBleDeviceTensiometerBPM260 extends LifevitSDKBleDevice {
      */
 
     protected static boolean isTensiometerBPM260Device(String name) {
-        return name != null && name.startsWith(DEVICE_STARTS);
+        return name != null && (name.startsWith(DEVICE_STARTS) || name.startsWith(DEVICE_STARTS_NEW));
     }
 
 
@@ -107,7 +108,7 @@ public class LifevitSDKBleDeviceTensiometerBPM260 extends LifevitSDKBleDevice {
         }
         BluetoothGattCharacteristic TxChar = RxService.getCharacteristic(UUID.fromString(UUID_BLOOD_PRESSURE_READ));
         if (TxChar == null) {
-            LogUtils.log(Log.ERROR, CLASS_TAG, "Tx charateristic not found!");
+            LogUtils.log(Log.ERROR, CLASS_TAG, "Tx characteristic not found!");
             return;
         }
         mBluetoothGatt.setCharacteristicNotification(TxChar, true);
@@ -228,6 +229,4 @@ public class LifevitSDKBleDeviceTensiometerBPM260 extends LifevitSDKBleDevice {
             }
         }
     }
-
-
 }
