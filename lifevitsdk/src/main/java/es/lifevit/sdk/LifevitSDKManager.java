@@ -30,14 +30,18 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import com.lifesense.plugin.ble.LSBluetoothManager;
+import com.lifesense.plugin.ble.OnPairingListener;
 import com.lifesense.plugin.ble.OnSearchingListener;
 import com.lifesense.plugin.ble.OnSyncingListener;
 import com.lifesense.plugin.ble.data.LSConnectState;
 import com.lifesense.plugin.ble.data.LSDeviceInfo;
+import com.lifesense.plugin.ble.data.LSDevicePairSetting;
 import com.lifesense.plugin.ble.data.LSDeviceType;
 import com.lifesense.plugin.ble.data.LSManagerStatus;
+import com.lifesense.plugin.ble.data.LSPairCommand;
 import com.lifesense.plugin.ble.data.LSProtocolType;
 import com.lifesense.plugin.ble.data.bpm.LSBloodPressure;
+import com.lifesense.plugin.ble.data.tracker.ATPairResultsCode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -750,30 +754,28 @@ public class LifevitSDKManager {
             listener.statusChanged(LifevitSDKConstants.STATUS_SCANNING);
             lifesenseManager.searchDevice(types, new OnSearchingListener() {
                 @Override
-                public void onSearchResults(LSDeviceInfo lsDeviceInfo) {
-
-                    final IntentFilter bondFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-
-                    BroadcastReceiver mBondStateBroadcastReceiver = new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(final Context context, final Intent intent) {
-                            // Obtain the device and check it this is the one that we are connected to
-                            final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                            // Read bond state
-                            final int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
-                            if (bondState == BluetoothDevice.BOND_BONDED) {
-                                connectAndReadDataBPM300(lsDeviceInfo, listener);
+                public void onSearchResults(LSDeviceInfo lsDevice) {
+                    if(lsDevice.getRegisterStatus() == 0) {
+                        LSBluetoothManager.getInstance().pairDevice(lsDevice, new OnPairingListener() {
+                            @Override
+                            public void onStateChanged(LSDeviceInfo lsDevice, int status) {
+                                listener.statusChanged(status);
+                                if(status == ATPairResultsCode.PAIR_SUCCESSFULLY) {
+                                    connectAndReadDataBPM300(lsDevice, listener);
+                                }
                             }
-                        }
-                    };
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        activity.registerReceiver(mBondStateBroadcastReceiver, bondFilter, Context.RECEIVER_EXPORTED);
+                            @Override
+                            public void onMessageUpdate(String macAddress, LSDevicePairSetting msg) {
+                                if(msg.getPairCmd() == LSPairCommand.DeviceIdRequest) {
+                                    msg.setObj(macAddress.replace(":",""));
+                                    LSBluetoothManager.getInstance().pushPairSetting(macAddress,msg);
+                                }
+                            }
+                        });
                     } else {
-                        activity.registerReceiver(mBondStateBroadcastReceiver, bondFilter);
+                        connectAndReadDataBPM300(lsDevice, listener);
                     }
-                    connectAndReadDataBPM300(lsDeviceInfo, listener);
                 }
             });
         } else {
@@ -796,9 +798,7 @@ public class LifevitSDKManager {
                     switch (lsConnectState) {
                         case Connecting, GattConnected -> listener.statusChanged(LifevitSDKConstants.STATUS_CONNECTING);
                         case Disconnect, ConnectFailure, RequestDisconnect -> listener.statusChanged(LifevitSDKConstants.STATUS_DISCONNECTED);
-                        case ConnectSuccess -> {
-                            listener.statusChanged(STATUS_CONNECTED);
-                        }
+                        case ConnectSuccess -> listener.statusChanged(STATUS_CONNECTED);
                     }
                 }
 
