@@ -28,8 +28,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_22
-        targetCompatibility JavaVersion.VERSION_22
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     namespace 'es.lifevit.sdk'
     lint {
@@ -58,7 +58,7 @@ afterEvaluate {
 
                 groupId='com.github.lifevitsdk'
                 artifactId = 'lifevitsdk'
-                version = '1.7.1'
+                version = '1.7.2'
             }
         }
     }
