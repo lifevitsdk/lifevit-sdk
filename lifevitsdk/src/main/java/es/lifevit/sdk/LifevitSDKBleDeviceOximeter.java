@@ -143,18 +143,14 @@ public class LifevitSDKBleDeviceOximeter extends LifevitSDKBleDevice {
 
 
     public void parseOximeterData(byte[] data) {
-
-        int dataLenght = 0;
         byte b = data[0];
         if (b == (byte) 0xAA) {//FIRST ROW OF DATA
             //Log.e("SOSTECA-BLE/OXIMETER","NEW DATA BATCH");
             bytecounter = 0;
-            dataLenght = data[1] % 0xFF;
             for (int i = 2; i < data.length; i++) {
                 bytecounter++;
             }
         } else {
-
             LifevitSDKOximeterData result = new LifevitSDKOximeterData();
             result.setDate(Calendar.getInstance().getTimeInMillis());
 
@@ -163,7 +159,7 @@ public class LifevitSDKBleDeviceOximeter extends LifevitSDKBleDevice {
             for (int i = 0; i < data.length; i++) {
                 if (bytecounter == 33) {
                     int pi = data[i] & 0xFF;
-                    if (((pi == -1)) || (pi == 255)) {
+                    if (pi == 255) {
                         result.setPi(-1);
                     } else {
                         result.setPi(pi);
@@ -171,29 +167,23 @@ public class LifevitSDKBleDeviceOximeter extends LifevitSDKBleDevice {
                 } else if (bytecounter == 34) {
                     int dat = data[i] & 0x0fffffff;
                     int spo2 = dat & 0xFF;
-                    if (((spo2 == 127) || (spo2 == -1)) || (spo2 == 255)) {
+                    if (spo2 == 127 || spo2 == 255) {
                         result.setSpO2(-1);
                     } else {
                         result.setSpO2(spo2);
                     }
                 } else if (bytecounter == 35) {
                     int pulse = data[i] % 0xFF;
-                    if (((pulse == 127) || (pulse == -1)) || (pulse == 255)) {
+                    if (pulse == 127 || pulse == -1) {
                         result.setLpm(-1);
                     } else {
                         result.setLpm(pulse);
                     }
                 } else if (bytecounter == 36) {
                     int rpm = data[i] % 0xFF;
-                    if (((rpm == -1)) || (rpm == 255)) {
-                        result.setRpm(-1);
-                    } else {
-                        result.setRpm(rpm);
-                    }
+                    result.setRpm(rpm);
                 } else if (bytecounter >= 45) {
-                    if (i == 19) {
-
-                    } else {
+                    if (i != 19) {
                         int dat = data[i] & 0x0fffffff;
                         int waveVal = dat & 0xFF;
                         if (waveVal < 100) {

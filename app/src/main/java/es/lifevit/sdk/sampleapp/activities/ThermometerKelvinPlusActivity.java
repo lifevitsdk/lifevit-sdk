@@ -33,7 +33,7 @@ public class ThermometerKelvinPlusActivity extends AppCompatActivity {
     }
 
     private void initListeners() {
-        binding.connect.setOnClickListener(view -> {
+        binding.connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectToKelvinPlus(
                         new LifevitSDKManager.KelvinPlusConnectionListener() {

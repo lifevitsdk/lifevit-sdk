@@ -489,7 +489,7 @@ public class LifevitSDKManager {
                         hshDetectedDevices.remove(type);
                         hshDeviceAddressByType.remove(type);
 
-                        if (hshDetectedDevices.size() == 0) {
+                        if (hshDetectedDevices.isEmpty()) {
                             stopLeScan();
                             // }
                         }
@@ -564,7 +564,7 @@ public class LifevitSDKManager {
 
             if (!gps_enabled && !network_enabled) {
                 // notify user
-                if (deviceListeners.size() > 0) {
+                if (!deviceListeners.isEmpty()) {
                     ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);
                     for (LifevitSDKDeviceListener deviceListener : listeners) {
                         deviceListener.deviceOnConnectionError(deviceType, LifevitSDKConstants.CODE_LOCATION_TURN_OFF);
@@ -696,6 +696,9 @@ public class LifevitSDKManager {
         }
     }
 
+    boolean oldSolution = true;
+    long latestBpm260MeasureReceived = 0L;
+
     private void connectAndReadDataBPM260(LSDeviceInfo lsDeviceInfo, BPM260ConnectionListener listener) {
         LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
         lifesenseManager.stopSearch();
@@ -717,8 +720,19 @@ public class LifevitSDKManager {
 
                 @Override
                 public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
+                    Log.d("test", String.format("MEASURE %d, %d, %d", lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate()));
                     listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
-                    disconnectBPM260();
+                    if(oldSolution) {
+                        // OLD SOLUTION
+                        disconnectBPM260();
+                    } else {
+                        // NEW SOLUTION
+                        if(latestBpm260MeasureReceived > 0 && System.currentTimeMillis() - latestBpm260MeasureReceived > 500) {
+                            disconnectBPM260();
+                        } else {
+                            latestBpm260MeasureReceived = System.currentTimeMillis();
+                        }
+                    }
                 }
             });
         } else if(lifesenseManager.getManagerStatus() == LSManagerStatus.Syncing) {
@@ -785,6 +799,8 @@ public class LifevitSDKManager {
         }
     }
 
+    long latestBpm300MeasureReceived = 0L;
+
     private void connectAndReadDataBPM300(LSDeviceInfo lsDeviceInfo, BPM300ConnectionListener listener) {
         LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
         lifesenseManager.stopSearch();
@@ -804,8 +820,19 @@ public class LifevitSDKManager {
 
                 @Override
                 public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
+                    Log.d("test", String.format("MEASURE %d, %d, %d", lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate()));
                     listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
-                    disconnectBPM300();
+                    if(oldSolution) {
+                        // OLD SOLUTION
+                        disconnectBPM300();
+                    } else {
+                        // NEW SOLUTION
+                        if(latestBpm300MeasureReceived > 0 && System.currentTimeMillis() - latestBpm300MeasureReceived > 500) {
+                            disconnectBPM300();
+                        } else {
+                            latestBpm300MeasureReceived = System.currentTimeMillis();
+                        }
+                    }
                 }
             });
         } else if(lifesenseManager.getManagerStatus() == LSManagerStatus.Syncing) {
@@ -1076,7 +1103,7 @@ public class LifevitSDKManager {
 
     private BluetoothAdapter.LeScanCallback mOldScanCallback = (device, rssi, scanRecord) -> {
 
-        if (hshDetectedDevices.size() == 0) {
+        if (hshDetectedDevices.isEmpty()) {
             stopLeScan();
             cleanConnectingData();
             return;
@@ -1301,7 +1328,7 @@ public class LifevitSDKManager {
             LogUtils.log(Log.DEBUG, CLASS_TAG, "DISCONNECT HOUR: " + System.currentTimeMillis());
         }
 
-        if (getDeviceListeners().size() > 0L && deviceType != LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER) {
+        if (!getDeviceListeners().isEmpty() && deviceType != LifevitSDKConstants.DEVICE_BRACELET_AT250_FIRMWARE_UPDATER) {
             ArrayList<LifevitSDKDeviceListener> listeners = new ArrayList<>(deviceListeners);
             for (LifevitSDKDeviceListener listener : listeners) {
                 listener.deviceOnConnectionChanged(deviceType, deviceStatus);
@@ -1320,7 +1347,7 @@ public class LifevitSDKManager {
 
             //LogUtils.log(Log.DEBUG, CLASS_TAG, "[REMOVE ScanningQueue]" + printScanningQueue());
 
-            if (hshDetectedDevices.size() == 0) {
+            if (hshDetectedDevices.isEmpty()) {
                 stopLeScan();
             }
 

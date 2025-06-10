@@ -82,7 +82,7 @@ public class BraceletAT500HrActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, 120000);
             } else {
@@ -90,7 +90,7 @@ public class BraceletAT500HrActivity extends AppCompatActivity {
             }
         });
 
-        button_command.setOnClickListener(view -> {
+        button_command.setOnClickListener(_ -> {
             final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
 
             if (SDKTestApplication.getInstance().getLifevitSDKManager().isUserRunning()) {

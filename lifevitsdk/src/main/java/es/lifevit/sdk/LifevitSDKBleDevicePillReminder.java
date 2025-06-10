@@ -113,14 +113,8 @@ public class LifevitSDKBleDevicePillReminder extends LifevitSDKBleDevice {
 
         descriptors.remove(descriptor.getUuid());
 
-        if (descriptors.size() == 0) {
+        if (descriptors.isEmpty()) {
             new Thread(() -> {
-//                    try {
-//                        Thread.sleep(1000);
-//                    }
-//                    catch (Exception e){
-//
-//                    }
                 setDeviceDate();
 
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"),

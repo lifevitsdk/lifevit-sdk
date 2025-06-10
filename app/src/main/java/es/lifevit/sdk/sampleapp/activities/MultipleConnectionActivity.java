@@ -107,7 +107,7 @@ public class MultipleConnectionActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnectedBracelet) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, 10000);
             } else {
@@ -115,14 +115,14 @@ public class MultipleConnectionActivity extends AppCompatActivity {
             }
         });
 
-        button_check_address.setOnClickListener(view -> {
+        button_check_address.setOnClickListener(_ -> {
             String addr = SDKTestApplication.getInstance().getLifevitSDKManager().getDeviceAddress(LifevitSDKConstants.DEVICE_BRACELET_AT500HR);
             textview_connection_result_address.setText(addr);
         });
 
         button_connect_by_addr.setOnClickListener(view -> SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BRACELET_AT500HR, 10000, textview_connection_result_address.getText().toString()));
 
-        button_connect_thermometer.setOnClickListener(view -> {
+        button_connect_thermometer.setOnClickListener(_ -> {
             if (isDisconnectedThermometer) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, 10000);
             } else {
@@ -130,7 +130,7 @@ public class MultipleConnectionActivity extends AppCompatActivity {
             }
         });
 
-        button_connect_oximeter.setOnClickListener(view -> {
+        button_connect_oximeter.setOnClickListener(_ -> {
             if (isDisconnectedOximeter) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_OXIMETER, 10000);
             } else {
@@ -138,7 +138,7 @@ public class MultipleConnectionActivity extends AppCompatActivity {
             }
         });
 
-        button_connect_tensiometer.setOnClickListener(view -> {
+        button_connect_tensiometer.setOnClickListener(_ -> {
             if (isDisconnectedTensiometer) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000);
             } else {

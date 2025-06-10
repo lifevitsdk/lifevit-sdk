@@ -70,7 +70,7 @@ public class ThermometerActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_THERMOMETER, 60000);
             } else {
@@ -78,7 +78,7 @@ public class ThermometerActivity extends AppCompatActivity {
             }
         });
 
-        button_command.setOnClickListener(view -> {
+        button_command.setOnClickListener(_ -> {
             if (!isDisconnected) {
                 final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
 

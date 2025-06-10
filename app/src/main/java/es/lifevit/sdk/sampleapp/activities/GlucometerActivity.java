@@ -51,7 +51,7 @@ public class GlucometerActivity extends AppCompatActivity {
     }
 
     private void initListeners() {
-        binding.connect.setOnClickListener(view -> {
+        binding.connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_GLUCOMETER, 600000);
             } else {
@@ -59,7 +59,7 @@ public class GlucometerActivity extends AppCompatActivity {
             }
         });
 
-        binding.command.setOnClickListener(view -> {
+        binding.command.setOnClickListener(_ -> {
             if (!isDisconnected) {
                 final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
 

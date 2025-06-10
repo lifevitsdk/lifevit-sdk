@@ -81,7 +81,7 @@ public class BabyTempBT125Activity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_BABY_TEMP_BT125, 10000);
             } else {

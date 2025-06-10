@@ -101,7 +101,7 @@ public class TensiometerActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOMETER, 10000);
             } else {
@@ -111,7 +111,7 @@ public class TensiometerActivity extends AppCompatActivity {
 
         button_measurement.setOnClickListener(view -> SDKTestApplication.getInstance().getLifevitSDKManager().startMeasurement());
 
-        button_connect_by_addr.setOnClickListener(view -> {
+        button_connect_by_addr.setOnClickListener(_ -> {
             if (isDisconnected) {
                 textview_connect_by_addr_result.setText("Connecting device... Check connection status in upper TextView");
 

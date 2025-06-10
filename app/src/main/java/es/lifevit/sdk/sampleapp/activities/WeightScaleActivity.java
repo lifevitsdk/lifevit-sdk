@@ -142,7 +142,7 @@ public class WeightScaleActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 // Set up device
                 SDKTestApplication.getInstance().getLifevitSDKManager().setUpWeightScale(LifevitSDKConstants.WEIGHT_SCALE_GENDER_MALE, AGE, HEIGHT, LifevitSDKConstants.WEIGHT_UNIT_KG);
@@ -162,7 +162,7 @@ public class WeightScaleActivity extends AppCompatActivity {
 
         weight_scale_button_history.setOnClickListener(view -> SDKTestApplication.getInstance().getLifevitSDKManager().getWeightHistoryData());
 
-        weight_scale_button_clear_results.setOnClickListener(view -> {
+        weight_scale_button_clear_results.setOnClickListener(_ -> {
             textview_bmr.setText("---");
             textview_fat.setText("---");
             textview_muscle.setText("---");

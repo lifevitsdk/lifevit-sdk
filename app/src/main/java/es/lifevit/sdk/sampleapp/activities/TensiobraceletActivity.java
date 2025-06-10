@@ -78,7 +78,7 @@ public class TensiobraceletActivity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectDevice(LifevitSDKConstants.DEVICE_TENSIOBRACELET, 10000);
             } else {
@@ -86,7 +86,7 @@ public class TensiobraceletActivity extends AppCompatActivity {
             }
         });
 
-        button_command.setOnClickListener(view -> {
+        button_command.setOnClickListener(_ -> {
             final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
 
             CharSequence[] colors = new CharSequence[]{

@@ -94,7 +94,7 @@ public class BraceletAT250Activity extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
             if (isDisconnected) {
 
                 // Before connecting, set firmware update notification parameters
@@ -114,7 +114,7 @@ public class BraceletAT250Activity extends AppCompatActivity {
             }
         });
 
-        button_command.setOnClickListener(view -> {
+        button_command.setOnClickListener(_ -> {
             final LifevitSDKManager manager = SDKTestApplication.getInstance().getLifevitSDKManager();
 
 

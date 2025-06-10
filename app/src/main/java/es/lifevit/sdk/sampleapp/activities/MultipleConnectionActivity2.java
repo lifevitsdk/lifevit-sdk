@@ -145,7 +145,7 @@ public class MultipleConnectionActivity2 extends AppCompatActivity {
 
     private void initListeners() {
 
-        button_connect.setOnClickListener(view -> {
+        button_connect.setOnClickListener(_ -> {
 
             int scanPeriod = 50000;
 

@@ -31,7 +31,7 @@ public class TensiometerBPM300Activity extends AppCompatActivity {
     }
 
     private void initListeners() {
-        binding.connect.setOnClickListener(view -> {
+        binding.connect.setOnClickListener(_ -> {
             if (isDisconnected) {
                 SDKTestApplication.getInstance().getLifevitSDKManager().connectToBPM300(
                     this,
