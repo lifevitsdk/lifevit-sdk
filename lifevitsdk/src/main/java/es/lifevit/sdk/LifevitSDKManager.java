@@ -696,7 +696,7 @@ public class LifevitSDKManager {
         }
     }
 
-    boolean oldSolution = true;
+    boolean oldSolution = false;
     long latestBpm260MeasureReceived = 0L;
 
     private void connectAndReadDataBPM260(LSDeviceInfo lsDeviceInfo, BPM260ConnectionListener listener) {
@@ -720,7 +720,6 @@ public class LifevitSDKManager {
 
                 @Override
                 public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
-                    Log.d("test", String.format("MEASURE %d, %d, %d", lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate()));
                     listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
                     if(oldSolution) {
                         // OLD SOLUTION
@@ -820,7 +819,6 @@ public class LifevitSDKManager {
 
                 @Override
                 public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
-                    Log.d("test", String.format("MEASURE %d, %d, %d", lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate()));
                     listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
                     if(oldSolution) {
                         // OLD SOLUTION

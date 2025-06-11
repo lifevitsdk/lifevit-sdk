@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.8.0'
+        classpath 'com.android.tools.build:gradle:8.10.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -30,8 +30,8 @@ project.ext.set("compileSdkVersion", 34)
 project.ext.set("targetSdkVersion", 34)
 project.ext.set("minSdkVersion", 26)
 
-project.ext.set("versionCode", 34)
-project.ext.set("versionName", "2.2.5")
+project.ext.set("versionCode", 35)
+project.ext.set("versionName", "2.2.6")
 
 task clean(type: Delete) {
     delete rootProject.buildDir
