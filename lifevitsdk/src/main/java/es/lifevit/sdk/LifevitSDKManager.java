@@ -726,7 +726,7 @@ public class LifevitSDKManager {
                         disconnectBPM260();
                     } else {
                         // NEW SOLUTION
-                        if(latestBpm260MeasureReceived > 0 && System.currentTimeMillis() - latestBpm260MeasureReceived > 500) {
+                        if(latestBpm260MeasureReceived > 0 && System.currentTimeMillis() - latestBpm260MeasureReceived > 750) {
                             disconnectBPM260();
                         } else {
                             latestBpm260MeasureReceived = System.currentTimeMillis();
@@ -825,7 +825,7 @@ public class LifevitSDKManager {
                         disconnectBPM300();
                     } else {
                         // NEW SOLUTION
-                        if(latestBpm300MeasureReceived > 0 && System.currentTimeMillis() - latestBpm300MeasureReceived > 500) {
+                        if(latestBpm300MeasureReceived > 0 && System.currentTimeMillis() - latestBpm300MeasureReceived > 750) {
                             disconnectBPM300();
                         } else {
                             latestBpm300MeasureReceived = System.currentTimeMillis();
