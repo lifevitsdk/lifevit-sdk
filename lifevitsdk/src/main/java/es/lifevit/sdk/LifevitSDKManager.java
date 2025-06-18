@@ -696,9 +696,6 @@ public class LifevitSDKManager {
         }
     }
 
-    boolean oldSolution = false;
-    long latestBpm260MeasureReceived = 0L;
-
     private void connectAndReadDataBPM260(LSDeviceInfo lsDeviceInfo, BPM260ConnectionListener listener) {
         LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
         lifesenseManager.stopSearch();
@@ -721,17 +718,6 @@ public class LifevitSDKManager {
                 @Override
                 public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
                     listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
-                    if(oldSolution) {
-                        // OLD SOLUTION
-                        disconnectBPM260();
-                    } else {
-                        // NEW SOLUTION
-                        if(latestBpm260MeasureReceived > 0 && System.currentTimeMillis() - latestBpm260MeasureReceived > 750) {
-                            disconnectBPM260();
-                        } else {
-                            latestBpm260MeasureReceived = System.currentTimeMillis();
-                        }
-                    }
                 }
             });
         } else if(lifesenseManager.getManagerStatus() == LSManagerStatus.Syncing) {
@@ -798,8 +784,6 @@ public class LifevitSDKManager {
         }
     }
 
-    long latestBpm300MeasureReceived = 0L;
-
     private void connectAndReadDataBPM300(LSDeviceInfo lsDeviceInfo, BPM300ConnectionListener listener) {
         LSBluetoothManager lifesenseManager = LSBluetoothManager.getInstance();
         lifesenseManager.stopSearch();
@@ -820,17 +804,6 @@ public class LifevitSDKManager {
                 @Override
                 public void onBloodPressureDataUpdate(String s, LSBloodPressure lsBloodPressure) {
                     listener.onMeasurementFinish(lsBloodPressure.getSystolic(), lsBloodPressure.getDiastolic(), lsBloodPressure.getPulseRate());
-                    if(oldSolution) {
-                        // OLD SOLUTION
-                        disconnectBPM300();
-                    } else {
-                        // NEW SOLUTION
-                        if(latestBpm300MeasureReceived > 0 && System.currentTimeMillis() - latestBpm300MeasureReceived > 750) {
-                            disconnectBPM300();
-                        } else {
-                            latestBpm300MeasureReceived = System.currentTimeMillis();
-                        }
-                    }
                 }
             });
         } else if(lifesenseManager.getManagerStatus() == LSManagerStatus.Syncing) {
