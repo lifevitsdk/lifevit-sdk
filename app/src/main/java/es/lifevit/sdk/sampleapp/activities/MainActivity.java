@@ -55,7 +55,7 @@ public class MainActivity extends BaseAppCompatActivity {
     private void initPermissions() {
         requestPermissions(
                 findViewById(R.id.main_activity_main_view),
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT},
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.POST_NOTIFICATIONS},
                 100,
                 R.string.message_need_location_permission,
                 false,

@@ -26,8 +26,8 @@ allprojects {
     }
 }
 
-project.ext.set("compileSdkVersion", 34)
-project.ext.set("targetSdkVersion", 34)
+project.ext.set("compileSdkVersion", 35)
+project.ext.set("targetSdkVersion", 35)
 project.ext.set("minSdkVersion", 26)
 
 project.ext.set("versionCode", 35)

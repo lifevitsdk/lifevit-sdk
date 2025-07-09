@@ -485,7 +485,7 @@ public class BraceletAT250Activity extends AppCompatActivity {
             // 2. Notification
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             NotificationChannel mChannel;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && mNotificationManager != null) {
+            if (mNotificationManager != null) {
                 int importance = NotificationManager.IMPORTANCE_DEFAULT;
                 mChannel = new NotificationChannel(LifevitSDKConstants.AT250_NOTIFICATION_CHANNEL_ID_DFU, "Firmware Update", importance);
                 mChannel.setShowBadge(false);
@@ -493,9 +493,9 @@ public class BraceletAT250Activity extends AppCompatActivity {
                 mNotificationManager.createNotificationChannel(mChannel);
             }
 
-            mNotificationManager.notify(LifevitSDKConstants.AT250_FOREGROUND_NOTIFICATION_ID, createProgressNotification(state, progress));
+            if(mNotificationManager != null) {
+                mNotificationManager.notify(LifevitSDKConstants.AT250_FOREGROUND_NOTIFICATION_ID, createProgressNotification(state, progress));
+            }
         }
     };
-
-
 }
